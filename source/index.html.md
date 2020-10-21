@@ -58,7 +58,7 @@ curl -X GET https://trade.capecrypto.com/api/v2/peatio/account/balances \
 -H "X-Auth-Signature: changeme"
 ```
 
-> 4) Expected Response:
+> 4) Example response:
 ```json
 {
     "balance": "1.4995",
@@ -123,7 +123,7 @@ http POST https://trade.capecrypto.com/api/v2/peatio/market/orders \
 market=ethusd side=buy volume=31 ord_type=limit price=160.82
 ```
 
-> Expected Response:
+> Example Response:
 
 ``` json
 {
@@ -158,7 +158,7 @@ http POST https://trade.capecrypto.com/api/v2/peatio/market/trades \
 "X-Auth-Signature: changeme" \
 ```
 
-> Expected Response:
+> Example response:
 
 ``` json
 {
