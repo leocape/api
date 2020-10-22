@@ -83,8 +83,31 @@ html, body {
     padding: 0px 0px 10px 10px; 
     margin-top: -10px;
     font-size: 10px;
+  }
 
+  .request-type {  
+    &__get, &__post, &__patch, &__delete {
+      border-radius: 2px; 
+      padding: 1px 3px 1px 3px;
+      font-size: 8px;
+      color: white; 
+    }
 
+    &__get {  
+      background: #0F69B4; 
+    }
+
+    &__post {
+      background: #10A449; 
+    }
+
+    &__patch {
+      background: #C5862C; 
+    }
+
+    &__delete {
+      background: #A31D21; 
+    }
   }
 
   &>.search {

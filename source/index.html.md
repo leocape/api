@@ -80,7 +80,7 @@ Before calling a private endpoint you will need to generate three headers to acc
 3. <strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey
 
 # Example without Authentication
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> List available currencies
+## <span class="request-type__get">GET</span> List available currencies
 
 ```shell
 # http GET https://trade.capecrypto.com/api/v2/peatio/public/markets
@@ -113,7 +113,7 @@ Returns a list of all available currencies
 
 For the private endpoints, you need to authenticate your request. See the getting started and authentication sections above for how to create your Api Key and Secret, as well as generating a Nonce and Signature.
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Create Order
+## <span class="request-type__post">POST</span> Create Order
 
 ```shell
 http POST https://trade.capecrypto.com/api/v2/peatio/market/orders \
@@ -149,7 +149,7 @@ Example using httpie
 
 Creates a new order on the Order Book, and returns information about that newly created order
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Check Trade history
+## <span class="request-type__post">POST</span> Check Trade history
 
 ```shell
 http POST https://trade.capecrypto.com/api/v2/peatio/market/trades \
@@ -183,7 +183,7 @@ Get your trade history
 
 # Public APIs
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Trading fees
+## <span class="request-type__get">GET</span> Trading fees
 
 `/public/trading_fees`
 
@@ -208,7 +208,7 @@ Returns the current trading fees table as paginated collection
 | ---- | ----------- | ------ |
 | 200 | Returns trading_fees table as paginated collection | [ [TradingFee](#tradingfee) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Health
+## <span class="request-type__get">GET</span> Health
 
 `/public/health/ready`
 
@@ -222,7 +222,7 @@ Get application readiness status
 | ---- | ----------- |
 | 200 | Get application readiness status |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Alive
+## <span class="request-type__get">GET</span> Alive
 
 `/public/health/alive`
 
@@ -237,7 +237,7 @@ Get application liveness status
 | 200 | Get application liveness status |
 
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Timestamp
+## <span class="request-type__get">GET</span> Timestamp
 
 `/public/timestamp`
 
@@ -251,7 +251,7 @@ Get server time, in seconds since Unix epoch.
 | ---- | ----------- |
 | 200 | Get server current time, in seconds since Unix epoch. |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Market Ticker
+## <span class="request-type__get">GET</span> Market Ticker
 
 `/public/markets/{market}/tickers`
 
@@ -271,7 +271,7 @@ Get ticker of specific market.
 | ---- | ----------- | ------ |
 | 200 | Get ticker of specific market. | [Ticker](#ticker) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> All tickers
+## <span class="request-type__get">GET</span> All tickers
 
 `/public/markets/tickers`
 
@@ -285,7 +285,7 @@ Get ticker of all markets (For response doc see /:market/tickers/ response).
 | ---- | ----------- | ------ |
 | 200 | Get ticker of all markets (For response doc see /:market/tickers/ response). | [Ticker](#ticker) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> K Line
+## <span class="request-type__get">GET</span> K Line
 
 `/public/markets/{market}/k-line`
 
@@ -309,7 +309,7 @@ Get OHLC(k line) of specific market.
 | ---- | ----------- |
 | 200 | Get OHLC(k line) of specific market. |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Market Depth
+## <span class="request-type__get">GET</span> Market Depth
 
 `/public/markets/{market}/depth`
 
@@ -330,7 +330,7 @@ Get depth or specified market. Both asks and bids are sorted from highest price 
 | ---- | ----------- |
 | 200 | Get depth or specified market. Both asks and bids are sorted from highest price to lowest. |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Trades
+## <span class="request-type__get">GET</span> Trades
 
 `/public/markets/{market}/trades`
 
@@ -353,7 +353,7 @@ Get recent trades on market, each trade is included only once. Trades are sorted
 | ---- | ----------- | ------ |
 | 200 | Get recent trades on market, each trade is included only once. Trades are sorted in reverse creation order. | [ [Trade](#trade) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Order Book
+## <span class="request-type__get">GET</span> Order Book
 
 `/public/markets/{market}/order-book`
 
@@ -375,7 +375,7 @@ Get the order book of specified market.
 | ---- | ----------- | ------ |
 | 200 | Get the order book of specified market. | [ [OrderBook](#orderbook) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Markets
+## <span class="request-type__get">GET</span> Markets
 
 `/public/markets`
 
@@ -405,7 +405,7 @@ Get all available markets.
 | ---- | ----------- | ------ |
 | 200 | Get all available markets. | [ [Market](#market) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> All Currencies
+## <span class="request-type__get">GET</span> All Currencies
 
 `/public/currencies`
 
@@ -427,7 +427,7 @@ Get list of currencies
 | ---- | ----------- | ------ |
 | 200 | Get list of currencies | [ [Currency](#currency) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Single Currency
+## <span class="request-type__get">GET</span> Single Currency
 
 `/public/currencies/{id}`
 
@@ -454,7 +454,7 @@ Get a single currency
 # Account
 
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Transaction History
+## <span class="request-type__get">GET</span> Transaction History
 
 ` /account/transactions`
 
@@ -482,7 +482,7 @@ Get your transactions history.
 | ---- | ----------- |
 | 200 | Get your transactions history. |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Create New Withdrawal
+## <span class="request-type__post">POST</span> Create New Withdrawal
 
 `/account/withdraws`
 
@@ -506,7 +506,7 @@ Creates new withdrawal to active beneficiary.
 | ---- | ----------- |
 | 201 | Creates new withdrawal to active beneficiary. |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> List Withdrawals
+## <span class="request-type__post">POST</span> List Withdrawals
 
 ### Description
 
@@ -528,7 +528,7 @@ List your withdraws as paginated collection.
 | ---- | ----------- | ------ |
 | 200 | List your withdraws as paginated collection. | [ [Withdraw](#withdraw) ] |
 
-## <span style="color: white; background: #A31D21; border-radius: 2px; padding: 0px 3px 0px 3px;">DELETE</span> Delete Beneficiary
+## <span class="request-type__delete">DELETE</span> Delete Beneficiary
 
 ` /account/beneficiaries/{id}`
 
@@ -548,7 +548,7 @@ Delete beneficiary
 | ---- | ----------- |
 | 204 | Delete beneficiary |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Beneficiary ID
+## <span class="request-type__get">GET</span> Beneficiary ID
 
 `/account/beneficiaries/{id}`
 
@@ -568,11 +568,10 @@ Get beneficiary by ID
 | ---- | ----------- | ------ |
 | 200 | Get beneficiary by ID | [Beneficiary](#beneficiary) |
 
-## <span style="color: white; background: #C5862C; border-radius: 2px; padding: 0px 3px 0px 3px;">PATCH</span> Activate New Beneficiary
+## <span class="request-type__patch">PATCH</span> Activate New Beneficiary
 
 `/account/beneficiaries/{id}/activate`
 
-### PATCH
 ### Description
 
 Activates a new beneficiary with pin
@@ -590,7 +589,7 @@ Activates a new beneficiary with pin
 | ---- | ----------- | ------ |
 | 200 | Activates beneficiary with pin | [Beneficiary](#beneficiary) |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Create new Beneficiary
+## <span class="request-type__post">POST</span> Create new Beneficiary
 
 `/account/beneficiaries`
 
@@ -613,7 +612,7 @@ Create a new beneficiary
 | ---- | ----------- | ------ |
 | 201 | Create new beneficiary | [Beneficiary](#beneficiary) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> List Beneficiaries
+## <span class="request-type__get">GET</span> List Beneficiaries
 
 `/account/beneficiaries`
 
@@ -634,7 +633,7 @@ Get list of user beneficiaries
 | ---- | ----------- | ------ |
 | 200 | Get list of user beneficiaries | [ [Beneficiary](#beneficiary) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Deposit Address
+## <span class="request-type__get">GET</span> Deposit Address
 
 `/account/deposit_address/{currency}`
 
@@ -655,7 +654,7 @@ Returns the deposit address for account you want to deposit into, by currency. (
 | ---- | ----------- | ------ |
 | 200 | Returns deposit address for account you want to deposit to by currency. The address may be blank because address generation process is still in progress. If this case you should try again later. | [Deposit](#deposit) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Deposit Details
+## <span class="request-type__get">GET</span> Deposit Details
 
 `/account/deposits/{txid}`
 
@@ -675,11 +674,10 @@ Get details of specific deposit.
 | ---- | ----------- | ------ |
 | 200 | Get details of specific deposit. | [Deposit](#deposit) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Deposit History
+## <span class="request-type__get">GET</span> Deposit History
 
 `/account/deposits`
 
-### GET
 ### Description
 
 Get your deposit history.
@@ -700,7 +698,7 @@ Get your deposit history.
 | ---- | ----------- | ------ |
 | 200 | Get your deposits history. | [ [Deposit](#deposit) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> User Account by Currency
+## <span class="request-type__get">GET</span> User Account by Currency
 
 `/account/balances/{currency}`
 
@@ -720,7 +718,7 @@ Get user account by currency
 | ---- | ----------- | ------ |
 | 200 | Get user account by currency | [Account](#account) |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> List User Accounts
+## <span class="request-type__get">GET</span> List User Accounts
 
 `/account/balances`
 
@@ -748,7 +746,7 @@ Get list of user accounts
 
 # Trade
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> List Own Trades
+## <span class="request-type__get">GET</span> List Own Trades
 
  `/market/trades`
 
@@ -773,7 +771,7 @@ Get your executed trades. Trades are sorted in reverse creation order.
 | ---- | ----------- | ------ |
 | 200 | Get your executed trades. Trades are sorted in reverse creation order. | [ [Trade](#trade) ] |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Cancel All Orders
+## <span class="request-type__post">POST</span> Cancel All Orders
 
 `/market/orders/cancel`
 
@@ -794,7 +792,7 @@ Cancel all of your open orders.
 | ---- | ----------- | ------ |
 | 201 | Cancel all my orders. | [Order](#order) |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Cancel Specific Order
+## <span class="request-type__post">POST</span> Cancel Specific Order
 
 `/market/orders/{id}/cancel`
 
@@ -814,7 +812,7 @@ Cancel a specific order by it's Order ID.
 | ---- | ----------- |
 | 201 | Cancel an order. |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> Create Order
+## <span class="request-type__post">POST</span> Create Order
 
 `/market/orders`
 
@@ -838,9 +836,8 @@ Create a Sell/Buy order.
 | ---- | ----------- | ------ |
 | 201 | Create a Sell/Buy order. | [Order](#order) |
 
-## <span style="color: white; background: #10A449; border-radius: 2px; padding: 0px 3px 0px 3px;">POST</span> List Orders
+## <span class="request-type__post">POST</span> List Orders
 
-### GET
 ### Description
 
 Get a list of your orders, result is paginated.
@@ -867,7 +864,7 @@ Get a list of your orders, result is paginated.
 | ---- | ----------- | ------ |
 | 200 | Get your orders, result is paginated. | [ [Order](#order) ] |
 
-## <span style="color: white; background: #0F69B4; border-radius: 2px; padding: 0px 3px 0px 3px;">GET</span> Order Info
+## <span class="request-type__get">GET</span> Order Info
 
 `/market/orders/{id}`
 
