@@ -36,6 +36,32 @@ html, body {
   -webkit-text-size-adjust: none; /* Never autoresize text */
 }
 
+.request-type {  
+  &__get, &__post, &__patch, &__delete {
+    border-radius: 2px; 
+    padding: 1px 3px 1px 3px;
+    font-size: 8px;
+    color: white; 
+    vertical-align: top;
+  }
+
+  &__get {  
+    background: #0F69B4 !important; 
+  }
+
+  &__post {
+    background: #10A449; 
+  }
+
+  &__patch {
+    background: #C5862C; 
+  }
+
+  &__delete {
+    background: #A31D21; 
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // TABLE OF CONTENTS
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +120,7 @@ html, body {
     }
 
     &__get {  
-      background: #0F69B4; 
+      background: #0F69B4 !important; 
     }
 
     &__post {
@@ -403,6 +429,11 @@ html, body {
     padding-top: 1.2em;
     padding-bottom: 1.2em;
     background-image: linear-gradient(to bottom, rgba(#fff, 0.2), rgba(#fff, 0));
+
+    span {
+      line-height: 24px;
+      font-size: 14px;
+    }
   }
 
   // h2s right after h1s should bump right up
