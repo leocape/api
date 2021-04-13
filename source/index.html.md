@@ -52,7 +52,7 @@ OpenSSL::HMAC.hexdigest("SHA256", secret, nonce + api_key)
 >  3) Perform the authenticated request using the 3x headers:
 
 ```shell
-curl -X GET https://trade.capecrypto.com/api/v2/peatio/account/balances \
+curl -X GET https://trade.capecrypto.com/api/v2/trade/account/balances \
 -H "X-Auth-Apikey: changeme" \
 -H "X-Auth-Nonce: changeme" \
 -H "X-Auth-Signature: changeme"
@@ -83,7 +83,7 @@ Before calling a private endpoint you will need to generate three headers to acc
 ## <span class="request-type__get">GET</span> List available currencies
 
 ```shell
-# http GET https://trade.capecrypto.com/api/v2/peatio/public/markets
+# http GET https://trade.capecrypto.com/api/v2/trade/public/markets
 ```
 > The above command returns JSON structured like this:
 
@@ -104,7 +104,7 @@ Before calling a private endpoint you will need to generate three headers to acc
 
 Example using httpie:
 
-`http GET https://trade.capecrypto.com/api/v2/peatio/public/markets`
+`http GET https://trade.capecrypto.com/api/v2/trade/public/markets`
 
 Returns a list of all available currencies
 
@@ -116,7 +116,7 @@ For the private endpoints, you need to authenticate your request. See the gettin
 ## <span class="request-type__post">POST</span> Create Order
 
 ```shell
-http POST https://trade.capecrypto.com/api/v2/peatio/market/orders \
+http POST https://trade.capecrypto.com/api/v2/trade/market/orders \
 "X-Auth-Apikey: changeme" \ # See getting started section above
 "X-Auth-Nonce: changeme" \ # See authentication section above
 "X-Auth-Signature: changeme" \ # See authentication section above
@@ -145,14 +145,14 @@ market=ethusd side=buy volume=31 ord_type=limit price=160.82
 
 Example using httpie
 
-`https://trade.capecrypto.com/api/v2/peatio/market/orders`
+`https://trade.capecrypto.com/api/v2/trade/market/orders`
 
 Creates a new order on the Order Book, and returns information about that newly created order
 
 ## <span class="request-type__post">POST</span> Check Trade history
 
 ```shell
-http POST https://trade.capecrypto.com/api/v2/peatio/market/trades \
+http POST https://trade.capecrypto.com/api/v2/trade/market/trades \
 "X-Auth-Apikey: changeme" \
 "X-Auth-Nonce: changeme" \
 "X-Auth-Signature: changeme" \
@@ -177,7 +177,7 @@ http POST https://trade.capecrypto.com/api/v2/peatio/market/trades \
 }
 ```
 
-`https://trade.capecrypto.com/api/v2/peatio/market/trades`
+`https://trade.capecrypto.com/api/v2/trade/market/trades`
 
 Get your trade history
 
