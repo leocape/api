@@ -542,7 +542,7 @@ OpenSSL::HMAC.hexdigest<span class="o">(</span><span class="s2">"SHA256"</span>,
 <code>json
 {
     &quot;balance&quot;: &quot;1.4995&quot;,
-    &quot;currency&quot;: &quot;eth&quot;,
+    &quot;currency&quot;: &quot;btc&quot;,
     &quot;locked&quot;: &quot;0.0&quot;
 }
 </code></p>
@@ -588,7 +588,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\ </span><span class="c"># See getting started section above</span>
 <span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
 <span class="s2">"X-Auth-Signature: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
-<span class="nv">market</span><span class="o">=</span>ethusd <span class="nv">side</span><span class="o">=</span>buy <span class="nv">volume</span><span class="o">=</span>31 <span class="nv">ord_type</span><span class="o">=</span>limit <span class="nv">price</span><span class="o">=</span>160.82
+<span class="nv">market</span><span class="o">=</span>btczar <span class="nv">side</span><span class="o">=</span>buy <span class="nv">volume</span><span class="o">=</span>31 <span class="nv">ord_type</span><span class="o">=</span>limit <span class="nv">price</span><span class="o">=</span>160.82
 </code></pre></div>
 <blockquote>
 <p>Example Response:</p>
@@ -598,7 +598,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
   </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-03-12T17:01:56+01:00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"executed_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10440269</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ethusd"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"ord_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"limit"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"origin_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"31.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160.82"</span><span class="p">,</span><span class="w">
@@ -627,9 +627,9 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
   </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-03-12T17:01:56+01:00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"fee"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.002"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.01"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fee_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eth"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"fee_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1834499</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ethusd"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10440269</span><span class="p">,</span><span class="w">
   </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160.82"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="s2">"buy"</span><span class="p">,</span><span class="w">
