@@ -532,7 +532,7 @@ OpenSSL::HMAC.hexdigest<span class="o">(</span><span class="s2">"SHA256"</span>,
 <blockquote>
 <p>3) Perform the authenticated request using the 3x headers:</p>
 </blockquote>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> GET https://trade.capecrypto.com/api/v2/peatio/account/balances <span class="se">\</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> GET https://trade.capecrypto.com/api/v2/trade/account/balances <span class="se">\</span>
 <span class="nt">-H</span> <span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\</span>
 <span class="nt">-H</span> <span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\</span>
 <span class="nt">-H</span> <span class="s2">"X-Auth-Signature: changeme"</span>
@@ -559,7 +559,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <li><strong>X-Auth-Apikey</strong>: Your API key that you created in the previous step</li>
 <li><strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey</li>
 </ol>
-<h1 id='example-without-authentication'>Example without Authentication</h1><h2 id='get-list-available-currencies'><span class="request-type__get">GET</span> List available currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># http GET https://trade.capecrypto.com/api/v2/peatio/public/markets</span>
+<h1 id='example-without-authentication'>Example without Authentication</h1><h2 id='get-list-available-currencies'><span class="request-type__get">GET</span> List available currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># http GET https://trade.capecrypto.com/api/v2/trade/public/markets</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -579,12 +579,12 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </span></code></pre></div>
 <p>Example using httpie:</p>
 
-<p><code>http GET https://trade.capecrypto.com/api/v2/peatio/public/markets</code></p>
+<p><code>http GET https://trade.capecrypto.com/api/v2/trade/public/markets</code></p>
 
 <p>Returns a list of all available currencies</p>
 <h1 id='example-with-authentication'>Example with Authentication</h1>
 <p>For the private endpoints, you need to authenticate your request. See the getting started and authentication sections above for how to create your Api Key and Secret, as well as generating a Nonce and Signature.</p>
-<h2 id='post-create-order'><span class="request-type__post">POST</span> Create Order</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/peatio/market/orders <span class="se">\</span>
+<h2 id='post-create-order'><span class="request-type__post">POST</span> Create Order</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/trade/market/orders <span class="se">\</span>
 <span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\ </span><span class="c"># See getting started section above</span>
 <span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
 <span class="s2">"X-Auth-Signature: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
@@ -611,10 +611,10 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </span></code></pre></div>
 <p>Example using httpie</p>
 
-<p><code>https://trade.capecrypto.com/api/v2/peatio/market/orders</code></p>
+<p><code>https://trade.capecrypto.com/api/v2/trade/market/orders</code></p>
 
 <p>Creates a new order on the Order Book, and returns information about that newly created order</p>
-<h2 id='post-check-trade-history'><span class="request-type__post">POST</span> Check Trade history</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/peatio/market/trades <span class="se">\</span>
+<h2 id='post-check-trade-history'><span class="request-type__post">POST</span> Check Trade history</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/trade/market/trades <span class="se">\</span>
 <span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\</span>
 <span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\</span>
 <span class="s2">"X-Auth-Signature: changeme"</span> <span class="se">\</span>
@@ -637,7 +637,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
   </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"804.1"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p><code>https://trade.capecrypto.com/api/v2/peatio/market/trades</code></p>
+<p><code>https://trade.capecrypto.com/api/v2/trade/market/trades</code></p>
 
 <p>Get your trade history</p>
 <h1 id='public-apis'>Public APIs</h1><h2 id='get-trading-fees'><span class="request-type__get">GET</span> Trading fees</h2>
