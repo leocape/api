@@ -62,7 +62,7 @@ curl -X GET https://trade.capecrypto.com/api/v2/trade/account/balances \
 ```json
 {
     "balance": "1.4995",
-    "currency": "eth",
+    "currency": "btc",
     "locked": "0.0"
 }
 ```
@@ -120,7 +120,7 @@ http POST https://trade.capecrypto.com/api/v2/trade/market/orders \
 "X-Auth-Apikey: changeme" \ # See getting started section above
 "X-Auth-Nonce: changeme" \ # See authentication section above
 "X-Auth-Signature: changeme" \ # See authentication section above
-market=ethusd side=buy volume=31 ord_type=limit price=160.82
+market=btczar side=buy volume=31 ord_type=limit price=160.82
 ```
 
 > Example Response:
@@ -131,7 +131,7 @@ market=ethusd side=buy volume=31 ord_type=limit price=160.82
   "created_at": "2020-03-12T17:01:56+01:00",
   "executed_volume": "0.0",
   "id": 10440269,
-  "market": "ethusd",
+  "market": "btczar",
   "ord_type": "limit",
   "origin_volume": "31.0",
   "price": "160.82",
@@ -166,9 +166,9 @@ http POST https://trade.capecrypto.com/api/v2/trade/market/trades \
   "created_at": "2020-03-12T17:01:56+01:00",
   "fee": "0.002",
   "fee_amount": "0.01",
-  "fee_currency": "eth",
+  "fee_currency": "btc",
   "id": 1834499,
-  "market": "ethusd",
+  "market": "btczar",
   "order_id": 10440269,
   "price": "160.82",
   "side": "buy",
