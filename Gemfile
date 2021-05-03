@@ -11,3 +11,4 @@ gem 'redcarpet', '~> 3.5.0'
 gem 'nokogiri', '~> 1.10.8'
 gem 'sass'
 gem "rexml", ">= 3.2.5"
+gem "kramdown", ">= 2.3.1"
