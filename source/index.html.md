@@ -29,7 +29,7 @@ The public endpoints do not require authentication, but the private endpoints do
 
 # Authentication
 
-> Authentication Example:
+> Authentication Example (using Ruby):
 
 > 1) Create a Nonce:
 
@@ -38,7 +38,7 @@ date +%s%3N
 # => "1584087661035"
 ```
 
-> 2) Create the signature by concatenating the Nonce and the Api Key:
+> 2) Create a signature by concatenating the Nonce and the Api Key, and then encode with your secret using 256 HMAC:
 
 ```shell
 require 'openssl'
