@@ -506,7 +506,7 @@
 <h1 id='getting-started'>Getting started</h1>
 <p>Before getting going, head to the <strong>Profile screen</strong>. Enable 2FA and then create an API key.</p>
 
-<p>1Save the API key and Secret and do not share it with anyone.</p>
+<p>Save the API key and Secret and do not share it with anyone.</p>
 
 <p>The public endpoints do not require authentication, but the private endpoints do</p>
 <h1 id='authentication'>Authentication</h1>
@@ -519,7 +519,7 @@
 <span class="c"># =&gt; "1584087661035"</span>
 </code></pre></div>
 <blockquote>
-<p>2) Create the signature by concatenating the Nonce and the Api Key:</p>
+<p>2) Create the signature by concatenating the Nonce and the Api Key, and along with your secret, ecrypting to HMAC 256:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>require <span class="s1">'openssl'</span>
 
@@ -557,7 +557,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <ol>
 <li><strong>X-Auth-Nonce</strong>: A nonce is an arbitrary number that can be used only once. In our environment you MUST use a millisecond timestamp in UTC time. </li>
 <li><strong>X-Auth-Apikey</strong>: Your API key that you created in the previous step</li>
-<li><strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey</li>
+<li><strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey, along with your API secret</li>
 </ol>
 <h1 id='example-without-authentication'>Example without Authentication</h1><h2 id='get-list-available-currencies'><span class="request-type__get">GET</span> List available currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># http GET https://trade.capecrypto.com/api/v2/trade/public/markets</span>
 </code></pre></div>
