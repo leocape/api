@@ -23,7 +23,7 @@ Welcome to the Cape Crypto API Documentation! You can use the API to create and 
 
 Before getting going, head to the <strong>Profile screen</strong>. Enable 2FA and then create an API key.
 
-1Save the API key and Secret and do not share it with anyone.
+Save the API key and Secret and do not share it with anyone.
 
 The public endpoints do not require authentication, but the private endpoints do
 
