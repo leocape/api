@@ -77,7 +77,7 @@ Before calling a private endpoint you will need to generate three headers to acc
 
 1. <strong>X-Auth-Nonce</strong>: A nonce is an arbitrary number that can be used only once. In our environment you MUST use a millisecond timestamp in UTC time. 
 2. <strong>X-Auth-Apikey</strong>: Your API key that you created in the previous step
-3. <strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey
+3. <strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey, and your API secret
 
 # Example without Authentication
 ## <span class="request-type__get">GET</span> List available currencies
