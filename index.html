@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <title>Cape Crypto | API Documentation</title>
 
     <style media="screen">
@@ -248,8 +249,11 @@
 .highlight .kd {
   color: #cb4b16;
 }
-.highlight .s, .highlight .sa, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+.highlight .s, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
   color: #859900;
+}
+.highlight .sa {
+  color: #6c71c4;
 }
 .highlight .sr {
   color: #2aa198;
@@ -279,9 +283,9 @@
   color: #859900;
 }
     </style>
-    <link href="stylesheets/screen-d613cd3f.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/screen-833e3e34.css" rel="stylesheet" media="screen" />
     <link href="stylesheets/print-953e3353.css" rel="stylesheet" media="print" />
-      <script src="javascripts/all-34464e03.js"></script>
+      <script src="javascripts/all-b12a2749.js"></script>
 
     <script>
       $(function() { setupCodeCopy(); });
@@ -297,7 +301,7 @@
     </a>
     <div class="toc-wrapper">
       <img src="images/logo-b97fa499.png" class="logo" alt="" />
-      <div class="subtitle">API Documentation V2</div>
+      <div class="subtitle">API Documentation V2.1.0</div>
 
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -314,41 +318,29 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
-            <a href="#example-without-authentication" class="toc-h1 toc-link" data-title="Example without Authentication">Example without Authentication</a>
+            <a href="#example-using-authentication" class="toc-h1 toc-link" data-title="Example using Authentication">Example using Authentication</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-list-available-currencies" class="toc-h2 toc-link" data-title="GET List available currencies"><span class="request-type__get">GET</span> List available currencies</a>
+                    <a href="#post-create-order" class="toc-h2 toc-link" data-title="POST Create order"><span class="request-type__post">POST</span> Create order</a>
                   </li>
               </ul>
           </li>
           <li>
-            <a href="#example-with-authentication" class="toc-h1 toc-link" data-title="Example with Authentication">Example with Authentication</a>
+            <a href="#public-request-example" class="toc-h1 toc-link" data-title="Public request example">Public request example</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#post-create-order" class="toc-h2 toc-link" data-title="POST Create Order"><span class="request-type__post">POST</span> Create Order</a>
-                  </li>
-                  <li>
-                    <a href="#post-check-trade-history" class="toc-h2 toc-link" data-title="POST Check Trade history"><span class="request-type__post">POST</span> Check Trade history</a>
+                    <a href="#get-get-available-markets" class="toc-h2 toc-link" data-title="GET Get available markets"><span class="request-type__get">GET</span> Get available markets</a>
                   </li>
               </ul>
           </li>
           <li>
-            <a href="#public-apis" class="toc-h1 toc-link" data-title="Public APIs">Public APIs</a>
+            <a href="#public" class="toc-h1 toc-link" data-title="Public">Public</a>
               <ul class="toc-list-h2">
-                  <li>
-                    <a href="#get-trading-fees" class="toc-h2 toc-link" data-title="GET Trading fees"><span class="request-type__get">GET</span> Trading fees</a>
-                  </li>
-                  <li>
-                    <a href="#get-health" class="toc-h2 toc-link" data-title="GET Health"><span class="request-type__get">GET</span> Health</a>
-                  </li>
                   <li>
                     <a href="#get-alive" class="toc-h2 toc-link" data-title="GET Alive"><span class="request-type__get">GET</span> Alive</a>
                   </li>
                   <li>
-                    <a href="#get-timestamp" class="toc-h2 toc-link" data-title="GET Timestamp"><span class="request-type__get">GET</span> Timestamp</a>
-                  </li>
-                  <li>
-                    <a href="#get-market-ticker" class="toc-h2 toc-link" data-title="GET Market Ticker"><span class="request-type__get">GET</span> Market Ticker</a>
+                    <a href="#get-ticker" class="toc-h2 toc-link" data-title="GET Ticker"><span class="request-type__get">GET</span> Ticker</a>
                   </li>
                   <li>
                     <a href="#get-all-tickers" class="toc-h2 toc-link" data-title="GET All tickers"><span class="request-type__get">GET</span> All tickers</a>
@@ -357,13 +349,10 @@
                     <a href="#get-k-line" class="toc-h2 toc-link" data-title="GET K Line"><span class="request-type__get">GET</span> K Line</a>
                   </li>
                   <li>
-                    <a href="#get-market-depth" class="toc-h2 toc-link" data-title="GET Market Depth"><span class="request-type__get">GET</span> Market Depth</a>
+                    <a href="#get-orderbook" class="toc-h2 toc-link" data-title="GET Orderbook"><span class="request-type__get">GET</span> Orderbook</a>
                   </li>
                   <li>
-                    <a href="#get-trades" class="toc-h2 toc-link" data-title="GET Trades"><span class="request-type__get">GET</span> Trades</a>
-                  </li>
-                  <li>
-                    <a href="#get-order-book" class="toc-h2 toc-link" data-title="GET Order Book"><span class="request-type__get">GET</span> Order Book</a>
+                    <a href="#get-market-trades" class="toc-h2 toc-link" data-title="GET Market trades"><span class="request-type__get">GET</span> Market trades</a>
                   </li>
                   <li>
                     <a href="#get-markets" class="toc-h2 toc-link" data-title="GET Markets"><span class="request-type__get">GET</span> Markets</a>
@@ -380,66 +369,89 @@
             <a href="#account" class="toc-h1 toc-link" data-title="Account">Account</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-transaction-history" class="toc-h2 toc-link" data-title="GET Transaction History"><span class="request-type__get">GET</span> Transaction History</a>
+                    <a href="#post-create-new-beneficiary" class="toc-h2 toc-link" data-title="POST Create new beneficiary"><span class="request-type__post">POST</span> Create new beneficiary</a>
                   </li>
                   <li>
-                    <a href="#post-create-new-withdrawal" class="toc-h2 toc-link" data-title="POST Create New Withdrawal"><span class="request-type__post">POST</span> Create New Withdrawal</a>
+                    <a href="#patch-activate-new-neneficiary" class="toc-h2 toc-link" data-title="PATCH Activate new neneficiary"><span class="request-type__patch">PATCH</span> Activate new neneficiary</a>
                   </li>
                   <li>
-                    <a href="#post-list-withdrawals" class="toc-h2 toc-link" data-title="POST List Withdrawals"><span class="request-type__post">POST</span> List Withdrawals</a>
+                    <a href="#delete-delete-beneficiary" class="toc-h2 toc-link" data-title="DELETE Delete beneficiary"><span class="request-type__delete">DELETE</span> Delete beneficiary</a>
                   </li>
                   <li>
-                    <a href="#delete-delete-beneficiary" class="toc-h2 toc-link" data-title="DELETE Delete Beneficiary"><span class="request-type__delete">DELETE</span> Delete Beneficiary</a>
-                  </li>
-                  <li>
-                    <a href="#get-beneficiary-id" class="toc-h2 toc-link" data-title="GET Beneficiary ID"><span class="request-type__get">GET</span> Beneficiary ID</a>
-                  </li>
-                  <li>
-                    <a href="#patch-activate-new-beneficiary" class="toc-h2 toc-link" data-title="PATCH Activate New Beneficiary"><span class="request-type__patch">PATCH</span> Activate New Beneficiary</a>
-                  </li>
-                  <li>
-                    <a href="#post-create-new-beneficiary" class="toc-h2 toc-link" data-title="POST Create new Beneficiary"><span class="request-type__post">POST</span> Create new Beneficiary</a>
+                    <a href="#get-beneficiary-by-id" class="toc-h2 toc-link" data-title="GET Beneficiary by id"><span class="request-type__get">GET</span> Beneficiary by id</a>
                   </li>
                   <li>
                     <a href="#get-list-beneficiaries" class="toc-h2 toc-link" data-title="GET List Beneficiaries"><span class="request-type__get">GET</span> List Beneficiaries</a>
                   </li>
                   <li>
-                    <a href="#get-deposit-address" class="toc-h2 toc-link" data-title="GET Deposit Address"><span class="request-type__get">GET</span> Deposit Address</a>
+                    <a href="#post-new-withdrawal" class="toc-h2 toc-link" data-title="POST New withdrawal"><span class="request-type__post">POST</span> New withdrawal</a>
                   </li>
                   <li>
-                    <a href="#get-deposit-details" class="toc-h2 toc-link" data-title="GET Deposit Details"><span class="request-type__get">GET</span> Deposit Details</a>
+                    <a href="#get-withdrawal-history" class="toc-h2 toc-link" data-title="GET Withdrawal history"><span class="request-type__post">GET</span> Withdrawal history</a>
                   </li>
                   <li>
-                    <a href="#get-deposit-history" class="toc-h2 toc-link" data-title="GET Deposit History"><span class="request-type__get">GET</span> Deposit History</a>
+                    <a href="#get-instant-deposit-methods" class="toc-h2 toc-link" data-title="GET Instant deposit methods"><span class="request-type__post">GET</span> Instant deposit methods</a>
                   </li>
                   <li>
-                    <a href="#get-user-account-by-currency" class="toc-h2 toc-link" data-title="GET User Account by Currency"><span class="request-type__get">GET</span> User Account by Currency</a>
+                    <a href="#post-redeem-voucher" class="toc-h2 toc-link" data-title="POST Redeem voucher"><span class="request-type__post">POST</span> Redeem voucher</a>
                   </li>
                   <li>
-                    <a href="#get-list-user-accounts" class="toc-h2 toc-link" data-title="GET List User Accounts"><span class="request-type__get">GET</span> List User Accounts</a>
+                    <a href="#get-deposit-address" class="toc-h2 toc-link" data-title="GET Deposit address"><span class="request-type__get">GET</span> Deposit address</a>
+                  </li>
+                  <li>
+                    <a href="#get-deposit-history-by-txid" class="toc-h2 toc-link" data-title="GET Deposit history by txid"><span class="request-type__get">GET</span> Deposit history by txid</a>
+                  </li>
+                  <li>
+                    <a href="#get-deposit-history" class="toc-h2 toc-link" data-title="GET Deposit history"><span class="request-type__get">GET</span> Deposit history</a>
+                  </li>
+                  <li>
+                    <a href="#get-balance" class="toc-h2 toc-link" data-title="GET Balance"><span class="request-type__get">GET</span> Balance</a>
+                  </li>
+                  <li>
+                    <a href="#get-all-balances" class="toc-h2 toc-link" data-title="GET All balances"><span class="request-type__get">GET</span> All balances</a>
+                  </li>
+                  <li>
+                    <a href="#post-new-lightning-payment" class="toc-h2 toc-link" data-title="POST New lightning payment"><span class="request-type__post">POST</span> New lightning payment</a>
+                  </li>
+                  <li>
+                    <a href="#post-create-a-lightning-invoice" class="toc-h2 toc-link" data-title="POST Create a Lightning invoice"><span class="request-type__post">POST</span> Create a Lightning invoice</a>
                   </li>
               </ul>
           </li>
           <li>
-            <a href="#trade" class="toc-h1 toc-link" data-title="Trade">Trade</a>
+            <a href="#trading" class="toc-h1 toc-link" data-title="Trading">Trading</a>
               <ul class="toc-list-h2">
-                  <li>
-                    <a href="#get-list-own-trades" class="toc-h2 toc-link" data-title="GET List Own Trades"><span class="request-type__get">GET</span> List Own Trades</a>
-                  </li>
-                  <li>
-                    <a href="#post-cancel-all-orders" class="toc-h2 toc-link" data-title="POST Cancel All Orders"><span class="request-type__post">POST</span> Cancel All Orders</a>
-                  </li>
-                  <li>
-                    <a href="#post-cancel-specific-order" class="toc-h2 toc-link" data-title="POST Cancel Specific Order"><span class="request-type__post">POST</span> Cancel Specific Order</a>
-                  </li>
                   <li>
                     <a href="#post-create-order-2" class="toc-h2 toc-link" data-title="POST Create Order"><span class="request-type__post">POST</span> Create Order</a>
                   </li>
                   <li>
-                    <a href="#post-list-orders" class="toc-h2 toc-link" data-title="POST List Orders"><span class="request-type__post">POST</span> List Orders</a>
+                    <a href="#get-order-by-id" class="toc-h2 toc-link" data-title="GET Order by id"><span class="request-type__get">GET</span> Order by id</a>
                   </li>
                   <li>
-                    <a href="#get-order-info" class="toc-h2 toc-link" data-title="GET Order Info"><span class="request-type__get">GET</span> Order Info</a>
+                    <a href="#get-all-orders" class="toc-h2 toc-link" data-title="GET All orders"><span class="request-type__post">GET</span> All orders</a>
+                  </li>
+                  <li>
+                    <a href="#get-trades" class="toc-h2 toc-link" data-title="GET Trades"><span class="request-type__get">GET</span> Trades</a>
+                  </li>
+                  <li>
+                    <a href="#post-cancel-order" class="toc-h2 toc-link" data-title="POST Cancel Order"><span class="request-type__post">POST</span> Cancel Order</a>
+                  </li>
+                  <li>
+                    <a href="#post-cancel-all-orders" class="toc-h2 toc-link" data-title="POST Cancel All Orders"><span class="request-type__post">POST</span> Cancel All Orders</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#websocket" class="toc-h1 toc-link" data-title="Websocket">Websocket</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#subscribe-orderbook" class="toc-h2 toc-link" data-title="SUBSCRIBE Orderbook"><span class="request-type__get">SUBSCRIBE</span> Orderbook</a>
+                  </li>
+                  <li>
+                    <a href="#subscribe-k-line" class="toc-h2 toc-link" data-title="SUBSCRIBE K-Line"><span class="request-type__get">SUBSCRIBE</span> K-Line</a>
+                  </li>
+                  <li>
+                    <a href="#subscribe-private" class="toc-h2 toc-link" data-title="SUBSCRIBE Private"><span class="request-type__get">SUBSCRIBE</span> Private</a>
                   </li>
               </ul>
           </li>
@@ -447,19 +459,16 @@
             <a href="#models" class="toc-h1 toc-link" data-title="Models">Models</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#tradingfee" class="toc-h2 toc-link" data-title="TradingFee">TradingFee</a>
-                  </li>
-                  <li>
                     <a href="#ticker" class="toc-h2 toc-link" data-title="Ticker">Ticker</a>
                   </li>
                   <li>
                     <a href="#tickerentry" class="toc-h2 toc-link" data-title="TickerEntry">TickerEntry</a>
                   </li>
                   <li>
-                    <a href="#trade-2" class="toc-h2 toc-link" data-title="Trade">Trade</a>
+                    <a href="#orderbook-entry" class="toc-h2 toc-link" data-title="Orderbook entry">Orderbook entry</a>
                   </li>
                   <li>
-                    <a href="#orderbook" class="toc-h2 toc-link" data-title="OrderBook">OrderBook</a>
+                    <a href="#trade" class="toc-h2 toc-link" data-title="Trade">Trade</a>
                   </li>
                   <li>
                     <a href="#order" class="toc-h2 toc-link" data-title="Order">Order</a>
@@ -483,10 +492,28 @@
                     <a href="#account-2" class="toc-h2 toc-link" data-title="Account">Account</a>
                   </li>
                   <li>
-                    <a href="#transactions" class="toc-h2 toc-link" data-title="Transactions">Transactions</a>
+                    <a href="#instant-deposit-method" class="toc-h2 toc-link" data-title="Instant Deposit Method">Instant Deposit Method</a>
                   </li>
                   <li>
-                    <a href="#member" class="toc-h2 toc-link" data-title="Member">Member</a>
+                    <a href="#voucher-redemption" class="toc-h2 toc-link" data-title="Voucher Redemption">Voucher Redemption</a>
+                  </li>
+                  <li>
+                    <a href="#change-voucher" class="toc-h2 toc-link" data-title="Change voucher">Change voucher</a>
+                  </li>
+                  <li>
+                    <a href="#lightning-payment" class="toc-h2 toc-link" data-title="Lightning payment">Lightning payment</a>
+                  </li>
+                  <li>
+                    <a href="#lightning-invoice" class="toc-h2 toc-link" data-title="Lightning invoice">Lightning invoice</a>
+                  </li>
+                  <li>
+                    <a href="#websocket-orderbook-snapshot" class="toc-h2 toc-link" data-title="Websocket orderbook snapshot">Websocket orderbook snapshot</a>
+                  </li>
+                  <li>
+                    <a href="#websocket-orderbook-increment" class="toc-h2 toc-link" data-title="Websocket orderbook increment">Websocket orderbook increment</a>
+                  </li>
+                  <li>
+                    <a href="#states" class="toc-h2 toc-link" data-title="States">States</a>
                   </li>
               </ul>
           </li>
@@ -495,275 +522,262 @@
           </li>
       </ul>
         <ul class="toc-footer">
-            <li><a href='https://trade.capecrypto.com'>Cape Crypto</a></li>
+            <li><a href="https://trade.capecrypto.com" target="_blank">Cape Crypto PTY LTD</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the Cape Crypto API Documentation! You can use the API to create and cancel orders, view your balance, view market orders and perform all the account actions you can perform from the app.</p>
+<p>Welcome to the Cape Crypto API Documentation. You can use our full API suite to integrate with us.</p>
+
+<p>Create and cancel orders, view your account balance, stream orderbook and account updates over websocket, and perform all other actions you can perform from the apps.</p>
+
+<p>🚀 Looking for trading features that we haven&#39;t added yet? We&#39;ll add them for you! <a href="https://support.capecrypto.com/hc/en-us/requests/new" target="_blank">Reach out to us</a></p>
+
+<p><img src="https://raw.githubusercontent.com/capecrypto/kungfu/main/hummingbot_icon.jpg" alt="Hummingbot icon" title="Hummingbot icon" width="15" height="15"/> Looking for a Hummingbot connector for Cape Crypto? We have one! <a href="https://support.capecrypto.com/hc/en-us/requests/new" target="_blank">Reach out to us</a></p>
 <h1 id='getting-started'>Getting started</h1>
-<p>Before getting going, head to the <strong>Profile screen</strong>. Enable 2FA and then create an API key.</p>
-
-<p>Save the API key and Secret and do not share it with anyone.</p>
-
-<p>The public endpoints do not require authentication, but the private endpoints do</p>
-<h1 id='authentication'>Authentication</h1>
-<blockquote>
-<p>Authentication Example:</p>
-
-<p>1) Create a Nonce:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight shell tab-shell"><code><span class="nb">date</span> +%s%3N
-<span class="c"># =&gt; "1584087661035"</span>
-</code></pre></div>
-<blockquote>
-<p>2) Create the signature by concatenating the Nonce and the Api Key, and along with your secret, ecrypting to HMAC 256:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>require <span class="s1">'openssl'</span>
-
-nonce <span class="o">=</span> <span class="s1">'1584087661035'</span> <span class="c"># The nonce created above'</span>
-api_key <span class="o">=</span> <span class="s1">'changeme'</span> <span class="c"># Your API key (see getting started above)'</span>
-secret <span class="o">=</span> <span class="s1">'changeme'</span> <span class="c"># Your API secret (see getting started above)'</span>
-OpenSSL::HMAC.hexdigest<span class="o">(</span><span class="s2">"SHA256"</span>, secret, nonce + api_key<span class="o">)</span>
-<span class="c"># =&gt; "6cc108cb3427b655ccf0870fc7fa807ef3756506d4db3f3c93f8d4cd8ef0e611" </span>
-</code></pre></div>
-<blockquote>
-<p>3) Perform the authenticated request using the 3x headers:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> GET https://trade.capecrypto.com/api/v2/trade/account/balances <span class="se">\</span>
-<span class="nt">-H</span> <span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\</span>
-<span class="nt">-H</span> <span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\</span>
-<span class="nt">-H</span> <span class="s2">"X-Auth-Signature: changeme"</span>
-</code></pre></div>
-<blockquote>
-<p>4) Example response:
-<code>json
-{
-    &quot;balance&quot;: &quot;1.4995&quot;,
-    &quot;currency&quot;: &quot;btc&quot;,
-    &quot;locked&quot;: &quot;0.0&quot;
-}
-</code></p>
-</blockquote>
-
-<aside class="notice">
-Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</strong> as mentioned in the Getting Started section above.
-</aside>
-
-<p>Before calling a private endpoint you will need to generate three headers to accompany your request:</p>
+<p>The API suite consists of public and private endpoints. Private endpoints require your requests to be signed for authentication. In order to sign your requests, you will need to create and API key and secret, and have 2FA enabled:</p>
 
 <ol>
-<li><strong>X-Auth-Nonce</strong>: A nonce is an arbitrary number that can be used only once. In our environment you MUST use a millisecond timestamp in UTC time. </li>
-<li><strong>X-Auth-Apikey</strong>: Your API key that you created in the previous step</li>
-<li><strong>X-Auth-Signature</strong>: HMAC-SHA256 signature created using a concatenation of the X-Auth-Nonce and X-Auth-Apikey, along with your API secret</li>
+<li>Sign into your account <a href="https://trade.capecrypto.com" target="_blank">Cape Crypto</a></li>
+<li>Head to the <strong>Profile</strong> page by clicking the profile icon at the top right</li>
+<li>Enable 2FA</li>
+<li>Create a new API key</li>
+<li>Save your new API key and Secret and do not share it with anyone</li>
 </ol>
-<h1 id='example-without-authentication'>Example without Authentication</h1><h2 id='get-list-available-currencies'><span class="request-type__get">GET</span> List available currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># http GET https://trade.capecrypto.com/api/v2/trade/public/markets</span>
+
+<p>Use your API key and secret to sign your requests for all private endpoints. (Public endpoints do not require authentication)</p>
+
+<ul>
+<li>Base url REST: <code>https://trade.capecrypto.com/api/v2/trade</code></li>
+<li>Base url WSS: <code>wss://trade.capecrypto.com/api/v2/stream</code></li>
+</ul>
+<h1 id='authentication'>Authentication</h1>
+<blockquote>
+<p>Authentication:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// generateHeaders.js</span>
+
+<span class="kd">const</span> <span class="nx">crypto</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">crypto</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">123456...</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">secret</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ABCDEF...</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">timeStamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">queryString</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">timeStamp</span><span class="p">}${</span><span class="nx">apikey</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">crypto</span>
+    <span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="dl">"</span><span class="s2">sha256</span><span class="dl">"</span><span class="p">,</span> <span class="nx">secret</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">queryString</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">digest</span><span class="p">(</span><span class="dl">"</span><span class="s2">hex</span><span class="dl">"</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">Content-Type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json;charset=utf-8</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="nx">apikey</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nx">timeStamp</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<aside class="notice">
+Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</strong>.
+</aside>
+
+<p>To securely access the private endpoints, each request requires authentication headers.</p>
+
+<p>Generate a new signature for each new request, and add these headers to the request.</p>
+
+<ol>
+<li><strong>X-Auth-Nonce</strong>: Current timestamp in milliseconds UTC time.</li>
+<li><strong>X-Auth-Apikey</strong>: Your API key</li>
+<li><strong>X-Auth-Signature</strong>: HMAC-SHA256 encrypted string of the combined timestamp, apikey and secret (see JS example)</li>
+</ol>
+<h1 id='example-using-authentication'>Example using Authentication</h1><h2 id='post-create-order'><span class="request-type__post">POST</span> Create order</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// generateHeaders.js</span>
+
+<span class="kd">const</span> <span class="nx">crypto</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">crypto</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">123456...</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">secret</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ABCDEF...</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">timeStamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">queryString</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">timeStamp</span><span class="p">}${</span><span class="nx">apikey</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">crypto</span>
+    <span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="dl">"</span><span class="s2">sha256</span><span class="dl">"</span><span class="p">,</span> <span class="nx">secret</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">queryString</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">digest</span><span class="p">(</span><span class="dl">"</span><span class="s2">hex</span><span class="dl">"</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">Content-Type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json;charset=utf-8</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="nx">apikey</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nx">timeStamp</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+  <span class="p">};</span>
+<span class="p">};</span>
 </code></pre></div>
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Send the authenticated request:</p>
 </blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-    </span><span class="nl">"amount_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btcusdt"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"max_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1000000.0"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"min_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0001"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"min_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000.0"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BTC/ZAR"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"price_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"quote_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enabled"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div>
-<p>Example using httpie:</p>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// createOrder.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
 
-<p><code>http GET https://trade.capecrypto.com/api/v2/trade/public/markets</code></p>
+<span class="nx">createOrder</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/trade/market/orders`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
-<p>Returns a list of all available currencies</p>
-<h1 id='example-with-authentication'>Example with Authentication</h1>
-<p>For the private endpoints, you need to authenticate your request. See the getting started and authentication sections above for how to create your Api Key and Secret, as well as generating a Nonce and Signature.</p>
-<h2 id='post-create-order'><span class="request-type__post">POST</span> Create Order</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/trade/market/orders <span class="se">\</span>
-<span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\ </span><span class="c"># See getting started section above</span>
-<span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
-<span class="s2">"X-Auth-Signature: changeme"</span> <span class="se">\ </span><span class="c"># See authentication section above</span>
-<span class="nv">market</span><span class="o">=</span>btczar <span class="nv">side</span><span class="o">=</span>buy <span class="nv">volume</span><span class="o">=</span>31 <span class="nv">ord_type</span><span class="o">=</span>limit <span class="nv">price</span><span class="o">=</span>160.82
+  <span class="kd">const</span> <span class="nx">orderData</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">market</span><span class="p">:</span> <span class="dl">"</span><span class="s2">btczar</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">side</span><span class="p">:</span> <span class="dl">"</span><span class="s2">sell</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">volume</span><span class="p">:</span> <span class="dl">"</span><span class="s2">0.00001</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">ord_type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">limit</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">price</span><span class="p">:</span> <span class="dl">"</span><span class="s2">800000</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">post_only</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">custom_order_id</span><span class="p">:</span> <span class="dl">"</span><span class="s2">302b0494-1a06-4089-846c-0c6b13f1b661</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">orderData</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 </code></pre></div>
 <blockquote>
-<p>Example Response:</p>
+<p>Create order response:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"avg_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-03-12T17:01:56+01:00"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"executed_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10440269</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">173757</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7e86a4fa-fcae-4953-b9bc-d6f328beea48"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sell"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"ord_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"limit"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"origin_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"31.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160.82"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"remaining_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"31.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="s2">"buy"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800000.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"avg_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-12-08T08:46:59+01:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-12-08T08:46:59+01:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"origin_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00001"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"remaining_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00001"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"executed_volume"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"trades_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-03-12T17:01:56+01:00"</span><span class="w">
+  </span><span class="nl">"custom_order_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"302b0494-1a06-4089-846c-0c6b13f1b661"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>Example using httpie</p>
-
 <p><code>https://trade.capecrypto.com/api/v2/trade/market/orders</code></p>
 
-<p>Creates a new order on the Order Book, and returns information about that newly created order</p>
-<h2 id='post-check-trade-history'><span class="request-type__post">POST</span> Check Trade history</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>http POST https://trade.capecrypto.com/api/v2/trade/market/trades <span class="se">\</span>
-<span class="s2">"X-Auth-Apikey: changeme"</span> <span class="se">\</span>
-<span class="s2">"X-Auth-Nonce: changeme"</span> <span class="se">\</span>
-<span class="s2">"X-Auth-Signature: changeme"</span> <span class="se">\</span>
+<p>Create a new order on your account by signing your request and submitting the request</p>
+<h1 id='public-request-example'>Public request example</h1><h2 id='get-get-available-markets'><span class="request-type__get">GET</span> Get available markets</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">getMarkets</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/trade/public/markets`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">getMarkets</span><span class="p">();</span>
 </code></pre></div>
 <blockquote>
-<p>Example response:</p>
+<p>Markets response:</p>
 </blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-03-12T17:01:56+01:00"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fee"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.002"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.01"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fee_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1834499</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"market"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10440269</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160.82"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"side"</span><span class="p">:</span><span class="w"> </span><span class="s2">"buy"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"taker_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"buy"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"804.1"</span><span class="w">
-</span><span class="p">}</span><span class="w">
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btczar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BTC/ZAR"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"quote_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"200000.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1200000.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00001"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"price_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enabled"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ethzar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ETH/ZAR"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eth"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"quote_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100000.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0001"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"price_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enabled"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xrpzar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"XRP/ZAR"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xrp"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"quote_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"price_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enabled"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usdczar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USDC/ZAR"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usdc"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"quote_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"min_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.5"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"price_precision"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enabled"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div>
-<p><code>https://trade.capecrypto.com/api/v2/trade/market/trades</code></p>
+<p><code>GET https://trade.capecrypto.com/api/v2/trade/public/markets</code></p>
 
-<p>Get your trade history</p>
-<h1 id='public-apis'>Public APIs</h1><h2 id='get-trading-fees'><span class="request-type__get">GET</span> Trading fees</h2>
-<p><code>/public/trading_fees</code></p>
+<p>Returns a list of all available markets</p>
+<h1 id='public'>Public</h1><h2 id='get-alive'><span class="request-type__get">GET</span> Alive</h2>
+<p><code>/public/health/alive</code></p>
 <h3 id='description'>Description</h3>
-<p>Returns the current trading fees table as paginated collection</p>
-<h3 id='parameters'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>group</td>
-<td>query</td>
-<td>Member group for define maker/taker fee.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>market_id</td>
-<td>query</td>
-<td>Market id for define maker/taker fee.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>limit</td>
-<td>query</td>
-<td>Limit the number of returned paginations. Defaults to 100.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>page</td>
-<td>query</td>
-<td>Specify the page of paginated results.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>ordering</td>
-<td>query</td>
-<td>If set, returned values will be sorted in specific order, defaults to &#39;asc&#39;.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>order_by</td>
-<td>query</td>
-<td>Name of the field, which result will be ordered by.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-</tbody></table>
+<p>Check that the trade engine is running. Occasionally the trade engine will be temporarily taken offline for udpates and general maintenance. Maintenence will usually not take longer than a few minutes.</p>
 <h3 id='responses'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
 <th>Description</th>
-<th>Schema</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Returns trading_fees table as paginated collection</td>
-<td>[ <a href="#tradingfee">TradingFee</a> ]</td>
+<td>Trade engine is running, trading is available</td>
 </tr>
 </tbody></table>
-<h2 id='get-health'><span class="request-type__get">GET</span> Health</h2>
-<p><code>/public/health/ready</code></p>
-<h3 id='description-2'>Description</h3>
-<p>Get application readiness status</p>
-<h3 id='responses-2'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get application readiness status</td>
-</tr>
-</tbody></table>
-<h2 id='get-alive'><span class="request-type__get">GET</span> Alive</h2>
-<p><code>/public/health/alive</code></p>
-<h3 id='description-3'>Description</h3>
-<p>Get application liveness status</p>
-<h3 id='responses-3'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get application liveness status</td>
-</tr>
-</tbody></table>
-<h2 id='get-timestamp'><span class="request-type__get">GET</span> Timestamp</h2>
-<p><code>/public/timestamp</code></p>
-<h3 id='description-4'>Description</h3>
-<p>Get server time, in seconds since Unix epoch.</p>
-<h3 id='responses-4'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get server current time, in seconds since Unix epoch.</td>
-</tr>
-</tbody></table>
-<h2 id='get-market-ticker'><span class="request-type__get">GET</span> Market Ticker</h2>
+<h2 id='get-ticker'><span class="request-type__get">GET</span> Ticker</h2>
 <p><code>/public/markets/{market}/tickers</code></p>
-<h3 id='description-5'>Description</h3>
+<h3 id='description-2'>Description</h3>
 <p>Get ticker of specific market.</p>
-<h3 id='parameters-2'>Parameters</h3>
+<h3 id='parameters'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -781,7 +795,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-5'>Responses</h3>
+<h3 id='responses-2'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -790,16 +804,16 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tr>
 </thead><tbody>
 <tr>
-<td>200</td>
-<td>Get ticker of specific market.</td>
+<td>200 Returns a ticker.</td>
 <td><a href="#ticker">Ticker</a></td>
+<td></td>
 </tr>
 </tbody></table>
 <h2 id='get-all-tickers'><span class="request-type__get">GET</span> All tickers</h2>
 <p><code>/public/markets/tickers</code></p>
-<h3 id='description-6'>Description</h3>
-<p>Get ticker of all markets (For response doc see /:market/tickers/ response).</p>
-<h3 id='responses-6'>Responses</h3>
+<h3 id='description-3'>Description</h3>
+<p>Get ticker of all markets</p>
+<h3 id='responses-3'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -809,15 +823,15 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get ticker of all markets (For response doc see /:market/tickers/ response).</td>
+<td>Returns an array of tickers.</td>
 <td><a href="#ticker">Ticker</a></td>
 </tr>
 </tbody></table>
 <h2 id='get-k-line'><span class="request-type__get">GET</span> K Line</h2>
 <p><code>/public/markets/{market}/k-line</code></p>
-<h3 id='description-7'>Description</h3>
-<p>Get OHLC(k line) of specific market.</p>
-<h3 id='parameters-3'>Parameters</h3>
+<h3 id='description-4'>Description</h3>
+<p>Get K-Line (OHLC) of specific market.</p>
+<h3 id='parameters-2'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -844,14 +858,14 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>time_from</td>
 <td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch. If set, only k-line data after that time will be returned.</td>
+<td>Timestamp in ms. If set, only k-line data after that time will be returned.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 <tr>
 <td>time_to</td>
 <td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch. If set, only k-line data till that time will be returned.</td>
+<td>Timestamp in ms. If set, only k-line data till that time will be returned.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
@@ -863,7 +877,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-7'>Responses</h3>
+<h3 id='responses-4'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -872,14 +886,14 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get OHLC(k line) of specific market.</td>
+<td>Returns K-Line (OHLC) of market.</td>
 </tr>
 </tbody></table>
-<h2 id='get-market-depth'><span class="request-type__get">GET</span> Market Depth</h2>
+<h2 id='get-orderbook'><span class="request-type__get">GET</span> Orderbook</h2>
 <p><code>/public/markets/{market}/depth</code></p>
-<h3 id='description-8'>Description</h3>
-<p>Get depth or specified market. Both asks and bids are sorted from highest price to lowest.</p>
-<h3 id='parameters-4'>Parameters</h3>
+<h3 id='description-5'>Description</h3>
+<p>Get the orderbook for the specified market eg. &#39;btczar&#39;. Asks and bids are sorted away from the spread, ie asks are sorted low to high, and bids are sorted high to low. Results are returned in tupples of [price, amount] in the base currency eg. &#39;btc&#39;.</p>
+<h3 id='parameters-3'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -899,12 +913,12 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>limit</td>
 <td>query</td>
-<td>Limit the number of returned price levels. Default to 300.</td>
+<td>Limit the number of returned price levels. Default 100.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-8'>Responses</h3>
+<h3 id='responses-5'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -913,14 +927,14 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get depth or specified market. Both asks and bids are sorted from highest price to lowest.</td>
+<td>Get orderbook of specified market</td>
 </tr>
 </tbody></table>
-<h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
+<h2 id='get-market-trades'><span class="request-type__get">GET</span> Market trades</h2>
 <p><code>/public/markets/{market}/trades</code></p>
-<h3 id='description-9'>Description</h3>
-<p>Get recent trades on market, each trade is included only once. Trades are sorted in reverse creation order.</p>
-<h3 id='parameters-5'>Parameters</h3>
+<h3 id='description-6'>Description</h3>
+<p>Get recent trades for the specified market, results are paginated</p>
+<h3 id='parameters-4'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -945,21 +959,35 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>integer</td>
 </tr>
 <tr>
-<td>timestamp</td>
+<td>time_from</td>
 <td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.If set, only trades executed before the time will be returned.</td>
+<td>Timestamp in ms. Return trades executed after the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>time_to</td>
+<td>query</td>
+<td>Timestamp in ms. Return trades executed before the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>page</td>
+<td>query</td>
+<td>Paginated page number.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 <tr>
 <td>order_by</td>
 <td>query</td>
-<td>If set, returned trades will be sorted in specific order, default to &#39;desc&#39;.</td>
+<td>Default is desc (newest to oldest). Options are [asc desc]</td>
 <td>No</td>
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-9'>Responses</h3>
+<h3 id='responses-6'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -969,65 +997,15 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get recent trades on market, each trade is included only once. Trades are sorted in reverse creation order.</td>
+<td>Get recent trades on market.</td>
 <td>[ <a href="#trade">Trade</a> ]</td>
-</tr>
-</tbody></table>
-<h2 id='get-order-book'><span class="request-type__get">GET</span> Order Book</h2>
-<p><code>/public/markets/{market}/order-book</code></p>
-<h3 id='description-10'>Description</h3>
-<p>Get the order book of specified market.</p>
-<h3 id='parameters-6'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>market</td>
-<td>path</td>
-<td></td>
-<td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>asks_limit</td>
-<td>query</td>
-<td>Limit the number of returned sell orders. Default to 20.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>bids_limit</td>
-<td>query</td>
-<td>Limit the number of returned buy orders. Default to 20.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-10'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get the order book of specified market.</td>
-<td>[ <a href="#orderbook">OrderBook</a> ]</td>
 </tr>
 </tbody></table>
 <h2 id='get-markets'><span class="request-type__get">GET</span> Markets</h2>
 <p><code>/public/markets</code></p>
-<h3 id='description-11'>Description</h3>
+<h3 id='description-7'>Description</h3>
 <p>Get all available markets.</p>
-<h3 id='parameters-7'>Parameters</h3>
+<h3 id='parameters-5'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1047,75 +1025,40 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>page</td>
 <td>query</td>
-<td>Specify the page of paginated results.</td>
+<td>Paginated page number.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 <tr>
 <td>ordering</td>
 <td>query</td>
-<td>If set, returned values will be sorted in specific order, defaults to &#39;asc&#39;.</td>
+<td>Order of results by field name (see order_by below), defaults to &#39;asc&#39;.</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>order_by</td>
 <td>query</td>
-<td>Name of the field, which result will be ordered by.</td>
+<td>Name of the field to order by. [id position]</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>base_unit</td>
 <td>query</td>
-<td>Strict filter for base unit</td>
+<td>Return only markets that have this currency as the base unit eg. &#39;btc&#39;</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>quote_unit</td>
 <td>query</td>
-<td>Strict filter for quote unit</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>search</td>
-<td>query</td>
-<td></td>
-<td>No</td>
-<td>json</td>
-</tr>
-<tr>
-<td>search[base_code]</td>
-<td>query</td>
-<td>Search base currency code using LIKE</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>search[quote_code]</td>
-<td>query</td>
-<td>Search qoute currency code using LIKE</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>search[base_name]</td>
-<td>query</td>
-<td>Search base currency name using LIKE</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>search[quote_name]</td>
-<td>query</td>
-<td>Search quote currency name using LIKE</td>
+<td>Return only markets that have this currency as the quote unit eg. &#39;zar&#39;</td>
 <td>No</td>
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-11'>Responses</h3>
+<h3 id='responses-7'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1131,9 +1074,9 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tbody></table>
 <h2 id='get-all-currencies'><span class="request-type__get">GET</span> All Currencies</h2>
 <p><code>/public/currencies</code></p>
-<h3 id='description-12'>Description</h3>
+<h3 id='description-8'>Description</h3>
 <p>Get list of currencies</p>
-<h3 id='parameters-8'>Parameters</h3>
+<h3 id='parameters-6'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1153,7 +1096,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>page</td>
 <td>query</td>
-<td>Specify the page of paginated results.</td>
+<td>Paginated page number.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
@@ -1165,7 +1108,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-12'>Responses</h3>
+<h3 id='responses-8'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1181,9 +1124,9 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tbody></table>
 <h2 id='get-single-currency'><span class="request-type__get">GET</span> Single Currency</h2>
 <p><code>/public/currencies/{id}</code></p>
-<h3 id='description-13'>Description</h3>
+<h3 id='description-9'>Description</h3>
 <p>Get a single currency</p>
-<h3 id='parameters-9'>Parameters</h3>
+<h3 id='parameters-7'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1201,7 +1144,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-13'>Responses</h3>
+<h3 id='responses-9'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1215,338 +1158,11 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td><a href="#currency">Currency</a></td>
 </tr>
 </tbody></table>
-<h1 id='account'>Account</h1><h2 id='get-transaction-history'><span class="request-type__get">GET</span> Transaction History</h2>
-<p><code>/account/transactions</code></p>
-<h3 id='description-14'>Description</h3>
-<p>Get your transactions history.</p>
-<h3 id='parameters-10'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>currency</td>
-<td>query</td>
-<td>Currency code</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>order_by</td>
-<td>query</td>
-<td>Sorting order</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>time_from</td>
-<td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>time_to</td>
-<td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>deposit_state</td>
-<td>query</td>
-<td>Filter deposits by states.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>withdraw_state</td>
-<td>query</td>
-<td>Filter withdraws by states.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>txid</td>
-<td>query</td>
-<td>Transaction id.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>limit</td>
-<td>query</td>
-<td>Limit the number of returned transactions. Default to 100.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>page</td>
-<td>query</td>
-<td>Specify the page of paginated results.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-14'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get your transactions history.</td>
-</tr>
-</tbody></table>
-<h2 id='post-create-new-withdrawal'><span class="request-type__post">POST</span> Create New Withdrawal</h2>
-<p><code>/account/withdraws</code></p>
-<h3 id='description-15'>Description</h3>
-<p>Creates new withdrawal to active beneficiary.</p>
-<h3 id='parameters-11'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>otp</td>
-<td>formData</td>
-<td>OTP to perform action</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>beneficiary_id</td>
-<td>formData</td>
-<td>ID of Active Beneficiary belonging to user.</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>currency</td>
-<td>formData</td>
-<td>The currency code.</td>
-<td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>amount</td>
-<td>formData</td>
-<td>The amount to withdraw.</td>
-<td>Yes</td>
-<td>double</td>
-</tr>
-<tr>
-<td>note</td>
-<td>formData</td>
-<td>Optional metadata to be applied to the transaction. Used to tag transactions with memorable comments.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-</tbody></table>
-<h3 id='responses-15'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Creates new withdrawal to active beneficiary.</td>
-</tr>
-</tbody></table>
-<h2 id='post-list-withdrawals'><span class="request-type__post">POST</span> List Withdrawals</h2><h3 id='description-16'>Description</h3>
-<p>List your withdraws as paginated collection.</p>
-<h3 id='parameters-12'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>currency</td>
-<td>query</td>
-<td>Currency code.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>limit</td>
-<td>query</td>
-<td>Number of withdraws per page (defaults to 100, maximum is 100).</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>state</td>
-<td>query</td>
-<td>Filter withdrawals by states.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>rid</td>
-<td>query</td>
-<td>Wallet address on the Blockchain.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>page</td>
-<td>query</td>
-<td>Page number (defaults to 1).</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-16'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>List your withdraws as paginated collection.</td>
-<td>[ <a href="#withdraw">Withdraw</a> ]</td>
-</tr>
-</tbody></table>
-<h2 id='delete-delete-beneficiary'><span class="request-type__delete">DELETE</span> Delete Beneficiary</h2>
-<p><code>/account/beneficiaries/{id}</code></p>
-<h3 id='description-17'>Description</h3>
-<p>Delete beneficiary</p>
-<h3 id='parameters-13'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>id</td>
-<td>path</td>
-<td>Beneficiary Identifier in Database</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-17'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>204</td>
-<td>Delete beneficiary</td>
-</tr>
-</tbody></table>
-<h2 id='get-beneficiary-id'><span class="request-type__get">GET</span> Beneficiary ID</h2>
-<p><code>/account/beneficiaries/{id}</code></p>
-<h3 id='description-18'>Description</h3>
-<p>Get beneficiary by ID</p>
-<h3 id='parameters-14'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>id</td>
-<td>path</td>
-<td>Beneficiary Identifier in Database</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-18'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get beneficiary by ID</td>
-<td><a href="#beneficiary">Beneficiary</a></td>
-</tr>
-</tbody></table>
-<h2 id='patch-activate-new-beneficiary'><span class="request-type__patch">PATCH</span> Activate New Beneficiary</h2>
-<p><code>/account/beneficiaries/{id}/activate</code></p>
-<h3 id='description-19'>Description</h3>
-<p>Activates a new beneficiary with pin</p>
-<h3 id='parameters-15'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>id</td>
-<td>path</td>
-<td>Beneficiary Identifier in Database</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>pin</td>
-<td>formData</td>
-<td>Pin code for beneficiary activation</td>
-<td>Yes</td>
-<td>integer</td>
-</tr>
-</tbody></table>
-<h3 id='responses-19'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Activates beneficiary with pin</td>
-<td><a href="#beneficiary">Beneficiary</a></td>
-</tr>
-</tbody></table>
-<h2 id='post-create-new-beneficiary'><span class="request-type__post">POST</span> Create new Beneficiary</h2>
+<h1 id='account'>Account</h1><h2 id='post-create-new-beneficiary'><span class="request-type__post">POST</span> Create new beneficiary</h2>
 <p><code>/account/beneficiaries</code></p>
-<h3 id='description-20'>Description</h3>
+<h3 id='description-10'>Description</h3>
 <p>Create a new beneficiary</p>
-<h3 id='parameters-16'>Parameters</h3>
+<h3 id='parameters-8'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1585,7 +1201,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>json</td>
 </tr>
 </tbody></table>
-<h3 id='responses-20'>Responses</h3>
+<h3 id='responses-10'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1599,11 +1215,124 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td><a href="#beneficiary">Beneficiary</a></td>
 </tr>
 </tbody></table>
+<h2 id='patch-activate-new-neneficiary'><span class="request-type__patch">PATCH</span> Activate new neneficiary</h2>
+<p><code>/account/beneficiaries/{id}/activate</code></p>
+<h3 id='description-11'>Description</h3>
+<p>Activates a new beneficiary with pin emailed during beneficiary creation</p>
+<h3 id='parameters-9'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>path</td>
+<td>Beneficiary Identifier</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>pin</td>
+<td>formData</td>
+<td>Pin code for beneficiary activation</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-11'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Activates beneficiary with pin</td>
+<td><a href="#beneficiary">Beneficiary</a></td>
+</tr>
+</tbody></table>
+<h2 id='delete-delete-beneficiary'><span class="request-type__delete">DELETE</span> Delete beneficiary</h2>
+<p><code>/account/beneficiaries/{id}</code></p>
+<h3 id='description-12'>Description</h3>
+<p>Delete beneficiary</p>
+<h3 id='parameters-10'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>path</td>
+<td>Beneficiary Identifier</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-12'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>204</td>
+<td>Delete beneficiary</td>
+</tr>
+</tbody></table>
+<h2 id='get-beneficiary-by-id'><span class="request-type__get">GET</span> Beneficiary by id</h2>
+<p><code>/account/beneficiaries/{id}</code></p>
+<h3 id='description-13'>Description</h3>
+<p>Get beneficiary by id</p>
+<h3 id='parameters-11'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>path</td>
+<td>Beneficiary Identifier</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-13'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Get beneficiary by id</td>
+<td><a href="#beneficiary">Beneficiary</a></td>
+</tr>
+</tbody></table>
 <h2 id='get-list-beneficiaries'><span class="request-type__get">GET</span> List Beneficiaries</h2>
 <p><code>/account/beneficiaries</code></p>
-<h3 id='description-21'>Description</h3>
+<h3 id='description-14'>Description</h3>
 <p>Get list of user beneficiaries</p>
-<h3 id='parameters-17'>Parameters</h3>
+<h3 id='parameters-12'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1628,7 +1357,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-21'>Responses</h3>
+<h3 id='responses-14'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1642,11 +1371,207 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>[ <a href="#beneficiary">Beneficiary</a> ]</td>
 </tr>
 </tbody></table>
-<h2 id='get-deposit-address'><span class="request-type__get">GET</span> Deposit Address</h2>
+<h2 id='post-new-withdrawal'><span class="request-type__post">POST</span> New withdrawal</h2>
+<p><code>/account/withdraws</code></p>
+<h3 id='description-15'>Description</h3>
+<p>Creates new withdrawal to active beneficiary.</p>
+<h3 id='parameters-13'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>otp</td>
+<td>formData</td>
+<td>OTP to perform action</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>beneficiary_id</td>
+<td>formData</td>
+<td>ID of active Beneficiary.</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>formData</td>
+<td>The currency code matching the beneficiary.</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>formData</td>
+<td>The amount to withdraw.</td>
+<td>Yes</td>
+<td>double</td>
+</tr>
+<tr>
+<td>note</td>
+<td>formData</td>
+<td>ZAR withdrawals only. Use &#39;same_day_rtc&#39; for <a href="https://support.capecrypto.com/hc/en-za/articles/360015121638-Fee-schedule#zar-withdraw-fees">Faster withdraws</a></td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-15'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Creates new withdrawal.</td>
+</tr>
+</tbody></table>
+<h2 id='get-withdrawal-history'><span class="request-type__post">GET</span> Withdrawal history</h2>
+<p><code>/account/withdraws</code></p>
+<h3 id='description-16'>Description</h3>
+<p>Get your withdraw history, paginated.</p>
+<h3 id='parameters-14'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>currency</td>
+<td>query</td>
+<td>Currency code.</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>query</td>
+<td>Number of withdraws per page (defaults to 100, maximum is 100).</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>state</td>
+<td>query</td>
+<td>Filter by withdraw state. [ <a href="#states">Withdraw states</a> ]</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>rid</td>
+<td>query</td>
+<td>Destination address (blockchain withdraws only).</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>page</td>
+<td>query</td>
+<td>Page number (defaults to 1).</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-16'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>List your withdraws.</td>
+<td>[ <a href="#withdraw">Withdraw</a> ]</td>
+</tr>
+</tbody></table>
+<h2 id='get-instant-deposit-methods'><span class="request-type__post">GET</span> Instant deposit methods</h2>
+<p><code>/payments/methods</code></p>
+<h3 id='description-17'>Description</h3>
+<p>Gets your available instant FIAT deposit methods, including voucher providers whose vouchers you can use to redeem (deposit). Use the id of the provider when creating the deposit request for the specific method.</p>
+<h3 id='responses-17'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Array of instant FIAT deposit methods.</td>
+<td><a href="#instant-deposit-method">Instant Deposit Method</a></td>
+</tr>
+</tbody></table>
+<h2 id='post-redeem-voucher'><span class="request-type__post">POST</span> Redeem voucher</h2>
+<p><code>/payments/vouchers/new</code></p>
+<h3 id='description-18'>Description</h3>
+<p>Redeem a voucher code.</p>
+<h3 id='parameters-15'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>payment_method_id</td>
+<td>query</td>
+<td>The id of this deposit method (see Instant FIAT deposit methods)</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>query</td>
+<td>The amount to redeem, eg 10 redeems R10</td>
+<td>Yes</td>
+<td>double</td>
+</tr>
+<tr>
+<td>voucher_pin</td>
+<td>query</td>
+<td>The voucher redemption code.</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-18'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Voucher redemption.</td>
+<td><a href="#voucher-redemption">Voucher redemption</a></td>
+</tr>
+</tbody></table>
+<h2 id='get-deposit-address'><span class="request-type__get">GET</span> Deposit address</h2>
 <p><code>/account/deposit_address/{currency}</code></p>
-<h3 id='description-22'>Description</h3>
-<p>Returns the deposit address for account you want to deposit into, by currency. (The address may be blank because the address generation process is still in progress. If this is that case you, please wait a short while and then try again later.)</p>
-<h3 id='parameters-18'>Parameters</h3>
+<h3 id='description-19'>Description</h3>
+<p>Fetch the deposit address for the specified currency.</p>
+
+<p>Note: If your currency deposit address has not been created yet, the result may return empty while the address is being created. If it is empty, please try again in a few seconds.</p>
+<h3 id='parameters-16'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1659,19 +1584,12 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>currency</td>
 <td>path</td>
-<td>The account you want to deposit to.</td>
+<td>The currency to receive.</td>
 <td>Yes</td>
 <td>string</td>
 </tr>
-<tr>
-<td>address_format</td>
-<td>query</td>
-<td>Address format legacy/cash</td>
-<td>No</td>
-<td>string</td>
-</tr>
 </tbody></table>
-<h3 id='responses-22'>Responses</h3>
+<h3 id='responses-19'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1681,15 +1599,15 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Returns deposit address for account you want to deposit to by currency. The address may be blank because address generation process is still in progress. If this case you should try again later.</td>
+<td>Deposit address. (May be empty on first request for new accounts, see note above).</td>
 <td><a href="#deposit">Deposit</a></td>
 </tr>
 </tbody></table>
-<h2 id='get-deposit-details'><span class="request-type__get">GET</span> Deposit Details</h2>
+<h2 id='get-deposit-history-by-txid'><span class="request-type__get">GET</span> Deposit history by txid</h2>
 <p><code>/account/deposits/{txid}</code></p>
-<h3 id='description-23'>Description</h3>
-<p>Get details of specific deposit.</p>
-<h3 id='parameters-19'>Parameters</h3>
+<h3 id='description-20'>Description</h3>
+<p>Get details of a specific blockchain deposit by the txid.</p>
+<h3 id='parameters-17'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1707,7 +1625,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-23'>Responses</h3>
+<h3 id='responses-20'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1721,11 +1639,11 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td><a href="#deposit">Deposit</a></td>
 </tr>
 </tbody></table>
-<h2 id='get-deposit-history'><span class="request-type__get">GET</span> Deposit History</h2>
+<h2 id='get-deposit-history'><span class="request-type__get">GET</span> Deposit history</h2>
 <p><code>/account/deposits</code></p>
-<h3 id='description-24'>Description</h3>
-<p>Get your deposit history.</p>
-<h3 id='parameters-20'>Parameters</h3>
+<h3 id='description-21'>Description</h3>
+<p>Get your deposit history</p>
+<h3 id='parameters-18'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1745,7 +1663,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>state</td>
 <td>query</td>
-<td>Filter deposits by states.</td>
+<td>Filter deposits by deposit state <a href="#states">States</a></td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -1771,7 +1689,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-24'>Responses</h3>
+<h3 id='responses-21'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1781,15 +1699,15 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get your deposits history.</td>
+<td>Get your deposit history.</td>
 <td>[ <a href="#deposit">Deposit</a> ]</td>
 </tr>
 </tbody></table>
-<h2 id='get-user-account-by-currency'><span class="request-type__get">GET</span> User Account by Currency</h2>
+<h2 id='get-balance'><span class="request-type__get">GET</span> Balance</h2>
 <p><code>/account/balances/{currency}</code></p>
-<h3 id='description-25'>Description</h3>
-<p>Get user account by currency</p>
-<h3 id='parameters-21'>Parameters</h3>
+<h3 id='description-22'>Description</h3>
+<p>Get single account balance by currency code eg. &#39;btc&#39;</p>
+<h3 id='parameters-19'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1807,7 +1725,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-25'>Responses</h3>
+<h3 id='responses-22'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1817,15 +1735,15 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </thead><tbody>
 <tr>
 <td>200</td>
-<td>Get user account by currency</td>
+<td>Get account balance by currency</td>
 <td><a href="#account">Account</a></td>
 </tr>
 </tbody></table>
-<h2 id='get-list-user-accounts'><span class="request-type__get">GET</span> List User Accounts</h2>
+<h2 id='get-all-balances'><span class="request-type__get">GET</span> All balances</h2>
 <p><code>/account/balances</code></p>
-<h3 id='description-26'>Description</h3>
-<p>Get list of user accounts</p>
-<h3 id='parameters-22'>Parameters</h3>
+<h3 id='description-23'>Description</h3>
+<p>Get account balances for all currencies</p>
+<h3 id='parameters-20'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1845,7 +1763,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>page</td>
 <td>query</td>
-<td>Specify the page of paginated results.</td>
+<td>Paginated page number.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
@@ -1856,24 +1774,197 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>No</td>
 <td>Boolean</td>
 </tr>
+</tbody></table>
+<h3 id='responses-23'>Responses</h3>
+<table><thead>
 <tr>
-<td>search</td>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Array of balances</td>
+<td>[ <a href="#account">Account</a> ]</td>
+</tr>
+</tbody></table>
+<h2 id='post-new-lightning-payment'><span class="request-type__post">POST</span> New lightning payment</h2>
+<p><code>/account/lightning/pays</code></p>
+<h3 id='description-24'>Description</h3>
+<p>Submits a payment request to pay a BTC Lightning BOLT11 invoice (withdraws this balance from your BTC account).</p>
+
+<p>As the payment is requested and validated on the lightning network, please query your withdrawal history to confirm that the payment succeeded.</p>
+<h3 id='parameters-21'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>bolt</td>
 <td>query</td>
-<td></td>
-<td>No</td>
-<td>json</td>
+<td>The bolt11 invoice to pay.</td>
+<td>Yes</td>
+<td>string</td>
 </tr>
 <tr>
-<td>search[currency_code]</td>
+<td>amount</td>
 <td>query</td>
-<td></td>
+<td>The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11</td>
+<td>Yes</td>
+<td>double</td>
+</tr>
+<tr>
+<td>description</td>
+<td>query</td>
+<td>The description of bolt description</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
-<td>search[currency_name]</td>
+<td>member_description</td>
 <td>query</td>
-<td></td>
+<td>Personal description of this payment for your records</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-24'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Lightning payment.</td>
+<td>[ <a href="#lightning-payment">Lightning payment</a> ]</td>
+</tr>
+</tbody></table>
+<h2 id='post-create-a-lightning-invoice'><span class="request-type__post">POST</span> Create a Lightning invoice</h2>
+<p><code>/account/lightning/invoices</code></p>
+<h3 id='description-25'>Description</h3>
+<p>Create a new lightning invoice to be paid (receive) over the BTC Lightning network.</p>
+
+<p>You can optionally specify a conversion_percent (1 = 100%, 0.1 = 10%) to automatically convert once the invoice is paid. The conversion percent should be such that the conversion amount is greater than or equal to the minimum order amount for the market eg. &#39;btczar&#39;. For example if receiving BTC 0.00001, and the minimum order amount on &#39;btczar&#39; is 0.00001, your conversion percent would have to be 1 (100%). Anything less would cause the invoice creation to fail, as the conversion amount would be below the minimum market order amount.</p>
+
+<p>The invoice expires in 1 hour.</p>
+<h3 id='parameters-22'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>amount</td>
+<td>query</td>
+<td>The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11</td>
+<td>Yes</td>
+<td>double</td>
+</tr>
+<tr>
+<td>conversion_percent</td>
+<td>query</td>
+<td>Percent of the received amount to be automatically converted to FIAT</td>
+<td>No</td>
+<td>double</td>
+</tr>
+<tr>
+<td>description</td>
+<td>query</td>
+<td>The description for the invoice (visible on the bolt11 invoice)</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>member_description</td>
+<td>query</td>
+<td>Personal description of this invoice for your records</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-25'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Lightning invoice.</td>
+<td>[ <a href="#lightning-invoice">Lightning invoice</a> ]</td>
+</tr>
+</tbody></table>
+<h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
+<p><code>/market/orders</code></p>
+<h3 id='description-26'>Description</h3>
+<p>Submits a Buy/Sell order to the order book. Orders should be confirmed that they have been created either by querying the order ID that is returned in the response, or subscribing to the websockets for order updates.</p>
+
+<p>You can supply your own custom_order_id for tracking purposes for you own system.</p>
+
+<p>For limit orders, you can specify post_only to ensure that orders wont complete if they would have matched. The order request will fail if post_only is true, and the order would have matched.</p>
+<h3 id='parameters-23'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market</td>
+<td>The market name eg &#39;btczar&#39;</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>side</td>
+<td>The direction of the order eg buy</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>The order size in base currency</td>
+<td>Yes</td>
+<td>double</td>
+</tr>
+<tr>
+<td>ord_type</td>
+<td>Limit / Market</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>price</td>
+<td>The limit order price</td>
+<td>No</td>
+<td>double</td>
+</tr>
+<tr>
+<td>post_only</td>
+<td>Fail limit order if matched</td>
+<td>No</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>custom_order_id</td>
+<td>Your custom order id</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -1887,130 +1978,16 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tr>
 </thead><tbody>
 <tr>
-<td>200</td>
-<td>Get list of user accounts</td>
-<td>[ <a href="#account">Account</a> ]</td>
-</tr>
-</tbody></table>
-<h1 id='trade'>Trade</h1><h2 id='get-list-own-trades'><span class="request-type__get">GET</span> List Own Trades</h2>
-<p><code>/market/trades</code></p>
-<h3 id='description-27'>Description</h3>
-<p>Get your executed trades. Trades are sorted in reverse creation order.</p>
-<h3 id='parameters-23'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>market</td>
-<td>query</td>
-<td></td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>limit</td>
-<td>query</td>
-<td>Limit the number of returned trades. Default to 100.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>page</td>
-<td>query</td>
-<td>Specify the page of paginated results.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>time_from</td>
-<td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.If set, only trades executed after the time will be returned.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>time_to</td>
-<td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.If set, only trades executed before the time will be returned.</td>
-<td>No</td>
-<td>integer</td>
-</tr>
-<tr>
-<td>order_by</td>
-<td>query</td>
-<td>If set, returned trades will be sorted in specific order, default to &#39;desc&#39;.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-</tbody></table>
-<h3 id='responses-27'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>200</td>
-<td>Get your executed trades. Trades are sorted in reverse creation order.</td>
-<td>[ <a href="#trade">Trade</a> ]</td>
-</tr>
-</tbody></table>
-<h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
-<p><code>/market/orders/cancel</code></p>
-<h3 id='description-28'>Description</h3>
-<p>Cancel all of your open orders.</p>
-<h3 id='parameters-24'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>market</td>
-<td>formData</td>
-<td></td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>side</td>
-<td>formData</td>
-<td>If present, only sell orders (asks) or buy orders (bids) will be canncelled.</td>
-<td>No</td>
-<td>string</td>
-</tr>
-</tbody></table>
-<h3 id='responses-28'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
 <td>201</td>
-<td>Cancel all my orders.</td>
+<td>Order submitted</td>
 <td><a href="#order">Order</a></td>
 </tr>
 </tbody></table>
-<h2 id='post-cancel-specific-order'><span class="request-type__post">POST</span> Cancel Specific Order</h2>
-<p><code>/market/orders/{id}/cancel</code></p>
-<h3 id='description-29'>Description</h3>
-<p>Cancel a specific order by it&#39;s Order ID.</p>
-<h3 id='parameters-25'>Parameters</h3>
+<h2 id='get-order-by-id'><span class="request-type__get">GET</span> Order by id</h2>
+<p><code>/market/orders/{id}</code></p>
+<h3 id='description-27'>Description</h3>
+<p>Get single order details.</p>
+<h3 id='parameters-24'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2028,69 +2005,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-29'>Responses</h3>
-<table><thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Cancel an order.</td>
-</tr>
-</tbody></table>
-<h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
-<p><code>/market/orders</code></p>
-<h3 id='description-30'>Description</h3>
-<p>Create a Sell/Buy order.</p>
-<h3 id='parameters-26'>Parameters</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Located in</th>
-<th>Description</th>
-<th>Required</th>
-<th>Schema</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>market</td>
-<td>formData</td>
-<td></td>
-<td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>side</td>
-<td>formData</td>
-<td></td>
-<td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>volume</td>
-<td>formData</td>
-<td></td>
-<td>Yes</td>
-<td>double</td>
-</tr>
-<tr>
-<td>ord_type</td>
-<td>formData</td>
-<td></td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>price</td>
-<td>formData</td>
-<td></td>
-<td>Yes</td>
-<td>double</td>
-</tr>
-</tbody></table>
-<h3 id='responses-30'>Responses</h3>
+<h3 id='responses-27'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2099,14 +2014,16 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tr>
 </thead><tbody>
 <tr>
-<td>201</td>
-<td>Create a Sell/Buy order.</td>
+<td>200</td>
+<td>Order details.</td>
 <td><a href="#order">Order</a></td>
 </tr>
 </tbody></table>
-<h2 id='post-list-orders'><span class="request-type__post">POST</span> List Orders</h2><h3 id='description-31'>Description</h3>
-<p>Get a list of your orders, result is paginated.</p>
-<h3 id='parameters-27'>Parameters</h3>
+<h2 id='get-all-orders'><span class="request-type__post">GET</span> All orders</h2>
+<p><code>/market/orders</code></p>
+<h3 id='description-28'>Description</h3>
+<p>Get orders, result is paginated.</p>
+<h3 id='parameters-25'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2154,7 +2071,7 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>page</td>
 <td>query</td>
-<td>Specify the page of paginated results.</td>
+<td>Paginated page number.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
@@ -2182,19 +2099,19 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <tr>
 <td>time_from</td>
 <td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.If set, only orders created after the time will be returned.</td>
+<td>Timestamp in ms.If set, only orders created after the time will be returned.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 <tr>
 <td>time_to</td>
 <td>query</td>
-<td>An integer represents the seconds elapsed since Unix epoch.If set, only orders created before the time will be returned.</td>
+<td>Timestamp in ms.If set, only orders created before the time will be returned.</td>
 <td>No</td>
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-31'>Responses</h3>
+<h3 id='responses-28'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2208,11 +2125,82 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>[ <a href="#order">Order</a> ]</td>
 </tr>
 </tbody></table>
-<h2 id='get-order-info'><span class="request-type__get">GET</span> Order Info</h2>
-<p><code>/market/orders/{id}</code></p>
-<h3 id='description-32'>Description</h3>
-<p>Get information of specified order.</p>
-<h3 id='parameters-28'>Parameters</h3>
+<h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
+<p><code>/market/trades</code></p>
+<h3 id='description-29'>Description</h3>
+<p>Fetch your executed trades.</p>
+<h3 id='parameters-26'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market</td>
+<td>query</td>
+<td></td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>query</td>
+<td>Limit the number of returned trades. Default to 100.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>page</td>
+<td>query</td>
+<td>Paginated page number.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>time_from</td>
+<td>query</td>
+<td>Timestamp in ms. Return trades executed after the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>time_to</td>
+<td>query</td>
+<td>Timestamp in ms. Return trades executed after the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td>query</td>
+<td>Order by created_at, defaults to &#39;desc&#39;. [asc desc]</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-29'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Get your executed trades..</td>
+<td>[ <a href="#trade">Trade</a> ]</td>
+</tr>
+</tbody></table>
+<h2 id='post-cancel-order'><span class="request-type__post">POST</span> Cancel Order</h2>
+<p><code>/market/orders/{id}/cancel</code></p>
+<h3 id='description-30'>Description</h3>
+<p>Cancel a specific order by Order id.</p>
+<h3 id='parameters-27'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2230,7 +2218,48 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-32'>Responses</h3>
+<h3 id='responses-30'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Cancel an order.</td>
+</tr>
+</tbody></table>
+<h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
+<p><code>/market/orders/cancel</code></p>
+<h3 id='description-31'>Description</h3>
+<p>Cancel all of your open orders.</p>
+<h3 id='parameters-28'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market</td>
+<td>formData</td>
+<td></td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>side</td>
+<td>formData</td>
+<td>Only cancel orders on this side [buy sell]</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-31'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2239,87 +2268,337 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 </tr>
 </thead><tbody>
 <tr>
-<td>200</td>
-<td>Get information of specified order.</td>
+<td>201</td>
+<td>Cancel all my orders.</td>
 <td><a href="#order">Order</a></td>
 </tr>
 </tbody></table>
-<h1 id='models'>Models</h1><h3 id='tradingfee'>TradingFee</h3>
-<p>Returns trading_fees table as paginated collection</p>
+<h1 id='websocket'>Websocket</h1><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// generateHeaders.js</span>
 
+<span class="kd">const</span> <span class="nx">crypto</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">crypto</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">123456...</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">secret</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ABCDEF...</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">timeStamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">queryString</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">timeStamp</span><span class="p">}${</span><span class="nx">apikey</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">signature</span> <span class="o">=</span> <span class="nx">crypto</span>
+    <span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="dl">"</span><span class="s2">sha256</span><span class="dl">"</span><span class="p">,</span> <span class="nx">secret</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">queryString</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">digest</span><span class="p">(</span><span class="dl">"</span><span class="s2">hex</span><span class="dl">"</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">Content-Type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json;charset=utf-8</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="nx">apikey</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nx">timeStamp</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="nx">signature</span><span class="p">,</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>The high performance websocket provides near realtime updates on the orderbook, your orders and balances.</p>
+
+<p>The orderbook endpoint does not require authenticaiton, while the private endpoints (orders, trades, and balances) do require authentication.</p>
+
+<p>To connect to the private endpoints on the websocket, send the authentication headers with the connection request, similar to the REST authentication, and subscribe to the streams you are interested in.
+You can combine multiple subscriptions in one request, and also provide the subscriptions at the same time as connecting - ie. you only need 1x request to get fully connected.</p>
+
+<p>You can also combine the public and private streams into one so that you only need to maintain 1x connection for example <code>?stream=btczar.ob-inc&amp;stream=order&amp;stream=trade&amp;stream=balance</code></p>
+<h2 id='subscribe-orderbook'><span class="request-type__get">SUBSCRIBE</span> Orderbook</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">WebSocket</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">ws</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">connectWssPublic</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s2">`wss://trade.capecrypto.com/api/v2`</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">streams</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">?stream=btczar.ob-inc&amp;stream=ethzar.ob-inc</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/stream/public</span><span class="p">${</span><span class="nx">streams</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+    <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">open</span><span class="dl">"</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Connected to websocket</span><span class="dl">"</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">message</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">message</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">([</span><span class="dl">"</span><span class="s2">ob-snap</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">ob-inc</span><span class="dl">"</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span> <span class="p">{</span>
+      <span class="c1">// handle all subscribed markets</span>
+      <span class="c1">// updateOrderBook(data);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">connectWssPublic</span><span class="p">();</span>
+</code></pre></div>
+<p><code>?stream={market}.ob-inc</code></p>
+<h3 id='description-32'>Description</h3>
+<p>Subscribe to orderbook updates for the specified market. You can subscribe to multiple markets at the same time by adding each market as a param, eg</p>
+
+<p><code>?stream=btczar.ob-inc&amp;ethzar.ob-inc</code></p>
+
+<p>Note: if the amount is empty &quot;&quot;, the order has been removed from the orderbook</p>
+<h3 id='parameters-29'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
-<th>Type</th>
+<th>Located in</th>
 <th>Description</th>
 <th>Required</th>
+<th>Schema</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>id</td>
-<td>integer</td>
-<td>Unique trading fee table identifier in database.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>group</td>
+<td>{market}-ob.inc</td>
+<td>query</td>
+<td>Name of the market to subscribe to</td>
+<td>yes</td>
 <td>string</td>
-<td>Member group for define maker/taker fee.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>market_id</td>
-<td>string</td>
-<td>Market id for define maker/taker fee.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>maker</td>
-<td>double</td>
-<td>Market maker fee.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>taker</td>
-<td>double</td>
-<td>Market taker fee.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>created_at</td>
-<td>string</td>
-<td>Trading fee table created time in iso8601 format.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>updated_at</td>
-<td>string</td>
-<td>Trading fee table updated time in iso8601 format.</td>
-<td>No</td>
 </tr>
 </tbody></table>
-<h3 id='ticker'>Ticker</h3>
-<p>Get ticker of all markets (For response doc see /:market/tickers/ response).</p>
+<h3 id='responses-32'>Responses</h3>
+<table><thead>
+<tr>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>snapshot</td>
+<td>[ <a href="#websocket-orderbook-snapshot">Snapshot</a> ]</td>
+</tr>
+<tr>
+<td>increment</td>
+<td>[ <a href="#websocket-orderbook-increment">Increment</a> ]</td>
+</tr>
+</tbody></table>
+<h2 id='subscribe-k-line'><span class="request-type__get">SUBSCRIBE</span> K-Line</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">WebSocket</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">ws</span><span class="dl">"</span><span class="p">);</span>
 
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">connectWssPublic</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s2">`wss://trade.capecrypto.com/api/v2`</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">streams</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">?stream=btczar.kline-15m</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/stream/public</span><span class="p">${</span><span class="nx">streams</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+    <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">open</span><span class="dl">"</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Connected to websocket</span><span class="dl">"</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">message</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">message</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">([</span><span class="dl">"</span><span class="s2">kline-</span><span class="dl">"</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span> <span class="p">{</span>
+      <span class="c1">// handle all subscribed markets</span>
+      <span class="c1">// updateOrderBook(data);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">connectWssPublic</span><span class="p">();</span>
+</code></pre></div>
+<p><code>?stream={market}.kline-{period}</code></p>
+<h3 id='description-33'>Description</h3>
+<p>Subscribe to the K-LINE (OHLC) for the specified market to get updates on the OHLC for each period. Similary to the otherendpoints, you can combine streams into a single subscription request.</p>
+<h3 id='parameters-30'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>{market}</td>
+<td>query</td>
+<td>Name of the market to subscribe to</td>
+<td>yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>{period}</td>
+<td>query</td>
+<td>The period to get updates at &quot;1m&quot;, &quot;5m&quot;, &quot;15m&quot;, &quot;30m&quot;, &quot;1h&quot;, &quot;2h&quot;, &quot;4h&quot;, &quot;6h&quot;, &quot;12h&quot;, &quot;1d&quot;, &quot;3d&quot;, &quot;1w&quot;</td>
+<td>yes</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-33'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>{market}.kline-{period}</td>
+<td>object</td>
+<td>Key name of the OHLC for the market and period</td>
+</tr>
+<tr>
+<td>OHLC for that period</td>
+<td>[number]</td>
+<td>Array of Timestamp, Open, High, Low, Close, Volume</td>
+</tr>
+</tbody></table>
+<h2 id='subscribe-private'><span class="request-type__get">SUBSCRIBE</span> Private</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="k">async</span> <span class="kd">function</span> <span class="nx">connectWssPrivate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s2">`wss://trade.capecrypto.com/api/v2`</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+    <span class="kd">const</span> <span class="nx">streams</span> <span class="o">=</span>
+      <span class="dl">"</span><span class="s2">?stream=btczar.ob-inc&amp;stream=ethzar.ob-inc&amp;stream=order&amp;stream=trade&amp;stream=balance</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/stream/private?</span><span class="p">${</span><span class="nx">streams</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+    <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span> <span class="p">{</span> <span class="nx">headers</span> <span class="p">});</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">open</span><span class="dl">"</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Connected to websocket</span><span class="dl">"</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">message</span><span class="dl">"</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">([</span><span class="dl">"</span><span class="s2">ob-snap</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">ob-inc</span><span class="dl">"</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span> <span class="p">{</span>
+      <span class="c1">// handle all subscribed markets</span>
+      <span class="c1">// updateOrderBook(data);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">trade</span><span class="dl">"</span><span class="p">])</span> <span class="p">{</span>
+      <span class="c1">// handleOwnTradeUpdate(data);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">order</span><span class="dl">"</span><span class="p">])</span> <span class="p">{</span>
+      <span class="c1">// handleOwnOrderUpdate(data);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">balance</span><span class="dl">"</span><span class="p">])</span> <span class="p">{</span>
+      <span class="c1">// handleBalanceUpdate(data);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">connectWssPrivate</span><span class="p">();</span>
+</code></pre></div>
+<p><code>?stream={subscription}</code></p>
+
+<p>Combined into 1x:
+<code>?stream={order}&amp;stream={trade}&amp;stream={balance}</code></p>
+<h3 id='description-34'>Description</h3>
+<p>Subscribe to your account, and receive updates on your placed orders, trades executed, and balance updates.</p>
+<h3 id='parameters-31'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
 <th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order</td>
+<td>query</td>
+<td>Subscribe to order updates for your orders</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>trade</td>
+<td>query</td>
+<td>Subscribe to trade executions for your orders</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>balance</td>
+<td>query</td>
+<td>Subscribe to balance updates on your account</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-34'>Responses</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market</td>
+<td>query</td>
+<td></td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>query</td>
+<td>Limit the number of returned trades. Default to 100.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>page</td>
+<td>query</td>
+<td>Paginated page number.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>time_from</td>
+<td>query</td>
+<td>Timestamp in ms. Return trades executed after the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>time_to</td>
+<td>query</td>
+<td>Timestamp in ms. Return trades executed after the timestamp.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td>query</td>
+<td>Order by created_at, defaults to &#39;desc&#39;. [asc desc]</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h1 id='models'>Models</h1><h3 id='ticker'>Ticker</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>at</td>
 <td>integer</td>
 <td>Timestamp of ticker</td>
-<td>No</td>
 </tr>
 <tr>
 <td>ticker</td>
 <td><a href="#tickerentry">TickerEntry</a></td>
 <td>Ticker entry for specified time</td>
-<td>No</td>
 </tr>
 </tbody></table>
 <h3 id='tickerentry'>TickerEntry</h3>
@@ -2328,838 +2607,1019 @@ Make sure you've <strong>Enabled 2FA</strong> and <strong>Created your API key</
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>low</td>
 <td>double</td>
 <td>The lowest trade price during last 24 hours (0.0 if no trades executed during last 24 hours)</td>
-<td>No</td>
 </tr>
 <tr>
 <td>high</td>
 <td>double</td>
 <td>The highest trade price during last 24 hours (0.0 if no trades executed during last 24 hours)</td>
-<td>No</td>
 </tr>
 <tr>
 <td>open</td>
 <td>double</td>
 <td>Price of the first trade executed 24 hours ago or less</td>
-<td>No</td>
 </tr>
 <tr>
 <td>last</td>
 <td>double</td>
 <td>The last executed trade price</td>
-<td>No</td>
 </tr>
 <tr>
 <td>volume</td>
 <td>double</td>
 <td>Total volume of trades executed during last 24 hours</td>
-<td>No</td>
 </tr>
 <tr>
 <td>amount</td>
 <td>double</td>
 <td>Total amount of trades executed during last 24 hours</td>
-<td>No</td>
 </tr>
 <tr>
 <td>vol</td>
 <td>double</td>
 <td>Alias to volume</td>
-<td>No</td>
 </tr>
 <tr>
 <td>avg_price</td>
 <td>double</td>
-<td>Average price more precisely VWAP is calculated by adding up the total traded for every transaction(price multiplied by the number of shares traded) and then dividing by the total shares traded</td>
-<td>No</td>
+<td>Average price more precisely VWAP (volume weighted average price)</td>
 </tr>
 <tr>
 <td>price_change_percent</td>
 <td>string</td>
-<td>Price change in the next format +3.19%.Price change is calculated using next formula (last - open) / open * 100%</td>
-<td>No</td>
+<td>Price change over the last 24 hours</td>
 </tr>
 <tr>
 <td>at</td>
 <td>integer</td>
 <td>Timestamp of ticker</td>
-<td>No</td>
 </tr>
 </tbody></table>
-<h3 id='trade-2'>Trade</h3>
-<p>Get your executed trades. Trades are sorted in reverse creation order.</p>
-
+<h3 id='orderbook-entry'>Orderbook entry</h3>
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>price</td>
+<td>number</td>
+<td>The price of the order</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>number</td>
+<td>The amount of the order at that price. Note: if the amount is empty &quot;&quot;, the order has been removed from the orderbook</td>
+</tr>
+</tbody></table>
+<h3 id='trade'>Trade</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>string</td>
 <td>Trade ID.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>price</td>
 <td>double</td>
 <td>Trade price.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>amount</td>
 <td>double</td>
 <td>Trade amount.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>total</td>
 <td>double</td>
 <td>Trade total (Amount * Price).</td>
-<td>No</td>
 </tr>
 <tr>
 <td>fee_currency</td>
 <td>double</td>
 <td>Currency user&#39;s fees were charged in.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>fee</td>
 <td>double</td>
 <td>Percentage of fee user was charged for performed trade.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>fee_amount</td>
 <td>double</td>
 <td>Amount of fee user was charged for performed trade.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>market</td>
 <td>string</td>
 <td>Trade market id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>created_at</td>
 <td>string</td>
 <td>Trade create time in iso8601 format.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>taker_type</td>
 <td>string</td>
 <td>Trade taker order type (sell or buy).</td>
-<td>No</td>
 </tr>
 <tr>
 <td>side</td>
 <td>string</td>
 <td>Trade side.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>order_id</td>
 <td>integer</td>
 <td>Order id.</td>
-<td>No</td>
-</tr>
-</tbody></table>
-<h3 id='orderbook'>OrderBook</h3>
-<p>Get the order book of specified market.</p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>asks</td>
-<td>[ <a href="#order">Order</a> ]</td>
-<td>Asks in orderbook</td>
-<td>No</td>
 </tr>
 <tr>
-<td>bids</td>
-<td>[ <a href="#order">Order</a> ]</td>
-<td>Bids in orderbook</td>
-<td>No</td>
+<td>custom_order_id</td>
+<td>integer</td>
+<td>Optional custom Order id if supplied.</td>
 </tr>
 </tbody></table>
 <h3 id='order'>Order</h3>
-<p>Get your orders, result is paginated.</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>integer</td>
 <td>Unique order id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>uuid</td>
 <td>string</td>
 <td>Unique order UUID.</td>
-<td>No</td>
+</tr>
+<tr>
+<td>custom_order_id</td>
+<td>string</td>
+<td>Custom order id if supplied during order creation.</td>
 </tr>
 <tr>
 <td>side</td>
 <td>string</td>
 <td>Either &#39;sell&#39; or &#39;buy&#39;.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>ord_type</td>
 <td>string</td>
 <td>Type of order, either &#39;limit&#39; or &#39;market&#39;.</td>
-<td>No</td>
+</tr>
+<tr>
+<td>post_only</td>
+<td>boolean</td>
+<td>If the Limit order was submitted as post_only .</td>
 </tr>
 <tr>
 <td>price</td>
 <td>double</td>
-<td>Price for each unit. e.g.If you want to sell/buy 1 btc at 3000 usd, the price is &#39;3000.0&#39;</td>
-<td>No</td>
+<td>Price for 1x base unit.</td>
 </tr>
 <tr>
 <td>avg_price</td>
 <td>double</td>
-<td>Average execution price, average of price in trades.</td>
-<td>No</td>
+<td>Average execution price over all executed trades.</td>
 </tr>
 <tr>
 <td>state</td>
 <td>string</td>
-<td>One of &#39;wait&#39;, &#39;done&#39;, or &#39;cancel&#39;.An order in &#39;wait&#39; is an active order, waiting fulfillment;a &#39;done&#39; order is an order fulfilled;&#39;cancel&#39; means the order has been canceled.</td>
-<td>No</td>
+<td>Current state of the order <a href="#states">Order states</a></td>
 </tr>
 <tr>
 <td>market</td>
 <td>string</td>
-<td>The market in which the order is placed, e.g. &#39;btcusd&#39;.All available markets can be found at /api/v2/markets.</td>
-<td>No</td>
+<td>The market in which the order is placed, e.g. &#39;btczar&#39;.</td>
 </tr>
 <tr>
 <td>created_at</td>
 <td>string</td>
 <td>Order create time in iso8601 format.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>updated_at</td>
 <td>string</td>
 <td>Order updated time in iso8601 format.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>origin_volume</td>
 <td>double</td>
-<td>The amount user want to sell/buy.An order could be partially executed,e.g. an order sell 5 btc can be matched with a buy 3 btc order,left 2 btc to be sold; in this case the order&#39;s volume would be &#39;5.0&#39;,its remaining_volume would be &#39;2.0&#39;, its executed volume is &#39;3.0&#39;.</td>
-<td>No</td>
+<td>The original amount of the order.</td>
 </tr>
 <tr>
 <td>remaining_volume</td>
 <td>double</td>
-<td>The remaining volume, see &#39;volume&#39;.</td>
-<td>No</td>
+<td>The remaining amount of the original order volume.</td>
 </tr>
 <tr>
 <td>executed_volume</td>
 <td>double</td>
-<td>The executed volume, see &#39;volume&#39;.</td>
-<td>No</td>
+<td>The executed volume of the original order volume.</td>
 </tr>
 <tr>
 <td>trades_count</td>
 <td>integer</td>
-<td>Count of trades.</td>
-<td>No</td>
+<td>Number of trades executed against this limit order.</td>
 </tr>
 <tr>
 <td>trades</td>
-<td>[ <a href="#trade">Trade</a> ]</td>
-<td>Trades wiht this order.</td>
-<td>No</td>
+<td>[<a href="#trade">Trade</a>]</td>
+<td>Array of trades executed against this order.</td>
 </tr>
 </tbody></table>
 <h3 id='market'>Market</h3>
-<p>Get all available markets.</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>string</td>
-<td>Unique market id. It&#39;s always in the form of xxxyyy,where xxx is the base currency code, yyy is the quotecurrency code, e.g. &#39;btcusd&#39;. All available markets canbe found at /api/v2/markets.</td>
-<td>No</td>
+<td>Unique market id eg &#39;btczar&#39;</td>
 </tr>
 <tr>
 <td>name</td>
 <td>string</td>
 <td>Market name.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>base_unit</td>
 <td>string</td>
 <td>Market Base unit.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>quote_unit</td>
 <td>string</td>
 <td>Market Quote unit.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>min_price</td>
 <td>double</td>
 <td>Minimum order price.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>max_price</td>
 <td>double</td>
 <td>Maximum order price.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>min_amount</td>
 <td>double</td>
 <td>Minimum order amount.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>amount_precision</td>
 <td>double</td>
 <td>Precision for order amount.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>price_precision</td>
 <td>double</td>
 <td>Precision for order price.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>state</td>
 <td>string</td>
-<td>Market state defines if user can see/trade on current market.</td>
-<td>No</td>
+<td>If the market is enabled for trading or not.</td>
 </tr>
 </tbody></table>
 <h3 id='currency'>Currency</h3>
-<p>Get a currency</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>string</td>
 <td>Currency code.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>name</td>
 <td>string</td>
 <td>Currency name</td>
-<td>No</td>
 </tr>
 <tr>
 <td>symbol</td>
 <td>string</td>
 <td>Currency symbol</td>
-<td>No</td>
 </tr>
 <tr>
 <td>explorer_transaction</td>
 <td>string</td>
 <td>Currency transaction exprorer url template</td>
-<td>No</td>
 </tr>
 <tr>
 <td>explorer_address</td>
 <td>string</td>
 <td>Currency address exprorer url template</td>
-<td>No</td>
 </tr>
 <tr>
 <td>type</td>
 <td>string</td>
 <td>Currency type</td>
-<td>No</td>
 </tr>
 <tr>
 <td>deposit_enabled</td>
 <td>string</td>
 <td>Currency deposit possibility status (true/false).</td>
-<td>No</td>
 </tr>
 <tr>
 <td>withdrawal_enabled</td>
 <td>string</td>
 <td>Currency withdrawal possibility status (true/false).</td>
-<td>No</td>
 </tr>
 <tr>
 <td>deposit_fee</td>
 <td>string</td>
 <td>Currency deposit fee</td>
-<td>No</td>
 </tr>
 <tr>
 <td>min_deposit_amount</td>
 <td>string</td>
 <td>Minimal deposit amount</td>
-<td>No</td>
 </tr>
 <tr>
 <td>withdraw_fee</td>
 <td>string</td>
 <td>Currency withdraw fee</td>
-<td>No</td>
 </tr>
 <tr>
 <td>min_withdraw_amount</td>
 <td>string</td>
 <td>Minimal withdraw amount</td>
-<td>No</td>
 </tr>
 <tr>
 <td>withdraw_limit_24h</td>
 <td>string</td>
 <td>Currency 24h withdraw limit</td>
-<td>No</td>
 </tr>
 <tr>
 <td>withdraw_limit_72h</td>
 <td>string</td>
 <td>Currency 72h withdraw limit</td>
-<td>No</td>
 </tr>
 <tr>
 <td>base_factor</td>
 <td>string</td>
 <td>Currency base factor</td>
-<td>No</td>
 </tr>
 <tr>
 <td>precision</td>
 <td>string</td>
 <td>Currency precision</td>
-<td>No</td>
 </tr>
 <tr>
 <td>position</td>
 <td>string</td>
 <td>Position used for defining currencies order</td>
-<td>No</td>
 </tr>
 <tr>
 <td>icon_url</td>
 <td>string</td>
 <td>Currency icon</td>
-<td>No</td>
 </tr>
 <tr>
 <td>min_confirmations</td>
 <td>string</td>
 <td>Number of confirmations required for confirming deposit or withdrawal</td>
-<td>No</td>
 </tr>
 </tbody></table>
 <h3 id='withdraw'>Withdraw</h3>
-<p>List your withdraws as paginated collection.</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>integer</td>
 <td>The withdrawal id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>currency</td>
 <td>string</td>
 <td>The currency code.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>type</td>
 <td>string</td>
 <td>The withdrawal type</td>
-<td>No</td>
 </tr>
 <tr>
 <td>amount</td>
 <td>string</td>
 <td>The withdrawal amount</td>
-<td>No</td>
 </tr>
 <tr>
 <td>fee</td>
 <td>double</td>
 <td>The exchange fee.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>blockchain_txid</td>
 <td>string</td>
 <td>The withdrawal transaction id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>rid</td>
 <td>string</td>
 <td>The beneficiary ID or wallet address on the Blockchain.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>state</td>
 <td>string</td>
 <td>The withdrawal state.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>confirmations</td>
 <td>integer</td>
 <td>Number of confirmations.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>note</td>
 <td>string</td>
-<td>Withdraw note.</td>
-<td>No</td>
+<td>Optional withdraw note.</td>
 </tr>
 <tr>
 <td>created_at</td>
 <td>string</td>
-<td>The datetimes for the withdrawal.</td>
-<td>No</td>
+<td>The datetime for the withdrawal.</td>
 </tr>
 <tr>
 <td>updated_at</td>
 <td>string</td>
-<td>The datetimes for the withdrawal.</td>
-<td>No</td>
+<td>The datetime for the withdrawal.</td>
 </tr>
 <tr>
 <td>done_at</td>
 <td>string</td>
 <td>The datetime when withdraw was completed</td>
-<td>No</td>
 </tr>
 </tbody></table>
 <h3 id='beneficiary'>Beneficiary</h3>
-<p>Get list of user beneficiaries</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>id</td>
+<td>uuid</td>
 <td>integer</td>
-<td>Beneficiary Identifier in Database</td>
-<td>No</td>
+<td>Beneficiary Identifier</td>
 </tr>
 <tr>
 <td>currency</td>
 <td>string</td>
 <td>Beneficiary currency code.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>name</td>
 <td>string</td>
-<td>Human rememberable name which refer beneficiary.</td>
-<td>No</td>
+<td>Name of the beneficiary.</td>
 </tr>
 <tr>
 <td>description</td>
 <td>string</td>
-<td>Human rememberable description of beneficiary.</td>
-<td>No</td>
+<td>A personal description of the beneficiary for your records.</td>
 </tr>
 <tr>
 <td>data</td>
 <td>json</td>
-<td>Bank Account details for fiat Beneficiary in JSON format.For crypto it&#39;s blockchain address.</td>
-<td>No</td>
+<td>Bank Account details for FIAT Beneficiary in JSON format. For crypto it&#39;s blockchain address.</td>
 </tr>
 <tr>
 <td>state</td>
 <td>string</td>
-<td>Defines either beneficiary active - user can use it to withdraw moneyor pending - requires beneficiary activation with pin.</td>
-<td>No</td>
+<td>Pending, Active, Archived (0,1,2)</td>
 </tr>
 </tbody></table>
 <h3 id='deposit'>Deposit</h3>
-<p>Get your deposits history.</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>id</td>
 <td>integer</td>
 <td>Unique deposit id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>currency</td>
 <td>string</td>
 <td>Deposit currency id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>amount</td>
 <td>double</td>
 <td>Deposit amount.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>fee</td>
 <td>double</td>
 <td>Deposit fee.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>txid</td>
 <td>string</td>
 <td>Deposit transaction id.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>confirmations</td>
 <td>integer</td>
 <td>Number of deposit confirmations.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>state</td>
 <td>string</td>
 <td>Deposit state.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>created_at</td>
 <td>string</td>
 <td>The datetime when deposit was created.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>completed_at</td>
 <td>string</td>
 <td>The datetime when deposit was completed..</td>
-<td>No</td>
 </tr>
 <tr>
 <td>tid</td>
 <td>string</td>
 <td>The shared transaction ID</td>
-<td>No</td>
 </tr>
 </tbody></table>
 <h3 id='account-2'>Account</h3>
-<p>Get list of user accounts</p>
-
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
 <td>currency</td>
 <td>string</td>
 <td>Currency code.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>balance</td>
 <td>double</td>
 <td>Account balance.</td>
-<td>No</td>
 </tr>
 <tr>
 <td>locked</td>
 <td>double</td>
 <td>Account locked funds.</td>
-<td>No</td>
 </tr>
 </tbody></table>
-<h3 id='transactions'>Transactions</h3>
+<h3 id='instant-deposit-method'>Instant Deposit Method</h3>
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>address</td>
+<td>id</td>
 <td>string</td>
-<td>Recipient address of transaction.</td>
-<td>No</td>
+<td>Method id, used when redeeming voucher</td>
 </tr>
 <tr>
-<td>currency</td>
+<td>provider_id</td>
 <td>string</td>
-<td>Transaction currency id.</td>
-<td>No</td>
+<td>ID of the provider</td>
 </tr>
 <tr>
-<td>amount</td>
-<td>double</td>
-<td>Transaction amount.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>fee</td>
-<td>double</td>
-<td>Transaction fee.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>txid</td>
+<td>name</td>
 <td>string</td>
-<td>Transaction id.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>state</td>
-<td>string</td>
-<td>Transaction state.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>note</td>
-<td>string</td>
-<td>Withdraw note.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>confirmations</td>
-<td>integer</td>
-<td>Number of confirmations.</td>
-<td>No</td>
-</tr>
-<tr>
-<td>updated_at</td>
-<td>string</td>
-<td>Transaction updated time in iso8601 format.</td>
-<td>No</td>
+<td>Name of the provider method</td>
 </tr>
 <tr>
 <td>type</td>
 <td>string</td>
-<td>Type of transaction</td>
-<td>No</td>
+<td>Type of method [voucher instanteft]</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>Description of this provider</td>
+</tr>
+<tr>
+<td>min_amount</td>
+<td>number</td>
+<td>Minimum deposit / redemption amount</td>
+</tr>
+<tr>
+<td>max_amount</td>
+<td>number</td>
+<td>Maximum deposit / redemption amount</td>
 </tr>
 </tbody></table>
-<h3 id='member'>Member</h3>
+<h3 id='voucher-redemption'>Voucher Redemption</h3>
 <table><thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
-<th>Required</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>uid</td>
-<td>string</td>
-<td>Member UID.</td>
-<td>No</td>
+<td>amount</td>
+<td>number</td>
+<td>The amount deposited after fees.</td>
 </tr>
 <tr>
-<td>email</td>
-<td>string</td>
-<td>Member email.</td>
-<td>No</td>
+<td>origin_amount</td>
+<td>number</td>
+<td>The original amount of the voucher.</td>
 </tr>
 <tr>
-<td>accounts</td>
-<td>[ <a href="#account">Account</a> ]</td>
-<td>Member accounts.</td>
-<td>No</td>
+<td>change_voucher</td>
+<td><a href="#change-voucher">Change voucher</a></td>
+<td>Optional if provider offers this, a new voucher for the remaining amount</td>
+</tr>
+</tbody></table>
+<h3 id='change-voucher'>Change voucher</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>change_amount</td>
+<td>number</td>
+<td>Amount of change from the redeemed voucher, available to be spent</td>
+</tr>
+<tr>
+<td>change_expiry</td>
+<td>string</td>
+<td>Expiry date of the new voucher.</td>
+</tr>
+<tr>
+<td>change_pin</td>
+<td>number</td>
+<td>The new voucher_pin to be used for redemption.</td>
+</tr>
+</tbody></table>
+<h3 id='lightning-payment'>Lightning payment</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>bolt</td>
+<td>String</td>
+<td>The invoice bolt11.</td>
+</tr>
+<tr>
+<td>address</td>
+<td>String</td>
+<td>The address of the invoice if not bolt11.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>number</td>
+<td>Invoice amount paid in SAT.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>Description for this invoice in the bolt11.</td>
+</tr>
+<tr>
+<td>member_description</td>
+<td>String</td>
+<td>Private member description for this invoice provided by member.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>String</td>
+<td>Payment state.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>String (ISO8601 formatted)</td>
+<td>The datetime when payment was created.</td>
+</tr>
+</tbody></table>
+<h3 id='lightning-invoice'>Lightning invoice</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>bolt</td>
+<td>String</td>
+<td>The invoice in bolt11.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>BigDecimal</td>
+<td>Invoice amount to be paid in SAT.</td>
+</tr>
+<tr>
+<td>conversion_percent</td>
+<td>BigDecimal</td>
+<td>The amount to automatically convert to FIAT.</td>
+</tr>
+<tr>
+<td>amount_msat</td>
+<td>BigDecimal</td>
+<td>Invoice amount to be paid in Mili SAT.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>Description for this invoice.</td>
+</tr>
+<tr>
+<td>member_description</td>
+<td>String</td>
+<td>Private member Description for this invoice.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>String</td>
+<td>Payment state.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>String (ISO8601 formatted)</td>
+<td>The datetime when invoice was created.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>String (ISO8601 formatted)</td>
+<td>The datetime when invoice expires.</td>
+</tr>
+<tr>
+<td>paid_at</td>
+<td>String (ISO8601 formatted)</td>
+<td>The datetime when invoice was paid.</td>
+</tr>
+</tbody></table>
+<h3 id='websocket-orderbook-snapshot'>Websocket orderbook snapshot</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>{market}.ob-snap</td>
+<td>Object</td>
+<td>The object key for the subscription</td>
+</tr>
+<tr>
+<td>asks</td>
+<td>[<a href="#orderbook-entry">Orderbook entry</a>]</td>
+<td>Array of ask / sell orderbook entries.</td>
+</tr>
+<tr>
+<td>bids</td>
+<td>[<a href="#orderbook-entry">Orderbook entry</a>]</td>
+<td>Array of bid / buy orderbook entries.</td>
+</tr>
+<tr>
+<td>sequence</td>
+<td>integer</td>
+<td>The current sequence of the orderbook, used to ensure updates are sequential</td>
+</tr>
+</tbody></table>
+<h3 id='websocket-orderbook-increment'>Websocket orderbook increment</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>{market}.ob-inc</td>
+<td>Object</td>
+<td>The object key for the subscription</td>
+</tr>
+<tr>
+<td>asks</td>
+<td>[<a href="#orderbook-entry">Orderbook entry</a>]</td>
+<td>Array of ask / sell orderbook entries.</td>
+</tr>
+<tr>
+<td>bids</td>
+<td>[<a href="#orderbook-entry">Orderbook entry</a>]</td>
+<td>Array of bid / buy orderbook entries.</td>
+</tr>
+<tr>
+<td>sequence</td>
+<td>integer</td>
+<td>The current sequence of the orderbook, used to ensure updates are sequential</td>
+</tr>
+</tbody></table>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"btczar.ob-snap"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"asks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"841039.73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.156431"</span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"845402.1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.004389"</span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"900000.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.00001"</span><span class="p">]</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"bids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"835956.8"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.047756"</span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"831012.48"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.03749"</span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"829990.51"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.019462"</span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="s2">"400000.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0.0001"</span><span class="p">]</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"sequence"</span><span class="p">:</span><span class="w"> </span><span class="mi">9712</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h3 id='states'>States</h3>
+<table><thead>
+<tr>
+<th>Order states</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>pending</td>
+<td>Initial state - order has been submitted (but is not yet placed / confirmed)</td>
+</tr>
+<tr>
+<td>wait</td>
+<td>Order has been placed and is available on the orderbook</td>
+</tr>
+<tr>
+<td>done</td>
+<td>Order has been completely filled</td>
+</tr>
+<tr>
+<td>cancel</td>
+<td>The order has been cancelled (A cancelled limit order may still have executed trades against it)</td>
+</tr>
+<tr>
+<td>reject</td>
+<td>The order submission was rejected</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Deposit states</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>submitted</td>
+</tr>
+<tr>
+<td>canceled</td>
+</tr>
+<tr>
+<td>rejected</td>
+</tr>
+<tr>
+<td>accepted</td>
+</tr>
+<tr>
+<td>collected</td>
+</tr>
+<tr>
+<td>skipped</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Withdraw states</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>prepared</td>
+</tr>
+<tr>
+<td>submitted</td>
+</tr>
+<tr>
+<td>rejected</td>
+</tr>
+<tr>
+<td>accepted</td>
+</tr>
+<tr>
+<td>skipped</td>
+</tr>
+<tr>
+<td>processing</td>
+</tr>
+<tr>
+<td>succeed</td>
+</tr>
+<tr>
+<td>canceled</td>
+</tr>
+<tr>
+<td>failed</td>
+</tr>
+<tr>
+<td>errored</td>
+</tr>
+<tr>
+<td>confirming</td>
 </tr>
 </tbody></table>
 <h1 id='errors'>Errors</h1>
 <table><thead>
 <tr>
-<th>Error Code</th>
-<th>Meaning</th>
+<th>Code</th>
+<th>Reason</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>4XX</td>
-<td>returned for malformed requests - the issue is on the sender&#39;s side.</td>
+<td>400</td>
+<td>Bad Request</td>
+<td>Your request is invalid.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized</td>
+<td>Apikey / secret / HMAC signature incorrect</td>
 </tr>
 <tr>
 <td>403</td>
-<td>returned when the WAF Limit (Web Application Firewall) has been violated.</td>
+<td>Forbidden</td>
+<td>You are authenticated, but unauthorized to access this endpoint.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
+<td>Invalid endpoint.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed</td>
+<td>Invalid method for endpoint eg POST instead of GET.</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Unprocessible Entity</td>
+<td>The server understood the request, but the data provided is incorrect.</td>
 </tr>
 <tr>
 <td>429</td>
-<td>returned when breaking a request rate limit.</td>
+<td>Too Many Requests</td>
+<td>You&#39;re sending too many requests too quickly. Slow down!</td>
 </tr>
 <tr>
-<td>5XX</td>
-<td>returned for internal errors; the issue is on deployment side. It is important to NOT treat this as a failure operation; the execution status is UNKNOWN and could have been a success.</td>
+<td>500</td>
+<td>Internal Server Error</td>
+<td>We had a problem with our server. Try again later.</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable</td>
+<td>We&#39;re temporarily offline for maintenance. Please try again later.</td>
 </tr>
 </tbody></table>
 
