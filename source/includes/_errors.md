@@ -1,8 +1,13 @@
 # Errors
 
-Error Code | Meaning
----------- | -------
-4XX | returned for malformed requests - the issue is on the sender's side.
-403 | returned when the WAF Limit (Web Application Firewall) has been violated.
-429 | returned when breaking a request rate limit.
-5XX | returned for internal errors; the issue is on deployment side. It is important to NOT treat this as a failure operation; the execution status is UNKNOWN and could have been a success.
+| Code | Reason                | Description                                                            |
+| ---- | --------------------- | ---------------------------------------------------------------------- |
+| 400  | Bad Request           | Your request is invalid.                                               |
+| 401  | Unauthorized          | Apikey / secret / HMAC signature incorrect                             |
+| 403  | Forbidden             | You are authenticated, but unauthorized to access this endpoint.       |
+| 404  | Not Found             | Invalid endpoint.                                                      |
+| 405  | Method Not Allowed    | Invalid method for endpoint eg POST instead of GET.                    |
+| 422  | Unprocessible Entity  | The server understood the request, but the data provided is incorrect. |
+| 429  | Too Many Requests     | You're sending too many requests too quickly. Slow down!               |
+| 500  | Internal Server Error | We had a problem with our server. Try again later.                     |
+| 503  | Service Unavailable   | We're temporarily offline for maintenance. Please try again later.     |
