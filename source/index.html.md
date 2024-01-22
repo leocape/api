@@ -558,6 +558,29 @@ Get list of user beneficiaries
 | ---- | ------------------------------ | ------------------------------- |
 | 200  | Get list of user beneficiaries | [ [Beneficiary](#beneficiary) ] |
 
+## <span class="request-type__post">GET</span> Withdraw quote
+
+`/account/withdraws/{currency}`
+
+`/account/withdraws/{currency}?bolt=ln...`
+
+### Description
+
+Get the expected fee to withdraw the specified currency. Submit the quote_id with your withdraw request payload to honor that fee during the withdrawal. Quotes are currently valid for 90 seconds, ensure you submit the withdrawal request before the expires_at parameter.
+
+### Parameters
+
+| Name     | Located in | Description                                                                      | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------- | -------- | ------- |
+| currency | path       | Currency code.                                                                   | Yes      | string  |
+| bolt     | query      | For BTC Lightning payments, supply the Bolt11 invoice. Fees are returned in BTC. | No       | integer |
+
+### Responses
+
+| Code | Description              | Schema                                |
+| ---- | ------------------------ | ------------------------------------- |
+| 200  | Returns a withdraw quote | [ [Withdraw quote](#withdraw-quote) ] |
+
 ## <span class="request-type__post">POST</span> New withdrawal
 
 `/account/withdraws`
@@ -766,7 +789,7 @@ As the payment is requested and validated on the lightning network, please query
 | ------------------ | ---------- | ------------------------------------------------------------------------------------------- | -------- | ------ |
 | bolt               | query      | The bolt11 invoice to pay.                                                                  | Yes      | string |
 | amount             | query      | The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11 | Yes      | double |
-| description        | query      | The description of bolt description                                                         | No       | string |
+| quote_id           | query      | The quote_id of the withdrawal quote, see [Withdraw quote](#get-withdraw-quote)             | No       | string |
 | member_description | query      | Personal description of this payment for your records                                       | No       | string |
 
 ### Responses
@@ -789,12 +812,12 @@ The invoice expires in 1 hour.
 
 ### Parameters
 
-| Name               | Located in | Description                                                                                 | Required | Schema |
-| ------------------ | ---------- | ------------------------------------------------------------------------------------------- | -------- | ------ |
-| amount             | query      | The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11 | Yes      | double |
-| conversion_percent | query      | Percent of the received amount to be automatically converted to FIAT                        | No       | double |
-| description        | query      | The description for the invoice (visible on the bolt11 invoice)                             | No       | string |
-| member_description | query      | Personal description of this invoice for your records                                       | No       | string |
+| Name               | Located in | Description                                                                                                                         | Required | Schema |
+| ------------------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ |
+| amount             | query      | The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11                                         | Yes      | double |
+| conversion_percent | query      | Percent of the received amount to be automatically converted to FIAT                                                                | No       | double |
+| description        | query      | The description for the invoice (visible on the Bolt11 invoice to the payer). If left blank the default Cape Crypto Invoice is used | No       | string |
+| member_description | query      | Personal description of this invoice for your records                                                                               | No       | string |
 
 ### Responses
 
@@ -1295,6 +1318,17 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 | created_at      | string  | The datetime for the withdrawal.                        |
 | updated_at      | string  | The datetime for the withdrawal.                        |
 | done_at         | string  | The datetime when withdraw was completed                |
+
+### Withdraw quote
+
+| Name       | Type   | Description                                                   |
+| ---------- | ------ | ------------------------------------------------------------- |
+| id         | string | The id of the quote. Submit this with your withdrawal request |
+| currency   | string | The currency code.                                            |
+| fee        | string | The fee for the withdrawal                                    |
+| blockchain | string | The blockchain for this quote                                 |
+| created_at | string | The datetime the quote was created.                           |
+| expires_at | string | The datetime the quote expires.                               |
 
 ### Beneficiary
 
