@@ -384,6 +384,9 @@
                     <a href="#get-list-beneficiaries" class="toc-h2 toc-link" data-title="GET List Beneficiaries"><span class="request-type__get">GET</span> List Beneficiaries</a>
                   </li>
                   <li>
+                    <a href="#get-withdraw-quote" class="toc-h2 toc-link" data-title="GET Withdraw quote"><span class="request-type__post">GET</span> Withdraw quote</a>
+                  </li>
+                  <li>
                     <a href="#post-new-withdrawal" class="toc-h2 toc-link" data-title="POST New withdrawal"><span class="request-type__post">POST</span> New withdrawal</a>
                   </li>
                   <li>
@@ -481,6 +484,9 @@
                   </li>
                   <li>
                     <a href="#withdraw" class="toc-h2 toc-link" data-title="Withdraw">Withdraw</a>
+                  </li>
+                  <li>
+                    <a href="#withdraw-quote" class="toc-h2 toc-link" data-title="Withdraw quote">Withdraw quote</a>
                   </li>
                   <li>
                     <a href="#beneficiary" class="toc-h2 toc-link" data-title="Beneficiary">Beneficiary</a>
@@ -1371,11 +1377,56 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>[ <a href="#beneficiary">Beneficiary</a> ]</td>
 </tr>
 </tbody></table>
+<h2 id='get-withdraw-quote'><span class="request-type__post">GET</span> Withdraw quote</h2>
+<p><code>/account/withdraws/{currency}</code></p>
+
+<p><code>/account/withdraws/{currency}?bolt=ln...</code></p>
+<h3 id='description-15'>Description</h3>
+<p>Get the expected fee to withdraw the specified currency. Submit the quote_id with your withdraw request payload to honor that fee during the withdrawal. Quotes are currently valid for 90 seconds, ensure you submit the withdrawal request before the expires_at parameter.</p>
+<h3 id='parameters-13'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>currency</td>
+<td>path</td>
+<td>Currency code.</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>bolt</td>
+<td>query</td>
+<td>For BTC Lightning payments, supply the Bolt11 invoice. Fees are returned in BTC.</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-15'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Returns a withdraw quote</td>
+<td>[ <a href="#withdraw-quote">Withdraw quote</a> ]</td>
+</tr>
+</tbody></table>
 <h2 id='post-new-withdrawal'><span class="request-type__post">POST</span> New withdrawal</h2>
 <p><code>/account/withdraws</code></p>
-<h3 id='description-15'>Description</h3>
+<h3 id='description-16'>Description</h3>
 <p>Creates new withdrawal to active beneficiary.</p>
-<h3 id='parameters-13'>Parameters</h3>
+<h3 id='parameters-14'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1421,7 +1472,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-15'>Responses</h3>
+<h3 id='responses-16'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1435,9 +1486,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-withdrawal-history'><span class="request-type__post">GET</span> Withdrawal history</h2>
 <p><code>/account/withdraws</code></p>
-<h3 id='description-16'>Description</h3>
+<h3 id='description-17'>Description</h3>
 <p>Get your withdraw history, paginated.</p>
-<h3 id='parameters-14'>Parameters</h3>
+<h3 id='parameters-15'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1483,7 +1534,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-16'>Responses</h3>
+<h3 id='responses-17'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1499,9 +1550,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-instant-deposit-methods'><span class="request-type__post">GET</span> Instant deposit methods</h2>
 <p><code>/payments/methods</code></p>
-<h3 id='description-17'>Description</h3>
+<h3 id='description-18'>Description</h3>
 <p>Gets your available instant FIAT deposit methods, including voucher providers whose vouchers you can use to redeem (deposit). Use the id of the provider when creating the deposit request for the specific method.</p>
-<h3 id='responses-17'>Responses</h3>
+<h3 id='responses-18'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1517,9 +1568,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-redeem-voucher'><span class="request-type__post">POST</span> Redeem voucher</h2>
 <p><code>/payments/vouchers/new</code></p>
-<h3 id='description-18'>Description</h3>
+<h3 id='description-19'>Description</h3>
 <p>Redeem a voucher code.</p>
-<h3 id='parameters-15'>Parameters</h3>
+<h3 id='parameters-16'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1551,7 +1602,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-18'>Responses</h3>
+<h3 id='responses-19'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1567,11 +1618,11 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-deposit-address'><span class="request-type__get">GET</span> Deposit address</h2>
 <p><code>/account/deposit_address/{currency}</code></p>
-<h3 id='description-19'>Description</h3>
+<h3 id='description-20'>Description</h3>
 <p>Fetch the deposit address for the specified currency.</p>
 
 <p>Note: If your currency deposit address has not been created yet, the result may return empty while the address is being created. If it is empty, please try again in a few seconds.</p>
-<h3 id='parameters-16'>Parameters</h3>
+<h3 id='parameters-17'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1589,7 +1640,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-19'>Responses</h3>
+<h3 id='responses-20'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1605,9 +1656,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-deposit-history-by-txid'><span class="request-type__get">GET</span> Deposit history by txid</h2>
 <p><code>/account/deposits/{txid}</code></p>
-<h3 id='description-20'>Description</h3>
+<h3 id='description-21'>Description</h3>
 <p>Get details of a specific blockchain deposit by the txid.</p>
-<h3 id='parameters-17'>Parameters</h3>
+<h3 id='parameters-18'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1625,7 +1676,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-20'>Responses</h3>
+<h3 id='responses-21'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1641,9 +1692,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-deposit-history'><span class="request-type__get">GET</span> Deposit history</h2>
 <p><code>/account/deposits</code></p>
-<h3 id='description-21'>Description</h3>
+<h3 id='description-22'>Description</h3>
 <p>Get your deposit history</p>
-<h3 id='parameters-18'>Parameters</h3>
+<h3 id='parameters-19'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1689,7 +1740,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-21'>Responses</h3>
+<h3 id='responses-22'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1705,9 +1756,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-balance'><span class="request-type__get">GET</span> Balance</h2>
 <p><code>/account/balances/{currency}</code></p>
-<h3 id='description-22'>Description</h3>
+<h3 id='description-23'>Description</h3>
 <p>Get single account balance by currency code eg. &#39;btc&#39;</p>
-<h3 id='parameters-19'>Parameters</h3>
+<h3 id='parameters-20'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1725,7 +1776,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-22'>Responses</h3>
+<h3 id='responses-23'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1741,9 +1792,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-all-balances'><span class="request-type__get">GET</span> All balances</h2>
 <p><code>/account/balances</code></p>
-<h3 id='description-23'>Description</h3>
+<h3 id='description-24'>Description</h3>
 <p>Get account balances for all currencies</p>
-<h3 id='parameters-20'>Parameters</h3>
+<h3 id='parameters-21'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1775,7 +1826,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>Boolean</td>
 </tr>
 </tbody></table>
-<h3 id='responses-23'>Responses</h3>
+<h3 id='responses-24'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1791,11 +1842,11 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-new-lightning-payment'><span class="request-type__post">POST</span> New lightning payment</h2>
 <p><code>/account/lightning/pays</code></p>
-<h3 id='description-24'>Description</h3>
+<h3 id='description-25'>Description</h3>
 <p>Submits a payment request to pay a BTC Lightning BOLT11 invoice (withdraws this balance from your BTC account).</p>
 
 <p>As the payment is requested and validated on the lightning network, please query your withdrawal history to confirm that the payment succeeded.</p>
-<h3 id='parameters-21'>Parameters</h3>
+<h3 id='parameters-22'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1820,9 +1871,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>double</td>
 </tr>
 <tr>
-<td>description</td>
+<td>quote_id</td>
 <td>query</td>
-<td>The description of bolt description</td>
+<td>The quote_id of the withdrawal quote, see <a href="#get-withdraw-quote">Withdraw quote</a></td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -1834,7 +1885,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-24'>Responses</h3>
+<h3 id='responses-25'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1850,13 +1901,13 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-create-a-lightning-invoice'><span class="request-type__post">POST</span> Create a Lightning invoice</h2>
 <p><code>/account/lightning/invoices</code></p>
-<h3 id='description-25'>Description</h3>
+<h3 id='description-26'>Description</h3>
 <p>Create a new lightning invoice to be paid (receive) over the BTC Lightning network.</p>
 
 <p>You can optionally specify a conversion_percent (1 = 100%, 0.1 = 10%) to automatically convert once the invoice is paid. The conversion percent should be such that the conversion amount is greater than or equal to the minimum order amount for the market eg. &#39;btczar&#39;. For example if receiving BTC 0.00001, and the minimum order amount on &#39;btczar&#39; is 0.00001, your conversion percent would have to be 1 (100%). Anything less would cause the invoice creation to fail, as the conversion amount would be below the minimum market order amount.</p>
 
 <p>The invoice expires in 1 hour.</p>
-<h3 id='parameters-22'>Parameters</h3>
+<h3 id='parameters-23'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1883,7 +1934,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <tr>
 <td>description</td>
 <td>query</td>
-<td>The description for the invoice (visible on the bolt11 invoice)</td>
+<td>The description for the invoice (visible on the Bolt11 invoice to the payer). If left blank the default Cape Crypto Invoice is used</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -1895,7 +1946,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-25'>Responses</h3>
+<h3 id='responses-26'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1911,13 +1962,13 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-26'>Description</h3>
+<h3 id='description-27'>Description</h3>
 <p>Submits a Buy/Sell order to the order book. Orders should be confirmed that they have been created either by querying the order ID that is returned in the response, or subscribing to the websockets for order updates.</p>
 
 <p>You can supply your own custom_order_id for tracking purposes for you own system.</p>
 
 <p>For limit orders, you can specify post_only to ensure that orders wont complete if they would have matched. The order request will fail if post_only is true, and the order would have matched.</p>
-<h3 id='parameters-23'>Parameters</h3>
+<h3 id='parameters-24'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1969,7 +2020,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-26'>Responses</h3>
+<h3 id='responses-27'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -1985,9 +2036,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-order-by-id'><span class="request-type__get">GET</span> Order by id</h2>
 <p><code>/market/orders/{id}</code></p>
-<h3 id='description-27'>Description</h3>
+<h3 id='description-28'>Description</h3>
 <p>Get single order details.</p>
-<h3 id='parameters-24'>Parameters</h3>
+<h3 id='parameters-25'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2005,7 +2056,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-27'>Responses</h3>
+<h3 id='responses-28'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2021,9 +2072,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-all-orders'><span class="request-type__post">GET</span> All orders</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-28'>Description</h3>
+<h3 id='description-29'>Description</h3>
 <p>Get orders, result is paginated.</p>
-<h3 id='parameters-25'>Parameters</h3>
+<h3 id='parameters-26'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2111,7 +2162,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-28'>Responses</h3>
+<h3 id='responses-29'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2127,9 +2178,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
 <p><code>/market/trades</code></p>
-<h3 id='description-29'>Description</h3>
+<h3 id='description-30'>Description</h3>
 <p>Fetch your executed trades.</p>
-<h3 id='parameters-26'>Parameters</h3>
+<h3 id='parameters-27'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2182,7 +2233,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-29'>Responses</h3>
+<h3 id='responses-30'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2198,9 +2249,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-cancel-order'><span class="request-type__post">POST</span> Cancel Order</h2>
 <p><code>/market/orders/{id}/cancel</code></p>
-<h3 id='description-30'>Description</h3>
+<h3 id='description-31'>Description</h3>
 <p>Cancel a specific order by Order id.</p>
-<h3 id='parameters-27'>Parameters</h3>
+<h3 id='parameters-28'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2218,7 +2269,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-30'>Responses</h3>
+<h3 id='responses-31'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2232,9 +2283,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
 <p><code>/market/orders/cancel</code></p>
-<h3 id='description-31'>Description</h3>
+<h3 id='description-32'>Description</h3>
 <p>Cancel all of your open orders.</p>
-<h3 id='parameters-28'>Parameters</h3>
+<h3 id='parameters-29'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2259,7 +2310,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-31'>Responses</h3>
+<h3 id='responses-32'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2334,13 +2385,13 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.ob-inc</code></p>
-<h3 id='description-32'>Description</h3>
+<h3 id='description-33'>Description</h3>
 <p>Subscribe to orderbook updates for the specified market. You can subscribe to multiple markets at the same time by adding each market as a param, eg</p>
 
 <p><code>?stream=btczar.ob-inc&amp;ethzar.ob-inc</code></p>
 
 <p>Note: if the amount is empty &quot;&quot;, the order has been removed from the orderbook</p>
-<h3 id='parameters-29'>Parameters</h3>
+<h3 id='parameters-30'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2358,7 +2409,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-32'>Responses</h3>
+<h3 id='responses-33'>Responses</h3>
 <table><thead>
 <tr>
 <th>Description</th>
@@ -2405,9 +2456,9 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.kline-{period}</code></p>
-<h3 id='description-33'>Description</h3>
+<h3 id='description-34'>Description</h3>
 <p>Subscribe to the K-LINE (OHLC) for the specified market to get updates on the OHLC for each period. Similary to the otherendpoints, you can combine streams into a single subscription request.</p>
-<h3 id='parameters-30'>Parameters</h3>
+<h3 id='parameters-31'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2432,7 +2483,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-33'>Responses</h3>
+<h3 id='responses-34'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2495,9 +2546,9 @@ You can combine multiple subscriptions in one request, and also provide the subs
 
 <p>Combined into 1x:
 <code>?stream={order}&amp;stream={trade}&amp;stream={balance}</code></p>
-<h3 id='description-34'>Description</h3>
+<h3 id='description-35'>Description</h3>
 <p>Subscribe to your account, and receive updates on your placed orders, trades executed, and balance updates.</p>
-<h3 id='parameters-31'>Parameters</h3>
+<h3 id='parameters-32'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2529,7 +2580,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-34'>Responses</h3>
+<h3 id='responses-35'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3082,6 +3133,45 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>done_at</td>
 <td>string</td>
 <td>The datetime when withdraw was completed</td>
+</tr>
+</tbody></table>
+<h3 id='withdraw-quote'>Withdraw quote</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>The id of the quote. Submit this with your withdrawal request</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>string</td>
+<td>The currency code.</td>
+</tr>
+<tr>
+<td>fee</td>
+<td>string</td>
+<td>The fee for the withdrawal</td>
+</tr>
+<tr>
+<td>blockchain</td>
+<td>string</td>
+<td>The blockchain for this quote</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>The datetime the quote was created.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>string</td>
+<td>The datetime the quote expires.</td>
 </tr>
 </tbody></table>
 <h3 id='beneficiary'>Beneficiary</h3>
