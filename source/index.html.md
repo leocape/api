@@ -1078,9 +1078,9 @@ Get details of a specific deposit by its internal deposit ID.
 
 ### Parameters
 
-| Name | Located in | Description       | Required | Schema  |
-| ---- | ---------- | ----------------- | -------- | ------- |
-| id   | path       | Deposit ID        | Yes      | integer |
+| Name | Located in | Description | Required | Schema  |
+| ---- | ---------- | ----------- | -------- | ------- |
+| id   | path       | Deposit ID  | Yes      | integer |
 
 ### Responses
 
@@ -1100,34 +1100,34 @@ Submit travel rule compliance information for a cryptocurrency deposit that is o
 
 ### Parameters
 
-| Name             | Located in | Description                                                                                  | Required | Schema  |
-| ---------------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------- |
-| id               | path       | Deposit ID                                                                                   | Yes      | string  |
-| is_own           | formData   | Is this your own wallet?                                                                     | Yes      | boolean |
-| is_unhosted      | formData   | Is this an unhosted wallet? (Cannot be true if vasp_id is provided)                          | Yes      | boolean |
-| vasp_id          | formData   | VASP ID from the system (mutually exclusive with custom_vasp fields)                         | No       | integer |
-| custom_vasp_name | formData   | Custom VASP name (required if not using vasp_id and not unhosted)                           | No       | string  |
-| custom_vasp_url  | formData   | Custom VASP URL (required if not using vasp_id and not unhosted)                            | No       | string  |
-| originator_data  | formData   | Originator information in JSON format (required if is_own is false, see fields below)       | No       | json    |
+| Name             | Located in | Description                                                                           | Required | Schema  |
+| ---------------- | ---------- | ------------------------------------------------------------------------------------- | -------- | ------- |
+| id               | path       | Deposit ID                                                                            | Yes      | string  |
+| is_own           | formData   | Is this your own wallet?                                                              | Yes      | boolean |
+| is_unhosted      | formData   | Is this an unhosted wallet? (Cannot be true if vasp_id is provided)                   | Yes      | boolean |
+| vasp_id          | formData   | VASP ID from the system (mutually exclusive with custom_vasp fields)                  | No       | integer |
+| custom_vasp_name | formData   | Custom VASP name (required if not using vasp_id and not unhosted)                     | No       | string  |
+| custom_vasp_url  | formData   | Custom VASP URL (required if not using vasp_id and not unhosted)                      | No       | string  |
+| originator_data  | formData   | Originator information in JSON format (required if is_own is false, see fields below) | No       | json    |
 
 **Originator Data Fields:**
 
 When `is_own` is `false`, you must provide originator information:
 
-| Field         | Type   | Required              | Description                                    |
-| ------------- | ------ | --------------------- | ---------------------------------------------- |
-| identity_type | string | Yes                   | Type of identity (e.g., "passport", "id")      |
-| first_name    | string | Yes (for Individuals) | Originator's first name                        |
-| last_name     | string | Yes (for Individuals) | Originator's last name                         |
-| company_name  | string | Yes (for Businesses)  | Company name (for business originators)        |
-| country       | string | Yes                   | ISO country code (e.g., "US", "ZA", "GB")      |
+| Field         | Type   | Required              | Description                               |
+| ------------- | ------ | --------------------- | ----------------------------------------- |
+| identity_type | string | Yes                   | Type of identity (e.g., "passport", "id") |
+| first_name    | string | Yes (for Individuals) | Originator's first name                   |
+| last_name     | string | Yes (for Individuals) | Originator's last name                    |
+| company_name  | string | Yes (for Businesses)  | Company name (for business originators)   |
+| country       | string | Yes                   | ISO country code (e.g., "US", "ZA", "GB") |
 
 ### Responses
 
-| Code | Description                                                                  | Schema              |
-| ---- | ---------------------------------------------------------------------------- | ------------------- |
-| 200  | Travel rule submitted successfully. Deposit transitions to hold state.       | [Deposit](#deposit) |
-| 422  | Validation error or deposit not eligible (wrong state, already submitted).   | Error array         |
+| Code | Description                                                                | Schema              |
+| ---- | -------------------------------------------------------------------------- | ------------------- |
+| 200  | Travel rule submitted successfully. Deposit transitions to hold state.     | [Deposit](#deposit) |
+| 422  | Validation error or deposit not eligible (wrong state, already submitted). | Error array         |
 
 ## <span class="request-type__get">GET</span> Deposit history
 
@@ -1705,7 +1705,7 @@ createIndividualCustomer();
 
 ### Description
 
-Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `parent_merchant_uid`.
+Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `merchant_uid`.
 
 **Individual customers** are automatically verified with Email, Phone, Profile, and Document labels after creation. Document files must be uploaded separately using the document upload endpoint (see "Upload Individual Customer Documents" section below).
 
@@ -1721,7 +1721,7 @@ Create a new individual customer account. Merchants create customers under their
 | email                | formData   | Customer email address (unique per merchant)                                       | Yes                           | string  |
 | phone_number         | formData   | Phone number in international format (e.g., +27821234567)                          | Yes                           | string  |
 | account_name         | formData   | Display name for the account                                                       | No                            | string  |
-| parent_merchant_uid  | formData   | Merchant UID (aggregators only - create under specific merchant)                   | No                            | string  |
+| merchant_uid         | formData   | Merchant UID (aggregators only - create under specific merchant)                   | No                            | string  |
 | first_name           | formData   | Customer first name                                                                | Yes                           | string  |
 | last_name            | formData   | Customer last name                                                                 | Yes                           | string  |
 | dob                  | formData   | Date of birth in YYYY-MM-DD format (must be 18+)                                   | Yes                           | string  |
@@ -1918,7 +1918,7 @@ createBusinessCustomer();
 
 ### Description
 
-Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `parent_merchant_uid`.
+Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `merchant_uid`.
 
 **Business customers** start with 'pending' status and require verification. Business documents must be uploaded separately using the document upload endpoint (see "Upload Business Customer Documents" section below).
 
@@ -1928,13 +1928,13 @@ Create a new business customer account with company details and Ultimate Benefic
 
 **Account Information:**
 
-| Name                | Located in | Description                                                      | Required | Schema |
-| ------------------- | ---------- | ---------------------------------------------------------------- | -------- | ------ |
-| entity_type         | formData   | Must be 'business'                                               | Yes      | string |
-| email               | formData   | Business email address (unique per merchant)                     | Yes      | string |
-| phone_number        | formData   | Business phone number in international format                    | Yes      | string |
-| account_name        | formData   | Business account display name (typically company name)           | Yes      | string |
-| parent_merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant) | No       | string |
+| Name         | Located in | Description                                                      | Required | Schema |
+| ------------ | ---------- | ---------------------------------------------------------------- | -------- | ------ |
+| entity_type  | formData   | Must be 'business'                                               | Yes      | string |
+| email        | formData   | Business email address (unique per merchant)                     | Yes      | string |
+| phone_number | formData   | Business phone number in international format                    | Yes      | string |
+| account_name | formData   | Business account display name (typically company name)           | Yes      | string |
+| merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant) | No       | string |
 
 **Business Profile (JSON Object):**
 
@@ -2032,15 +2032,15 @@ listCustomers();
 
 ### Description
 
-Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants' customers). Aggregators can filter by specific merchant using `parent_merchant_uid`.
+Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants' customers). Aggregators can filter by specific merchant using `merchant_uid`.
 
 ### Parameters
 
-| Name                | Located in | Description                                          | Required | Schema  |
-| ------------------- | ---------- | ---------------------------------------------------- | -------- | ------- |
-| page                | query      | Page number (defaults to 1)                          | No       | integer |
-| limit               | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
-| parent_merchant_uid | query      | Filter by merchant UID (aggregators only)            | No       | string  |
+| Name         | Located in | Description                                          | Required | Schema  |
+| ------------ | ---------- | ---------------------------------------------------- | -------- | ------- |
+| page         | query      | Page number (defaults to 1)                          | No       | integer |
+| limit        | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
+| merchant_uid | query      | Filter by merchant UID (aggregators only)            | No       | string  |
 
 ### Responses
 
@@ -2296,6 +2296,7 @@ uploadDocuments("ID123456789ABC");
 ### Description
 
 Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:
+
 - **ID document** (front side, plus back side for identity_card/driver_license)
 - **Selfie** (holding ID document)
 - **Liveness** (live photo/video - triggers automatic verification)
@@ -2309,13 +2310,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name         | Located in | Description                                              | Required | Schema |
-| ------------ | ---------- | -------------------------------------------------------- | -------- | ------ |
-| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 4MB  | Yes      | File   |
-| doc_type     | formData   | Document type (see Available Document Types below)       | Yes      | string |
-| customer_uid | formData   | Customer UID from the customer creation response         | Yes      | string |
-| doc_number   | formData   | ID document number (optional for selfie)                 | No       | string |
-| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (optional for selfie) | No | string |
+| Name         | Located in | Description                                                     | Required | Schema |
+| ------------ | ---------- | --------------------------------------------------------------- | -------- | ------ |
+| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 4MB         | Yes      | File   |
+| doc_type     | formData   | Document type (see Available Document Types below)              | Yes      | string |
+| customer_uid | formData   | Customer UID from the customer creation response                | Yes      | string |
+| doc_number   | formData   | ID document number (optional for selfie)                        | No       | string |
+| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (optional for selfie) | No       | string |
 
 ### Required Documents
 
@@ -2334,10 +2335,12 @@ The following documents must be uploaded for individual customers:
    - Not required for Passport
 
 3. **Selfie** - Photograph of customer holding their ID document
+
    - `doc_type`: 'Selfie'
    - `doc_number` and `doc_expire` are optional
 
 4. **Liveness** - Live photo or video verification
+
    - `doc_type`: 'Liveness'
    - This document triggers the automated verification workflow
    - Upload this document last, after all other documents are uploaded
@@ -2373,11 +2376,11 @@ Valid `doc_type` values for individual customer KYC documents:
 
 ### Responses
 
-| Code | Description                    | Schema          |
-| ---- | ------------------------------ | --------------- |
-| 200  | Document uploaded successfully | Success object  |
-| 400  | Invalid doc_type               | Error array     |
-| 422  | Validation error               | Error array     |
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
 
 ## <span class="request-type__post">POST</span> Upload Business Customer Documents
 
@@ -2476,11 +2479,11 @@ Valid `doc_type` values for business customer KYB documents:
 
 ### Responses
 
-| Code | Description                    | Schema          |
-| ---- | ------------------------------ | --------------- |
-| 200  | Document uploaded successfully | Success object  |
-| 400  | Invalid doc_type               | Error array     |
-| 422  | Validation error               | Error array     |
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
 
 ## <span class="request-type__post">POST</span> Upload UBO Documents
 
@@ -2575,6 +2578,7 @@ Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of busin
 **When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_uid` when uploading UBO documents.
 
 **Business KYB completion requires**:
+
 1. All 9 business entity documents uploaded
 2. **All UBOs must have complete KYC documents**
 
@@ -2715,8 +2719,8 @@ Get a paginated list of merchant accounts managed by the aggregator.
 
 ### Responses
 
-| Code | Description                       | Schema                                         |
-| ---- | --------------------------------- | ---------------------------------------------- |
+| Code | Description                       | Schema                                                             |
+| ---- | --------------------------------- | ------------------------------------------------------------------ |
 | 200  | List of merchants with pagination | Array of merchants (see [Customer (Business)](#customer-business)) |
 
 **Note:** Pagination information is returned in HTTP headers (`Page`, `Per-Page`, `Total`), not in the response body.
@@ -3127,6 +3131,7 @@ Subscribe to your account and receive real-time updates on your orders, trades, 
 `?stream=btczar.ob-inc&stream=order&stream=trade&stream=balance`
 
 **Benefits of combining streams:**
+
 - Single WebSocket connection for all updates
 - Synchronized view of orderbook changes and your order executions
 - Real-time balance updates as trades execute
@@ -3374,10 +3379,10 @@ ws.on("message", (data) => {
 
 All paginated list endpoints return an array of items in the response body, with pagination information provided in HTTP response headers:
 
-| Header   | Description                           | Example |
-| -------- | ------------------------------------- | ------- |
-| Page     | Current page number                   | 1       |
-| Per-Page | Number of items per page              | 100     |
+| Header   | Description                            | Example |
+| -------- | -------------------------------------- | ------- |
+| Page     | Current page number                    | 1       |
+| Per-Page | Number of items per page               | 100     |
 | Total    | Total number of items across all pages | 150     |
 
 ### Ticker
@@ -3543,6 +3548,7 @@ All paginated list endpoints return an array of items in the response body, with
 ### Customer
 
 Customer accounts come in two types with different response structures:
+
 - **Individual Customers** - See [Customer (Individual)](#customer-individual) for personal account structure
 - **Business Customers** - See [Customer (Business)](#customer-business) for business account structure
 
@@ -3656,65 +3662,65 @@ Customer accounts come in two types with different response structures:
 
 ### Deposit Method
 
-| Name            | Type    | Description                                                           |
-| --------------- | ------- | --------------------------------------------------------------------- |
-| uuid            | string  | Unique identifier for the deposit method                              |
-| name            | string  | Display name of the deposit method                                    |
-| description     | string  | Human-readable description of the method                              |
-| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                              |
-| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                                  |
-| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")         |
-| type            | string  | Method type (e.g., "bank", "crypto", "voucher")                       |
-| currencyType    | string  | Currency type: "fiat" or "crypto"                                     |
-| providerId      | string  | Payment provider identifier (e.g., "stitch", "xago", "cape")          |
-| minAmount       | number  | Minimum deposit amount (after baseFactor conversion)                  |
-| maxAmount       | number  | Maximum deposit amount (derived from remaining limits)                |
-| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)         |
-| precision       | number  | Decimal precision for display                                         |
-| feeCape         | number  | Cape's fee amount or percentage                                       |
-| feeProvider     | number  | Provider's fee amount or percentage                                   |
-| position        | number  | Display order position                                                |
-| iconUrl         | string  | Icon URL for UI display                                               |
-| verified        | boolean | Whether user is verified for this method                              |
-| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below)      |
+| Name            | Type    | Description                                                      |
+| --------------- | ------- | ---------------------------------------------------------------- |
+| uuid            | string  | Unique identifier for the deposit method                         |
+| name            | string  | Display name of the deposit method                               |
+| description     | string  | Human-readable description of the method                         |
+| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                         |
+| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                             |
+| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")    |
+| type            | string  | Method type (e.g., "bank", "crypto", "voucher")                  |
+| currencyType    | string  | Currency type: "fiat" or "crypto"                                |
+| providerId      | string  | Payment provider identifier (e.g., "stitch", "xago", "cape")     |
+| minAmount       | number  | Minimum deposit amount (after baseFactor conversion)             |
+| maxAmount       | number  | Maximum deposit amount (derived from remaining limits)           |
+| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)    |
+| precision       | number  | Decimal precision for display                                    |
+| feeCape         | number  | Cape's fee amount or percentage                                  |
+| feeProvider     | number  | Provider's fee amount or percentage                              |
+| position        | number  | Display order position                                           |
+| iconUrl         | string  | Icon URL for UI display                                          |
+| verified        | boolean | Whether user is verified for this method                         |
+| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below) |
 
 ### Withdraw Method
 
-| Name            | Type    | Description                                                           |
-| --------------- | ------- | --------------------------------------------------------------------- |
-| uuid            | string  | Unique identifier for the withdraw method                             |
-| id              | number  | Database ID (included for legacy support)                             |
-| name            | string  | Display name of the withdraw method                                   |
-| description     | string  | Human-readable description of the method                              |
-| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                              |
-| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                                  |
-| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")         |
-| type            | string  | Method type (e.g., "crypto", "bank", "wallet")                        |
-| currencyType    | string  | Currency type: "fiat" or "crypto"                                     |
-| providerId      | string  | Payment provider identifier (e.g., "xago", "celbux", "cape")          |
-| processorId     | string  | Processor that handles withdrawals for this method                    |
-| minAmount       | number  | Minimum withdrawal amount (after baseFactor conversion)               |
-| maxAmount       | number  | Maximum withdrawal amount (derived from remaining limits)             |
-| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)         |
-| precision       | number  | Decimal precision for display                                         |
-| feeCape         | number  | Cape's withdrawal fee amount or percentage                            |
-| feeProvider     | number  | Provider's withdrawal fee amount or percentage                        |
-| position        | number  | Display order position                                                |
-| iconUrl         | string  | Icon URL for UI display                                               |
-| verified        | boolean | Whether user is verified for this method                              |
-| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below)      |
+| Name            | Type    | Description                                                      |
+| --------------- | ------- | ---------------------------------------------------------------- |
+| uuid            | string  | Unique identifier for the withdraw method                        |
+| id              | number  | Database ID (included for legacy support)                        |
+| name            | string  | Display name of the withdraw method                              |
+| description     | string  | Human-readable description of the method                         |
+| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                         |
+| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                             |
+| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")    |
+| type            | string  | Method type (e.g., "crypto", "bank", "wallet")                   |
+| currencyType    | string  | Currency type: "fiat" or "crypto"                                |
+| providerId      | string  | Payment provider identifier (e.g., "xago", "celbux", "cape")     |
+| processorId     | string  | Processor that handles withdrawals for this method               |
+| minAmount       | number  | Minimum withdrawal amount (after baseFactor conversion)          |
+| maxAmount       | number  | Maximum withdrawal amount (derived from remaining limits)        |
+| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)    |
+| precision       | number  | Decimal precision for display                                    |
+| feeCape         | number  | Cape's withdrawal fee amount or percentage                       |
+| feeProvider     | number  | Provider's withdrawal fee amount or percentage                   |
+| position        | number  | Display order position                                           |
+| iconUrl         | string  | Icon URL for UI display                                          |
+| verified        | boolean | Whether user is verified for this method                         |
+| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below) |
 
 ### Remaining Limits
 
 The `remainingLimits` object is included in both Deposit Method and Withdraw Method responses.
 
-| Name             | Type   | Description                                   |
-| ---------------- | ------ | --------------------------------------------- |
-| transaction_max  | number | Maximum amount allowed per single transaction |
-| day              | number | Remaining limit for the current day           |
-| week             | number | Remaining limit for the current week          |
-| month            | number | Remaining limit for the current month         |
-| year_to_date     | number | Remaining limit for the current year          |
+| Name            | Type   | Description                                   |
+| --------------- | ------ | --------------------------------------------- |
+| transaction_max | number | Maximum amount allowed per single transaction |
+| day             | number | Remaining limit for the current day           |
+| week            | number | Remaining limit for the current week          |
+| month           | number | Remaining limit for the current month         |
+| year_to_date    | number | Remaining limit for the current year          |
 
 ### Voucher Redemption
 
