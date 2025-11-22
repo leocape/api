@@ -3465,7 +3465,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
 <h3 id='description-36'>Description</h3>
-<p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>parent_merchant_uid</code>.</p>
+<p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Individual customers</strong> are automatically verified with Email, Phone, Profile, and Document labels after creation. Document files must be uploaded separately using the document upload endpoint (see &quot;Upload Individual Customer Documents&quot; section below).</p>
 
@@ -3511,7 +3511,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 <tr>
-<td>parent_merchant_uid</td>
+<td>merchant_uid</td>
 <td>formData</td>
 <td>Merchant UID (aggregators only - create under specific merchant)</td>
 <td>No</td>
@@ -3849,7 +3849,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
 <h3 id='description-37'>Description</h3>
-<p>Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>parent_merchant_uid</code>.</p>
+<p>Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Business customers</strong> start with &#39;pending&#39; status and require verification. Business documents must be uploaded separately using the document upload endpoint (see &quot;Upload Business Customer Documents&quot; section below).</p>
 
@@ -3895,7 +3895,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 <tr>
-<td>parent_merchant_uid</td>
+<td>merchant_uid</td>
 <td>formData</td>
 <td>Merchant UID (aggregators only - create under specific merchant)</td>
 <td>No</td>
@@ -4208,7 +4208,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
 <h3 id='description-38'>Description</h3>
-<p>Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants&#39; customers). Aggregators can filter by specific merchant using <code>parent_merchant_uid</code>.</p>
+<p>Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants&#39; customers). Aggregators can filter by specific merchant using <code>merchant_uid</code>.</p>
 <h3 id='parameters-34'>Parameters</h3>
 <table><thead>
 <tr>
@@ -4234,7 +4234,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 <tr>
-<td>parent_merchant_uid</td>
+<td>merchant_uid</td>
 <td>query</td>
 <td>Filter by merchant UID (aggregators only)</td>
 <td>No</td>
@@ -4544,11 +4544,14 @@ Total: 150
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
 <h3 id='description-41'>Description</h3>
-<p>Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:
-- <strong>ID document</strong> (front side, plus back side for identity_card/driver_license)
-- <strong>Selfie</strong> (holding ID document)
-- <strong>Liveness</strong> (live photo/video - triggers automatic verification)
-- <strong>Proof of Address</strong> (utility bill, bank statement, etc.)</p>
+<p>Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:</p>
+
+<ul>
+<li><strong>ID document</strong> (front side, plus back side for identity_card/driver_license)</li>
+<li><strong>Selfie</strong> (holding ID document)</li>
+<li><strong>Liveness</strong> (live photo/video - triggers automatic verification)</li>
+<li><strong>Proof of Address</strong> (utility bill, bank statement, etc.)</li>
+</ul>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
@@ -4625,21 +4628,27 @@ Total: 150
 </ul>
 
 <ol>
-<li><p><strong>Selfie</strong> - Photograph of customer holding their ID document</p>
+<li><strong>Selfie</strong> - Photograph of customer holding their ID document</li>
+</ol>
 
 <ul>
 <li><code>doc_type</code>: &#39;Selfie&#39;</li>
 <li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
-</ul></li>
-<li><p><strong>Liveness</strong> - Live photo or video verification</p>
+</ul>
+
+<ol>
+<li><strong>Liveness</strong> - Live photo or video verification</li>
+</ol>
 
 <ul>
 <li><code>doc_type</code>: &#39;Liveness&#39;</li>
 <li>This document triggers the automated verification workflow</li>
 <li>Upload this document last, after all other documents are uploaded</li>
 <li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
-</ul></li>
-<li><p><strong>Proof of Address</strong> - Utility bill, bank statement, or lease agreement</p>
+</ul>
+
+<ol>
+<li><strong>Proof of Address</strong> - Utility bill, bank statement, or lease agreement
 
 <ul>
 <li><code>doc_type</code>: &#39;Proof of Address&#39;</li>
@@ -4928,9 +4937,12 @@ Total: 150
 
 <p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>customer_uid</code> when uploading UBO documents.</p>
 
-<p><strong>Business KYB completion requires</strong>:
-1. All 9 business entity documents uploaded
-2. <strong>All UBOs must have complete KYC documents</strong></p>
+<p><strong>Business KYB completion requires</strong>:</p>
+
+<ol>
+<li>All 9 business entity documents uploaded</li>
+<li><strong>All UBOs must have complete KYC documents</strong></li>
+</ol>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
@@ -5848,11 +5860,14 @@ You can combine multiple subscriptions in one request, and also provide the subs
 
 <p><code>?stream=btczar.ob-inc&amp;stream=order&amp;stream=trade&amp;stream=balance</code></p>
 
-<p><strong>Benefits of combining streams:</strong>
-- Single WebSocket connection for all updates
-- Synchronized view of orderbook changes and your order executions
-- Real-time balance updates as trades execute
-- Reduced latency and connection overhead</p>
+<p><strong>Benefits of combining streams:</strong></p>
+
+<ul>
+<li>Single WebSocket connection for all updates</li>
+<li>Synchronized view of orderbook changes and your order executions</li>
+<li>Real-time balance updates as trades execute</li>
+<li>Reduced latency and connection overhead</li>
+</ul>
 <h3 id='order-stream'>Order Stream</h3>
 <p><strong>Subscription:</strong> <code>?stream=order</code></p>
 
@@ -6743,9 +6758,12 @@ You can combine multiple subscriptions in one request, and also provide the subs
 </tr>
 </tbody></table>
 <h3 id='customer'>Customer</h3>
-<p>Customer accounts come in two types with different response structures:
-- <strong>Individual Customers</strong> - See <a href="#customer-individual">Customer (Individual)</a> for personal account structure
-- <strong>Business Customers</strong> - See <a href="#customer-business">Customer (Business)</a> for business account structure</p>
+<p>Customer accounts come in two types with different response structures:</p>
+
+<ul>
+<li><strong>Individual Customers</strong> - See <a href="#customer-individual">Customer (Individual)</a> for personal account structure</li>
+<li><strong>Business Customers</strong> - See <a href="#customer-business">Customer (Business)</a> for business account structure</li>
+</ul>
 <h3 id='customer-individual'>Customer (Individual)</h3>
 <table><thead>
 <tr>
