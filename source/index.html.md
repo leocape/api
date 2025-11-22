@@ -37,8 +37,15 @@ The API suite consists of public and private endpoints. Private endpoints requir
 
 Use your API key and secret to sign your requests for all private endpoints. (Public endpoints do not require authentication)
 
-- Base url REST: `https://trade.capecrypto.com/api/v2/trade`
-- Base url WSS: `wss://trade.capecrypto.com/api/v2/stream`
+All requests unless otherwise noted (EG for sub-account / customer management) use the following base URLs:
+
+- Base url REST: `https://trade.capecrypto.com/api/v2/atlas`
+- Base url Websocket: `wss://trade.capecrypto.com/api/v2/websocket`
+
+For Sub-account and customer management (noted in the routes below):
+
+- Base url: `https://trade.capecrypto.com/api/v2/persona`
+- Base url: `https://trade.capecrypto.com/api/v2/verification`
 
 # Authentication
 
@@ -51,7 +58,7 @@ const crypto = require("crypto");
 const apiKey = "123456...";
 const secret = "ABCDEF...";
 
-module.exports = async () => {
+module.exports = async (subAccountUid = {}) => {
   const timeStamp = new Date().getTime();
   const queryString = `${timeStamp}${apikey}`;
   const signature = crypto
@@ -64,6 +71,9 @@ module.exports = async () => {
     "X-Auth-Apikey": apikey,
     "X-Auth-Nonce": timeStamp,
     "X-Auth-Signature": signature,
+    "X-Auth-Signature": signature,
+    // Only for sub-account / customer requests:
+    "X-Auth-Subaccount-UID": subAccountUid,
   };
 };
 ```
@@ -79,6 +89,14 @@ Generate a new signature for each new request, and add these headers to the requ
 1. <strong>X-Auth-Nonce</strong>: Current timestamp in milliseconds UTC time.
 2. <strong>X-Auth-Apikey</strong>: Your API key
 3. <strong>X-Auth-Signature</strong>: HMAC-SHA256 encrypted string of the combined timestamp, apikey and secret (see JS example)
+
+## Acting on Behalf of Sub-Accounts or Customers
+
+When making requests on behalf of a sub-account or customer, include an additional optional header:
+
+4. <strong>X-Auth-Subaccount-Uid</strong>: The UID of the sub-account or customer you want to act as
+
+This allows the parent account (or merchant/aggregator) to make authenticated requests as if they were the sub-account or customer. The regular authentication headers (API key, nonce, signature) must still be included.
 
 # Example using Authentication
 
@@ -118,7 +136,7 @@ const generateHeaders = require("./generateHeaders");
 createOrder = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "POST";
-  const path = `/api/v2/trade/market/orders`;
+  const path = `/api/v2/atlas/market/orders`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
 
@@ -170,9 +188,79 @@ createOrder = async () => {
 }
 ```
 
-`https://trade.capecrypto.com/api/v2/trade/market/orders`
+`https://trade.capecrypto.com/api/v2/atlas/market/orders`
 
 Create a new order on your account by signing your request and submitting the request
+
+## <span class="request-type__post">POST</span> Create order as sub-account
+
+```javascript
+// generateHeadersWithSubAccount.js
+
+const crypto = require("crypto");
+const apiKey = "123456...";
+const secret = "ABCDEF...";
+const subAccountUid = "ID123456789ABC"; // Sub-account or customer UID
+
+module.exports = async () => {
+  const timeStamp = new Date().getTime();
+  const queryString = `${timeStamp}${apiKey}`;
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(queryString)
+    .digest("hex");
+
+  return {
+    "Content-Type": "application/json;charset=utf-8",
+    "X-Auth-Apikey": apiKey,
+    "X-Auth-Nonce": timeStamp,
+    "X-Auth-Signature": signature,
+    "X-Auth-Subaccount-Uid": subAccountUid, // Act on behalf of sub-account/customer
+  };
+};
+```
+
+> Send the authenticated request as sub-account:
+
+```javascript
+// createOrderAsSubAccount.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeadersWithSubAccount");
+
+createOrder = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/atlas/market/orders`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const orderData = {
+    market: "btczar",
+    side: "buy",
+    volume: "0.00001",
+    ord_type: "limit",
+    price: "750000",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: orderData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+```
+
+`https://trade.capecrypto.com/api/v2/atlas/market/orders`
+
+When the `X-Auth-Subaccount-Uid` header is included, the order is created on behalf of the specified sub-account or customer. The parent account's API credentials are used for authentication, but the operation is performed in the context of the sub-account.
 
 # Public request example
 
@@ -184,7 +272,7 @@ const axios = require("axios");
 getMarkets = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "GET";
-  const path = `/api/v2/trade/public/markets`;
+  const path = `/api/v2/atlas/public/markets`;
   const url = `${baseUrl}${path}`;
 
   const axiosConfig = {
@@ -258,7 +346,7 @@ getMarkets();
 ]
 ```
 
-`GET https://trade.capecrypto.com/api/v2/trade/public/markets`
+`GET https://trade.capecrypto.com/api/v2/atlas/public/markets`
 
 Returns a list of all available markets
 
@@ -277,6 +365,37 @@ Check that the trade engine is running. Occasionally the trade engine will be te
 | Code | Description                                   |
 | ---- | --------------------------------------------- |
 | 200  | Trade engine is running, trading is available |
+
+## <span class="request-type__get">GET</span> Get VASPs
+
+`/public/vasps`
+
+### Description
+
+Retrieve a paginated list of active Virtual Asset Service Providers (VASPs) registered in the system. VASPs are used for travel rule compliance when creating beneficiaries with cryptocurrency addresses.
+
+When creating a beneficiary with travel rule information, use the `id` from this endpoint as the `vasp_id` in the beneficiary data.
+
+### Parameters
+
+| Name  | Located in | Description                              | Required | Schema  |
+| ----- | ---------- | ---------------------------------------- | -------- | ------- |
+| page  | query      | Page number (default: 1)                 | No       | integer |
+| limit | query      | Results per page (default: 25, max: 100) | No       | integer |
+
+### Response Headers
+
+| Header   | Description                     |
+| -------- | ------------------------------- |
+| Page     | Current page number             |
+| Per-Page | Number of results per page      |
+| Total    | Total number of VASPs available |
+
+### Responses
+
+| Code | Description          | Schema            |
+| ---- | -------------------- | ----------------- |
+| 200  | List of active VASPs | [ [VASP](#vasp) ] |
 
 ## <span class="request-type__get">GET</span> Ticker
 
@@ -451,7 +570,74 @@ Get a single currency
 
 # Account
 
-#
+## <span class="request-type__get">GET</span> Get transaction history
+
+`/account/transactions`
+
+### Description
+
+Retrieve your complete transaction history with flexible filtering options. This endpoint returns all types of transactions including deposits, withdrawals, trades, internal transfers, referrals, and maker rewards.
+
+Transactions can be filtered by currency (matches both credit and debit currencies), transaction type, time range, and specific transaction ID. Results are paginated and can be ordered by creation time.
+
+### Parameters
+
+| Name      | Located in | Description                                                                                                 | Required | Schema  |
+| --------- | ---------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| currency  | query      | Filter by currency code (matches credit or debit currency, e.g., "btc", "zar")                              | No       | string  |
+| type      | query      | Filter by transaction type: 'deposit', 'withdraw', 'internal_transfer', 'trade', 'referral', 'maker_reward' | No       | string  |
+| txid      | query      | Filter by specific transaction ID                                                                           | No       | string  |
+| time_from | query      | Start timestamp (Unix timestamp in seconds)                                                                 | No       | integer |
+| time_to   | query      | End timestamp (Unix timestamp in seconds)                                                                   | No       | integer |
+| order_by  | query      | Sort order: 'asc' or 'desc' (default: 'desc')                                                               | No       | string  |
+| page      | query      | Page number (default: 1, min: 1)                                                                            | No       | integer |
+| limit     | query      | Results per page (default: 50, min: 1, max: 1000)                                                           | No       | integer |
+
+### Response Headers
+
+| Header   | Description                  |
+| -------- | ---------------------------- |
+| Total    | Total number of transactions |
+| Page     | Current page number          |
+| Per-Page | Number of results per page   |
+
+### Responses
+
+| Code | Description                   | Schema                          |
+| ---- | ----------------------------- | ------------------------------- |
+| 200  | Transaction history retrieved | [ [Transaction](#transaction) ] |
+| 401  | Authentication required       | Error array                     |
+| 422  | Validation error              | Error array                     |
+
+### Example Request
+
+```javascript
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getTransactions = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/account/transactions?currency=btc&type=deposit&limit=25&page=1`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getTransactions();
+```
 
 ## <span class="request-type__post">POST</span> Create new beneficiary
 
@@ -459,16 +645,188 @@ Get a single currency
 
 ### Description
 
-Create a new beneficiary
+Create a new beneficiary for cryptocurrency or fiat withdrawals. Beneficiaries can be cryptocurrency wallet addresses (with required travel rule information) or bank accounts for fiat transfers. All beneficiaries created via the API are automatically activated and ready for use.
+
+For cryptocurrency beneficiaries with travel rule requirements, you can specify whether the wallet is your own (`is_own`), unhosted (`is_unhosted`), or associated with a Virtual Asset Service Provider (VASP). Use the [Get VASPs](#get-vasps) endpoint to retrieve available VASP IDs.
 
 ### Parameters
 
-| Name        | Located in | Description                                      | Required | Schema |
-| ----------- | ---------- | ------------------------------------------------ | -------- | ------ |
-| currency    | formData   | Beneficiary currency code.                       | Yes      | string |
-| name        | formData   | Human rememberable name which refer beneficiary. | Yes      | string |
-| description | formData   | Human rememberable name which refer beneficiary. | No       | string |
-| data        | formData   | Beneficiary data in JSON format                  | Yes      | json   |
+| Name               | Located in | Description                                                                                   | Required | Schema  | Max Length |
+| ------------------ | ---------- | --------------------------------------------------------------------------------------------- | -------- | ------- | ---------- |
+| currency           | formData   | Currency code (e.g., "btc", "eth", "zar", "gbp")                                              | Yes      | string  | 10 chars   |
+| name               | formData   | Display name for the beneficiary                                                              | Yes      | string  | 64 chars   |
+| description        | formData   | Optional notes about the beneficiary                                                          | No       | string  | 255 chars  |
+| blockchain_key     | formData   | Blockchain identifier (defaults to currency's blockchain if omitted)                          | No       | string  | 255 chars  |
+| withdraw_method_id | formData   | Specific withdrawal method ID (auto-selected if omitted)                                      | No       | integer | -          |
+| data               | formData   | Address/account details in JSON format (structure varies by currency type - see tables below) | Yes      | json    | -          |
+
+Cryptocurrency `data` Object Fields
+
+| Field          | Type    | Required | Description                                                         |
+| -------------- | ------- | -------- | ------------------------------------------------------------------- |
+| address        | string  | Yes      | Cryptocurrency wallet address                                       |
+| tag            | string  | No       | Destination tag (for XRP, Stellar, etc.) - max: 4294967295          |
+| is_own         | boolean | No       | Travel rule: Is this your own wallet?                               |
+| is_unhosted    | boolean | No       | Travel rule: Is this an unhosted wallet?                            |
+| vasp_id        | number  | No       | Travel rule: VASP ID (obtain from [Get VASPs](#get-vasps) endpoint) |
+| recipient_data | object  | No       | Travel rule: Recipient information (see travel rule fields)         |
+
+Fiat `data` Object Fields
+
+| Field                   | Type   | Required | Description                                                |
+| ----------------------- | ------ | -------- | ---------------------------------------------------------- |
+| full_name               | string | **Yes**  | Account holder's full legal name (mandatory for fiat)      |
+| account_number          | string | No       | Bank account number                                        |
+| bank_name               | string | No       | Name of the bank                                           |
+| bank_swift_code         | string | No       | SWIFT/BIC code                                             |
+| bank_routing_number     | string | No       | Routing number (US banks)                                  |
+| iban                    | string | No       | IBAN (International Bank Account Number)                   |
+| bank_address            | string | No       | Bank's physical address                                    |
+| bank_city               | string | No       | Bank's city                                                |
+| intermediary_bank_swift | string | No       | Intermediary bank SWIFT code (for international transfers) |
+| account_holder_name     | string | No       | Account holder name (may differ from full_name)            |
+| account_type            | string | No       | Type of account (checking, savings, etc.)                  |
+
+Travel Rule `recipient_data` Object (Nested within `data`) (required for Cryptocurrency Beneficiaries)
+
+| Field         | Type   | Required              | Description                            |
+| ------------- | ------ | --------------------- | -------------------------------------- |
+| first_name    | string | Yes (for Individuals) | Recipient's first name                 |
+| last_name     | string | Yes (for Individuals) | Recipient's last name                  |
+| country       | string | Yes                   | Recipient's country code               |
+| identity_type | string | Yes                   | Individual or Business                 |
+| company_name  | string | Yes (for Businesses)  | Company name (for business recipients) |
+
+### Request Examples
+
+**Example 1: Crypto - Bitcoin**
+
+```json
+{
+  "currency": "btc",
+  "name": "My Bitcoin Wallet",
+  "description": "Personal cold storage wallet",
+  "data": {
+    "address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
+  }
+}
+```
+
+**Example 2: Crypto - XRP with Destination Tag**
+
+```json
+{
+  "currency": "xrp",
+  "name": "Exchange XRP Account",
+  "description": "My Binance XRP deposit",
+  "data": {
+    "address": "rN7n7otQDd6FczFgLdlqtyMVrn3qHwuSaDcqC",
+    "tag": "123456789"
+  }
+}
+```
+
+**Example 3: Crypto - Ethereum with Travel Rule Info**
+
+```json
+{
+  "currency": "eth",
+  "name": "Friend's Wallet",
+  "description": "John's Ethereum wallet",
+  "data": {
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    "is_own": false,
+    "is_unhosted": true,
+    "recipient_data": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "country": "US"
+    }
+  }
+}
+```
+
+**Example 4: Fiat - ZAR (South African Rand)**
+
+```json
+{
+  "currency": "zar",
+  "name": "South African Bank Account",
+  "description": "Personal savings account",
+  "data": {
+    "full_name": "Thabo Mbeki",
+    "account_number": "1234567890",
+    "bank_name": "Standard Bank",
+    "bank_swift_code": "SBZAZAJJ",
+    "bank_address": "30 Baker Street",
+    "bank_city": "Johannesburg",
+    "account_type": "savings"
+  }
+}
+```
+
+**Example 5: Fiat - GBP SWIFT Transfer**
+
+```json
+{
+  "currency": "gbp",
+  "name": "UK Business Account",
+  "description": "Company bank account",
+  "data": {
+    "full_name": "John Smith",
+    "account_number": "12345678",
+    "bank_name": "Barclays Bank",
+    "bank_swift_code": "BARCGB22",
+    "bank_address": "1 Churchill Place",
+    "bank_city": "London",
+    "account_type": "checking"
+  }
+}
+```
+
+**Example 6: Fiat - EUR IBAN Transfer**
+
+```json
+{
+  "currency": "eur",
+  "name": "EU Partner Account",
+  "description": "European supplier payment",
+  "data": {
+    "full_name": "Jean Dupont",
+    "iban": "FR1420041010050500013M02606",
+    "bank_name": "BNP Paribas",
+    "bank_swift_code": "BNPAFRPP",
+    "bank_city": "Paris"
+  }
+}
+```
+
+**Example 7: Fiat - International with Intermediary Bank**
+
+```json
+{
+  "currency": "usd",
+  "name": "International Vendor",
+  "description": "Asian supplier USD payment",
+  "data": {
+    "full_name": "ABC Trading Company Ltd",
+    "account_number": "9876543210",
+    "bank_name": "Asia Commercial Bank",
+    "bank_swift_code": "ACBVSGSG",
+    "intermediary_bank_swift": "CHASUS33",
+    "bank_address": "123 Business Street",
+    "bank_city": "Singapore"
+  }
+}
+```
+
+### Important Notes
+
+- **API-created beneficiaries** are automatically activated (state = `active`) and do not require PIN activation
+- **Fiat beneficiaries** must include `full_name` in the `data` object (mandatory)
+- **Cryptocurrency addresses** are validated against the blockchain service before creation
+- **XRP destination tags** must be unsigned int32 (maximum: 4294967295)
+- **Duplicate addresses** are not allowed for the same currency/blockchain combination
 
 ### Responses
 
@@ -476,13 +834,15 @@ Create a new beneficiary
 | ---- | ---------------------- | --------------------------- |
 | 201  | Create new beneficiary | [Beneficiary](#beneficiary) |
 
-## <span class="request-type__patch">PATCH</span> Activate new neneficiary
+## <span class="request-type__patch">PATCH</span> Activate beneficiary
 
 `/account/beneficiaries/{id}/activate`
 
 ### Description
 
-Activates a new beneficiary with pin emailed during beneficiary creation
+Activates a new beneficiary with pin emailed during beneficiary creation.
+
+**Note:** This activation step is only required for beneficiaries created through the web interface. Beneficiaries created via the API are automatically activated and do not require this step.
 
 ### Parameters
 
@@ -560,9 +920,9 @@ Get list of user beneficiaries
 
 ## <span class="request-type__post">GET</span> Withdraw quote
 
-`/account/withdraws/{currency}`
+`/account/withdraws/quote/{currency}`
 
-`/account/withdraws/{currency}?bolt=ln...`
+`/account/withdraws/quote/{currency}?bolt=ln...`
 
 ### Description
 
@@ -577,9 +937,10 @@ Get the expected fee to withdraw the specified currency. Submit the quote_id wit
 
 ### Responses
 
-| Code | Description              | Schema                                |
-| ---- | ------------------------ | ------------------------------------- |
-| 200  | Returns a withdraw quote | [ [Withdraw quote](#withdraw-quote) ] |
+| Code | Description              | Schema                                                               |
+| ---- | ------------------------ | -------------------------------------------------------------------- |
+| 200  | Returns a withdraw quote | [ [Withdraw quote](#withdraw-quote) ]                                |
+| 422  | Unproccesable entity     | Error array containing the reason why the quote could not be created |
 
 ## <span class="request-type__post">POST</span> New withdrawal
 
@@ -589,11 +950,13 @@ Get the expected fee to withdraw the specified currency. Submit the quote_id wit
 
 Creates new withdrawal to active beneficiary.
 
+**Note:** OTP is **not required** when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web interface.
+
 ### Parameters
 
 | Name           | Located in | Description                                                                                                                                                   | Required | Schema  |
 | -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| otp            | formData   | OTP to perform action                                                                                                                                         | Yes      | integer |
+| otp            | formData   | OTP to perform action (not required for API requests)                                                                                                         | No       | integer |
 | beneficiary_id | formData   | ID of active Beneficiary.                                                                                                                                     | Yes      | integer |
 | currency       | formData   | The currency code matching the beneficiary.                                                                                                                   | Yes      | string  |
 | amount         | formData   | The amount to withdraw.                                                                                                                                       | Yes      | double  |
@@ -629,19 +992,37 @@ Get your withdraw history, paginated.
 | ---- | -------------------- | ------------------------- |
 | 200  | List your withdraws. | [ [Withdraw](#withdraw) ] |
 
-## <span class="request-type__post">GET</span> Instant deposit methods
+## <span class="request-type__get">GET</span> Get deposit methods
 
-`/payments/methods`
+`/api/v2/payments/deposits/methods`
 
 ### Description
 
-Gets your available instant FIAT deposit methods, including voucher providers whose vouchers you can use to redeem (deposit). Use the id of the provider when creating the deposit request for the specific method.
+Get all available deposit methods for the authenticated user. Returns deposit methods for both cryptocurrencies and fiat currencies, filtered based on the user's KYC level and remaining transaction limits.
+
+Each method includes minimum and maximum amounts, fees, provider information, and remaining limits for different time periods (daily, weekly, monthly, yearly).
 
 ### Responses
 
-| Code | Description                            | Schema                                            |
-| ---- | -------------------------------------- | ------------------------------------------------- |
-| 201  | Array of instant FIAT deposit methods. | [Instant Deposit Method](#instant-deposit-method) |
+| Code | Description                         | Schema                                |
+| ---- | ----------------------------------- | ------------------------------------- |
+| 200  | Array of available deposit methods. | [ [Deposit Method](#deposit-method) ] |
+
+## <span class="request-type__get">GET</span> Get withdraw methods
+
+`/api/v2/payments/withdraws/methods`
+
+### Description
+
+Get all available withdrawal methods for the authenticated user. Returns withdrawal methods for both cryptocurrencies and fiat currencies, filtered based on the user's KYC level and remaining transaction limits.
+
+Each method includes minimum and maximum amounts, fees, provider information, processor details, and remaining limits for different time periods (daily, weekly, monthly, yearly).
+
+### Responses
+
+| Code | Description                            | Schema                                  |
+| ---- | -------------------------------------- | --------------------------------------- |
+| 200  | Array of available withdrawal methods. | [ [Withdraw Method](#withdraw-method) ] |
 
 ## <span class="request-type__post">POST</span> Redeem voucher
 
@@ -687,19 +1068,19 @@ Note: If your currency deposit address has not been created yet, the result may 
 | ---- | ---------------------------------------------------------------------------------- | ------------------- |
 | 200  | Deposit address. (May be empty on first request for new accounts, see note above). | [Deposit](#deposit) |
 
-## <span class="request-type__get">GET</span> Deposit history by txid
+## <span class="request-type__get">GET</span> Deposit by ID
 
-`/account/deposits/{txid}`
+`/account/deposits/{id}`
 
 ### Description
 
-Get details of a specific blockchain deposit by the txid.
+Get details of a specific deposit by its internal deposit ID.
 
 ### Parameters
 
-| Name | Located in | Description            | Required | Schema |
-| ---- | ---------- | ---------------------- | -------- | ------ |
-| txid | path       | Deposit transaction id | Yes      | string |
+| Name | Located in | Description       | Required | Schema  |
+| ---- | ---------- | ----------------- | -------- | ------- |
+| id   | path       | Deposit ID        | Yes      | integer |
 
 ### Responses
 
@@ -707,13 +1088,54 @@ Get details of a specific blockchain deposit by the txid.
 | ---- | -------------------------------- | ------------------- |
 | 200  | Get details of specific deposit. | [Deposit](#deposit) |
 
+## <span class="request-type__post">POST</span> Submit deposit travel rule
+
+`/account/deposits/{id}/travel_rule`
+
+### Description
+
+Submit travel rule compliance information for a cryptocurrency deposit that is on hold pending travel rule verification.
+
+**Note:** This endpoint is only applicable for cryptocurrency deposits in the `on_hold_travel_rule_customer` state. The deposit must be a coin deposit (not fiat).
+
+### Parameters
+
+| Name             | Located in | Description                                                                                  | Required | Schema  |
+| ---------------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------- |
+| id               | path       | Deposit ID                                                                                   | Yes      | string  |
+| is_own           | formData   | Is this your own wallet?                                                                     | Yes      | boolean |
+| is_unhosted      | formData   | Is this an unhosted wallet? (Cannot be true if vasp_id is provided)                          | Yes      | boolean |
+| vasp_id          | formData   | VASP ID from the system (mutually exclusive with custom_vasp fields)                         | No       | integer |
+| custom_vasp_name | formData   | Custom VASP name (required if not using vasp_id and not unhosted)                           | No       | string  |
+| custom_vasp_url  | formData   | Custom VASP URL (required if not using vasp_id and not unhosted)                            | No       | string  |
+| originator_data  | formData   | Originator information in JSON format (required if is_own is false, see fields below)       | No       | json    |
+
+**Originator Data Fields:**
+
+When `is_own` is `false`, you must provide originator information:
+
+| Field         | Type   | Required              | Description                                    |
+| ------------- | ------ | --------------------- | ---------------------------------------------- |
+| identity_type | string | Yes                   | Type of identity (e.g., "passport", "id")      |
+| first_name    | string | Yes (for Individuals) | Originator's first name                        |
+| last_name     | string | Yes (for Individuals) | Originator's last name                         |
+| company_name  | string | Yes (for Businesses)  | Company name (for business originators)        |
+| country       | string | Yes                   | ISO country code (e.g., "US", "ZA", "GB")      |
+
+### Responses
+
+| Code | Description                                                                  | Schema              |
+| ---- | ---------------------------------------------------------------------------- | ------------------- |
+| 200  | Travel rule submitted successfully. Deposit transitions to hold state.       | [Deposit](#deposit) |
+| 422  | Validation error or deposit not eligible (wrong state, already submitted).   | Error array         |
+
 ## <span class="request-type__get">GET</span> Deposit history
 
 `/account/deposits`
 
 ### Description
 
-Get your deposit history
+Get your deposit history. You can filter by specific deposit transaction using the `txid` query parameter, or fetch all deposits with optional filters for currency and state
 
 ### Parameters
 
@@ -787,10 +1209,56 @@ As the payment is requested and validated on the lightning network, please query
 
 | Name               | Located in | Description                                                                                 | Required | Schema |
 | ------------------ | ---------- | ------------------------------------------------------------------------------------------- | -------- | ------ |
-| bolt               | query      | The bolt11 invoice to pay.                                                                  | Yes      | string |
+| bolt               | query      | The bolt11 invoice to pay (either bolt or address required)                                 | No       | string |
+| address            | query      | Lightning address (alternative to bolt)                                                     | No       | string |
 | amount             | query      | The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11 | Yes      | double |
 | quote_id           | query      | The quote_id of the withdrawal quote, see [Withdraw quote](#get-withdraw-quote)             | No       | string |
 | member_description | query      | Personal description of this payment for your records                                       | No       | string |
+| description        | query      | Payment description (visible to recipient if applicable)                                    | No       | string |
+| otp                | query      | 6-digit OTP code (required for web session, not required for API sessions)                  | No       | string |
+| data               | formData   | Travel rule information in JSON format (see travel rule fields below)                       | No       | json   |
+
+**Travel Rule Data (Optional):**
+
+For compliance with travel rule requirements, you can include recipient information in the `data` parameter as a JSON object:
+
+```json
+{
+  "is_own": false,
+  "is_unhosted": true,
+  "vasp_id": 123,
+  "address": "lnbc...", // Lightning address or BOLT11
+  "recipient_data": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "company_name": "Acme Corp",
+    "address": "123 Main St",
+    "country": "US",
+    "identity_type": "Passport"
+  }
+}
+```
+
+**Travel Rule Fields:**
+
+| Field          | Type    | Description                                            |
+| -------------- | ------- | ------------------------------------------------------ |
+| is_own         | boolean | Is this your own wallet?                               |
+| is_unhosted    | boolean | Is this an unhosted wallet?                            |
+| vasp_id        | number  | VASP ID (obtain from [Get VASPs](#get-vasps) endpoint) |
+| address        | string  | Lightning address or BOLT11 invoice                    |
+| recipient_data | object  | Recipient information (see fields below)               |
+
+**Recipient Data Fields:**
+
+| Field         | Type   | Description                            |
+| ------------- | ------ | -------------------------------------- |
+| first_name    | string | Recipient's first name                 |
+| last_name     | string | Recipient's last name                  |
+| company_name  | string | Company name (for business recipients) |
+| address       | string | Physical address                       |
+| country       | string | Country code (e.g., "US", "ZA")        |
+| identity_type | string | Type of identification document        |
 
 ### Responses
 
@@ -824,6 +1292,1489 @@ The invoice expires in 1 hour.
 | Code | Description        | Schema                                      |
 | ---- | ------------------ | ------------------------------------------- |
 | 201  | Lightning invoice. | [ [Lightning invoice](#lightning-invoice) ] |
+
+# Sub-Accounts
+
+**Note:** Sub-account endpoints use the `/api/v2/persona` base path instead of `/api/v2/atlas`.
+
+**Sub-Account actions:** To make API requests for a sub-account (e.g., placing trades, checking balances), include the `X-Auth-Subaccount-Uid` header with the sub-account's UID. Your parent account's API credentials are used for authentication, but operations are performed in the sub-account's context.
+
+## <span class="request-type__post">POST</span> Create Sub-Account
+
+```javascript
+// createSubAccount.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+createSubAccount = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/persona/resource/sub_accounts`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const subAccountData = {
+    account_name: "Trading Account 1",
+    deposit_action: "transfer_to_parent",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: subAccountData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createSubAccount();
+```
+
+`/persona/resource/sub_accounts`
+
+### Description
+
+Create a new sub-account that inherits the parent's KYC verification. Sub-accounts cannot login independently and are managed by the parent account.
+
+### Parameters
+
+| Name           | Located in | Description                                                                        | Required | Schema |
+| -------------- | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
+| account_name   | formData   | Display name for the sub-account (1-100 characters)                                | Yes      | string |
+| deposit_action | formData   | JSON object defining automated deposit handling (see deposit action options below) | No       | json   |
+| data           | formData   | Optional additional data in JSON format                                            | No       | json   |
+
+**Deposit Action Options:**
+
+Configure automatic actions for deposits received by this sub-account.
+
+The `deposit_action` parameter accepts a JSON object with the following structure:
+
+```json
+{
+  "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+  "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
+  "beneficiary_id": 123, // Required for withdraw actions
+  "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
+  "max_slippage": 2.0 // Optional: Max slippage percentage (0.1-10, default: 2.0)
+}
+```
+
+**Available Actions:**
+
+| Action                           | Description                                                    | Required Fields                                            |
+| -------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| `none`                           | No automatic action (default)                                  | None                                                       |
+| `aggregate`                      | Automatically transfer deposits to parent account              | None                                                       |
+| `convert_and_withdraw`           | Convert deposit to target currency and withdraw to beneficiary | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+| `aggregate_convert_and_withdraw` | Transfer to parent, then convert and withdraw                  | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+
+**Example with Simple Aggregate:**
+
+```json
+{
+  "account_name": "Trading Account 1",
+  "deposit_action": {
+    "action": "aggregate"
+  }
+}
+```
+
+**Example with Convert and Withdraw:**
+
+```json
+{
+  "account_name": "USD Conversion Account",
+  "deposit_action": {
+    "action": "convert_and_withdraw",
+    "target_currency": "usd",
+    "beneficiary_id": 789,
+    "max_slippage": 1.5
+  }
+}
+```
+
+### Responses
+
+| Code | Description                      | Schema                    |
+| ---- | -------------------------------- | ------------------------- |
+| 201  | Sub-account created successfully | [SubAccount](#subaccount) |
+| 422  | Validation error                 | Error array               |
+
+## <span class="request-type__get">GET</span> List Sub-Accounts
+
+```javascript
+// listSubAccounts.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+listSubAccounts = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/persona/resource/sub_accounts?page=1&limit=100`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+listSubAccounts();
+```
+
+`/persona/resource/sub_accounts`
+
+### Description
+
+Get a paginated list of the user's sub-accounts.
+
+### Parameters
+
+| Name  | Located in | Description                                          | Required | Schema  |
+| ----- | ---------- | ---------------------------------------------------- | -------- | ------- |
+| page  | query      | Page number (defaults to 1)                          | No       | integer |
+| limit | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
+
+### Responses
+
+| Code | Description          | Schema                        |
+| ---- | -------------------- | ----------------------------- |
+| 200  | List of sub-accounts | [ [SubAccount](#subaccount) ] |
+
+## <span class="request-type__get">GET</span> Get Sub-Account by UID
+
+```javascript
+// getSubAccount.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getSubAccount = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const subAccountUid = "ID123456789ABC";
+  const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getSubAccount();
+```
+
+`/persona/resource/sub_accounts/{uid}`
+
+### Description
+
+Retrieve a specific sub-account by its unique identifier.
+
+### Parameters
+
+| Name | Located in | Description            | Required | Schema |
+| ---- | ---------- | ---------------------- | -------- | ------ |
+| uid  | path       | Sub-account identifier | Yes      | string |
+
+### Responses
+
+| Code | Description       | Schema                    |
+| ---- | ----------------- | ------------------------- |
+| 200  | Sub-account found | [SubAccount](#subaccount) |
+| 404  | Not found         | Error array               |
+
+## <span class="request-type__put">PUT</span> Update Sub-Account
+
+```javascript
+// updateSubAccount.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+updateSubAccount = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "PUT";
+  const subAccountUid = "ID123456789ABC";
+  const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const updateData = {
+    deposit_action: "none",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: updateData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+updateSubAccount();
+```
+
+`/persona/resource/sub_accounts/{uid}`
+
+### Description
+
+Update sub-account settings.
+
+### Parameters
+
+| Name           | Located in | Description                                         | Required | Schema |
+| -------------- | ---------- | --------------------------------------------------- | -------- | ------ |
+| uid            | path       | Sub-account identifier                              | Yes      | string |
+| deposit_action | formData   | Action for deposits: 'none' or 'transfer_to_parent' | No       | string |
+
+### Responses
+
+| Code | Description                      | Schema                    |
+| ---- | -------------------------------- | ------------------------- |
+| 200  | Sub-account updated successfully | [SubAccount](#subaccount) |
+| 404  | Not found                        | Error array               |
+| 422  | Validation error                 | Error array               |
+
+## <span class="request-type__delete">DELETE</span> Delete Sub-Account
+
+```javascript
+// deleteSubAccount.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+deleteSubAccount = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "DELETE";
+  const subAccountUid = "ID123456789ABC";
+  const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log("Sub-account deleted successfully");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+deleteSubAccount();
+```
+
+`/persona/resource/sub_accounts/{uid}`
+
+### Description
+
+Soft delete a sub-account (sets state to 'deleted'). The sub-account will no longer be accessible.
+
+### Parameters
+
+| Name | Located in | Description            | Required | Schema |
+| ---- | ---------- | ---------------------- | -------- | ------ |
+| uid  | path       | Sub-account identifier | Yes      | string |
+
+### Responses
+
+| Code | Description                      |
+| ---- | -------------------------------- |
+| 204  | Sub-account deleted successfully |
+| 404  | Not found                        |
+
+# Customers Management
+
+**Note:** Customer management endpoints use the `/api/v2/persona` base path and are available for **Merchants** and **Aggregators** only. Not all accounts are enabled for customer management, please contact us at support.capecrypto.com should you with to apply to upgrade your account to a merchant or aggregator account.
+
+**Hierarchical Structure:**
+
+- **Aggregators** can create and manage both merchants (associated to them) and customers
+- **Merchants** can create and manage customers under their own account
+
+**Customer Types:**
+
+- **Individual customers** - Personal accounts with profile information
+- **Business customers** - Business accounts with company details and UBO information
+
+**Acting as a Customer:** To make API requests for a customer (e.g., placing trades, checking balances, making withdrawals), include the `X-Auth-Subaccount-Uid` header with the customer's UID. Your merchant/aggregator API credentials are used for authentication, but operations are performed in the customer's context.
+
+## <span class="request-type__post">POST</span> Create Individual Customer
+
+```javascript
+// createIndividualCustomer.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+createIndividualCustomer = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/persona/resource/customers`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const customerData = {
+    entity_type: "individual",
+    email: "customer@example.com",
+    phone_number: "+27821234567",
+    account_name: "John Doe Account",
+
+    // Personal Information
+    first_name: "John",
+    last_name: "Doe",
+    dob: "1990-01-15",
+
+    // Location Information
+    address: "123 Main Street, Apt 4B",
+    postcode: "7700",
+    city: "Cape Town",
+    country: "ZA",
+    nationality: "ZA",
+    country_of_residence: "ZA",
+    sa_id_number: "9001155800087",
+
+    // Professional Information (See not above for approved list)
+    occupation: "Software Engineer",
+    source_of_funds: "Salary or Wages",
+
+    // Document Information
+    doc_number: "M12345678",
+    doc_type: "Passport",
+    doc_expire: "2028-12-31",
+    doc_country: "ZA",
+
+    // PEP Declaration
+    is_pep_occupation: false,
+    is_pep_related: false,
+    is_pip: false,
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: customerData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createIndividualCustomer();
+```
+
+`/persona/resource/customers`
+
+### Description
+
+Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `parent_merchant_uid`.
+
+**Individual customers** are automatically verified with Email, Phone, Profile, and Document labels after creation. Document files must be uploaded separately using the document upload endpoint (see "Upload Individual Customer Documents" section below).
+
+---
+
+### Parameters
+
+**Account Information:**
+
+| Name                 | Located in | Description                                                                        | Required                      | Schema  |
+| -------------------- | ---------- | ---------------------------------------------------------------------------------- | ----------------------------- | ------- |
+| entity_type          | formData   | Must be 'individual'                                                               | Yes                           | string  |
+| email                | formData   | Customer email address (unique per merchant)                                       | Yes                           | string  |
+| phone_number         | formData   | Phone number in international format (e.g., +27821234567)                          | Yes                           | string  |
+| account_name         | formData   | Display name for the account                                                       | No                            | string  |
+| parent_merchant_uid  | formData   | Merchant UID (aggregators only - create under specific merchant)                   | No                            | string  |
+| first_name           | formData   | Customer first name                                                                | Yes                           | string  |
+| last_name            | formData   | Customer last name                                                                 | Yes                           | string  |
+| dob                  | formData   | Date of birth in YYYY-MM-DD format (must be 18+)                                   | Yes                           | string  |
+| address              | formData   | Full street address                                                                | Yes                           | string  |
+| postcode             | formData   | Postal/ZIP code                                                                    | Yes                           | string  |
+| city                 | formData   | City name                                                                          | Yes                           | string  |
+| country              | formData   | ISO country code (2 chars, e.g., 'ZA', 'US')                                       | Yes                           | string  |
+| nationality          | formData   | Nationality ISO country code (2 chars)                                             | Yes                           | string  |
+| country_of_residence | formData   | Country of residence ISO code (2 chars)                                            | Yes                           | string  |
+| sa_id_number         | formData   | South African ID number                                                            | Yes if nationality='ZA'       | string  |
+| occupation           | formData   | Customer occupation (e.g., 'Software Engineer', 'Teacher', 'Business Owner')       | Yes                           | string  |
+| source_of_funds      | formData   | Source of funds (e.g., 'Salary or Wages', 'Business Income', 'Investment Income')  | Yes                           | string  |
+| is_pep_occupation    | formData   | Is the customer a PEP by occupation? (default: false)                              | No                            | boolean |
+| pep_occupation_data  | formData   | Details if is_pep_occupation is true                                               | Yes if is_pep_occupation=true | string  |
+| is_pep_related       | formData   | Is the customer related to a PEP? (default: false)                                 | No                            | boolean |
+| pep_related_data     | formData   | Details if is_pep_related is true                                                  | Yes if is_pep_related=true    | string  |
+| is_pip               | formData   | Is the customer a Prominent Influential Person? (default: false)                   | No                            | boolean |
+| pip_data             | formData   | Details if is_pip is true                                                          | Yes if is_pip=true            | string  |
+| deposit_action       | formData   | JSON object defining automated deposit handling (see deposit action options below) | No                            | json    |
+
+**Deposit Action Options:**
+
+The `deposit_action` parameter accepts a JSON object with the following structure:
+
+```json
+{
+  "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+  "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
+  "beneficiary_id": 123, // Required for withdraw actions
+  "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
+  "max_slippage": 2.0 // Optional: Max slippage percentage (0.1-10, default: 2.0)
+}
+```
+
+**Available Actions:**
+
+| Action                           | Description                                                           | Required Fields                                            |
+| -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `none`                           | No automatic action (default)                                         | None                                                       |
+| `aggregate`                      | Automatically transfer deposits to parent merchant/aggregator account | None                                                       |
+| `convert_and_withdraw`           | Convert deposit to target currency and withdraw to beneficiary        | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+| `aggregate_convert_and_withdraw` | Transfer to parent, then convert and withdraw                         | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+
+**Example with Deposit Action:**
+
+```json
+{
+  "entity_type": "individual",
+  "email": "customer@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  // ... other required fields ...
+  "deposit_action": {
+    "action": "convert_and_withdraw",
+    "target_currency": "zar",
+    "beneficiary_id": 456,
+    "max_slippage": 2.5
+  }
+}
+```
+
+### Responses
+
+| Code | Description                   | Schema                |
+| ---- | ----------------------------- | --------------------- |
+| 201  | Customer created successfully | [Customer](#customer) |
+| 422  | Validation error              | Error array           |
+
+## <span class="request-type__post">POST</span> Create Business Customer
+
+```javascript
+// createBusinessCustomer.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+createBusinessCustomer = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/persona/resource/customers`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const customerData = {
+    entity_type: "business",
+    email: "admin@acmecorp.com",
+    phone_number: "+27821234567",
+    account_name: "ACME Corporation",
+
+    business_profile: {
+      // Core Business Information
+      company_name: "ACME Corp (Pty) Ltd",
+      registration_number: "2020/123456/07",
+      registration_country: "ZA",
+      industry: "Financial Services",
+      purpose_of_account: "Cryptocurrency trading and payment processing",
+      expected_monthly_volume_usd: 500000,
+
+      // Additional Business Information
+      jurisdictions_of_operation: ["ZA", "US", "GB"],
+      website: "https://www.acmecorp.com",
+      employee_count: 25,
+
+      // Business Address
+      address: "123 Business Street, Suite 100",
+      city: "Cape Town",
+      postcode: "8001",
+      country: "ZA",
+
+      // License Information
+      license_status: "Licensed",
+      license_number: "FSP12345",
+      license_jurisdictions: ["ZA"],
+    },
+
+    // Ultimate Beneficial Owners (at least 1 required)
+    ubos: [
+      {
+        // Personal Information
+        email: "jane.smith@acmecorp.com",
+        first_name: "Jane",
+        last_name: "Smith",
+        phone_number: "+27821111111",
+        dob: "1985-05-15",
+
+        // Residence Information
+        address: "456 Residential Ave",
+        postcode: "7700",
+        city: "Cape Town",
+        country: "ZA",
+        nationality: "ZA",
+        id_number: "8505155800088",
+
+        // Professional Information
+        occupation: "Chief Executive Officer",
+        source_of_funds: "Business Income",
+
+        // Ownership & Roles
+        ownership_percentage: 60,
+        is_director: true,
+        is_authorized_signatory: true,
+
+        // PEP Declaration
+        is_pep_occupation: false,
+        is_pep_related: false,
+        is_pip: false,
+      },
+      {
+        // Second UBO example
+        email: "john.doe@acmecorp.com",
+        first_name: "John",
+        last_name: "Doe",
+        dob: "1980-03-20",
+
+        address: "789 Co-founder Street",
+        postcode: "7800",
+        city: "Cape Town",
+        country: "ZA",
+        nationality: "ZA",
+        id_number: "8003205800089",
+
+        occupation: "Chief Technology Officer",
+        source_of_funds: "Business Income",
+
+        ownership_percentage: 40,
+        is_director: true,
+        is_authorized_signatory: false,
+
+        is_pep_occupation: false,
+        is_pep_related: false,
+        is_pip: false,
+      },
+    ],
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: customerData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createBusinessCustomer();
+```
+
+`/persona/resource/customers`
+
+### Description
+
+Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `parent_merchant_uid`.
+
+**Business customers** start with 'pending' status and require verification. Business documents must be uploaded separately using the document upload endpoint (see "Upload Business Customer Documents" section below).
+
+---
+
+### Parameters
+
+**Account Information:**
+
+| Name                | Located in | Description                                                      | Required | Schema |
+| ------------------- | ---------- | ---------------------------------------------------------------- | -------- | ------ |
+| entity_type         | formData   | Must be 'business'                                               | Yes      | string |
+| email               | formData   | Business email address (unique per merchant)                     | Yes      | string |
+| phone_number        | formData   | Business phone number in international format                    | Yes      | string |
+| account_name        | formData   | Business account display name (typically company name)           | Yes      | string |
+| parent_merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant) | No       | string |
+
+**Business Profile (JSON Object):**
+
+**Core Business Information:**
+
+| Field                       | Description                                                                                | Required    | Schema           |
+| --------------------------- | ------------------------------------------------------------------------------------------ | ----------- | ---------------- |
+| company_name                | Legal company name                                                                         | Yes         | string           |
+| registration_number         | Company registration number                                                                | Yes         | string           |
+| registration_country        | ISO country code where company is registered (2-3 chars)                                   | Yes         | string           |
+| industry                    | Industry classification (e.g., 'Financial Services', 'Technology', 'Healthcare', 'Retail') | Yes         | string           |
+| purpose_of_account          | Business purpose for the account                                                           | Yes         | string           |
+| expected_monthly_volume_usd | Expected monthly trading volume in USD                                                     | Yes         | number           |
+| jurisdictions_of_operation  | Array of country codes where business operates                                             | No          | array of strings |
+| website                     | Company website URL                                                                        | No          | string           |
+| employee_count              | Number of employees                                                                        | No          | number           |
+| address                     | Business street address                                                                    | No          | string           |
+| city                        | Business city                                                                              | No          | string           |
+| postcode                    | Business postal code                                                                       | No          | string           |
+| country                     | Business country ISO code (2 chars)                                                        | No          | string           |
+| license_status              | License status: 'Licensed', 'Not Licensed', 'Pending'                                      | No          | string           |
+| license_number              | License number (required if license_status is 'Licensed')                                  | Conditional | string           |
+| license_jurisdictions       | Array of country codes where licensed (required if license_status is 'Licensed')           | Conditional | array of strings |
+
+**UBOs Array (Ultimate Beneficial Owners) - At least 1 required:**
+
+Each UBO object must include:
+
+**Personal Information:**
+
+| Field                   | Description                                     | Required    | Schema  |
+| ----------------------- | ----------------------------------------------- | ----------- | ------- |
+| email                   | UBO email address                               | Yes         | string  |
+| first_name              | UBO first name                                  | Yes         | string  |
+| last_name               | UBO last name                                   | Yes         | string  |
+| phone_number            | UBO phone number                                | No          | string  |
+| dob                     | Date of birth (YYYY-MM-DD, must be 18+)         | Yes         | string  |
+| address                 | UBO street address                              | Yes         | string  |
+| postcode                | UBO postal code                                 | Yes         | string  |
+| city                    | UBO city                                        | Yes         | string  |
+| country                 | UBO country ISO code (2 chars)                  | Yes         | string  |
+| nationality             | UBO nationality ISO code (2 chars)              | Yes         | string  |
+| id_number               | UBO national ID or passport number              | Yes         | string  |
+| occupation              | UBO occupation                                  | Yes         | string  |
+| source_of_funds         | UBO source of funds                             | Yes         | string  |
+| ownership_percentage    | Ownership percentage (minimum 5%, maximum 100%) | Yes         | number  |
+| is_director             | Is the UBO a company director?                  | No          | boolean |
+| is_authorized_signatory | Is the UBO an authorized signatory?             | No          | boolean |
+| is_pep_occupation       | Is the UBO a PEP by occupation?                 | No          | boolean |
+| pep_occupation_data     | Details if is_pep_occupation is true            | Conditional | string  |
+| is_pep_related          | Is the UBO related to a PEP?                    | No          | boolean |
+| pep_related_data        | Details if is_pep_related is true               | Conditional | string  |
+| is_pip                  | Is the UBO a Prominent Influential Person?      | No          | boolean |
+| pip_data                | Details if is_pip is true                       | Conditional | string  |
+
+### Responses
+
+| Code | Description                            | Schema                |
+| ---- | -------------------------------------- | --------------------- |
+| 201  | Business customer created successfully | [Customer](#customer) |
+| 422  | Validation error                       | Error array           |
+
+## <span class="request-type__get">GET</span> List Customers
+
+```javascript
+// listCustomers.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+listCustomers = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/persona/resource/customers?page=1&limit=100`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+listCustomers();
+```
+
+`/persona/resource/customers`
+
+### Description
+
+Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants' customers). Aggregators can filter by specific merchant using `parent_merchant_uid`.
+
+### Parameters
+
+| Name                | Located in | Description                                          | Required | Schema  |
+| ------------------- | ---------- | ---------------------------------------------------- | -------- | ------- |
+| page                | query      | Page number (defaults to 1)                          | No       | integer |
+| limit               | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
+| parent_merchant_uid | query      | Filter by merchant UID (aggregators only)            | No       | string  |
+
+### Responses
+
+| Code | Description                       | Schema                    |
+| ---- | --------------------------------- | ------------------------- |
+| 200  | List of customers with pagination | [ [Customer](#customer) ] |
+
+> Response Headers:
+
+```
+Page: 1
+Per-Page: 100
+Total: 150
+```
+
+> Response Body (Array):
+
+```json
+[
+  {
+    "uid": "ID123456789ABC",
+    "account_name": "CUST-001",
+    "state": "active",
+    "custom_id": "CUST-001",
+    "kyc_status": "verified",
+    "created_at": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "uid": "ID987654321XYZ",
+    "account_name": "CUST-002",
+    "state": "active",
+    "custom_id": "CUST-002",
+    "kyc_status": "verified",
+    "created_at": "2024-01-02T00:00:00.000Z"
+  }
+]
+```
+
+**Note:** Pagination information is returned in HTTP headers (`Page`, `Per-Page`, `Total`), not in the response body.
+
+## <span class="request-type__get">GET</span> Get Customer by UID
+
+```javascript
+// getCustomer.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getCustomer = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const customerUid = "ID123456789ABC";
+  const path = `/api/v2/persona/resource/customers/${customerUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getCustomer();
+```
+
+`/persona/resource/customers/{uid}`
+
+### Description
+
+Retrieve a specific customer with full details including profile, phone, labels, and business information (if applicable).
+
+### Parameters
+
+| Name | Located in | Description         | Required | Schema |
+| ---- | ---------- | ------------------- | -------- | ------ |
+| uid  | path       | Customer identifier | Yes      | string |
+
+### Responses
+
+| Code | Description    | Schema                |
+| ---- | -------------- | --------------------- |
+| 200  | Customer found | [Customer](#customer) |
+| 404  | Not found      | Error array           |
+
+## <span class="request-type__put">PUT</span> Update Customer
+
+```javascript
+// updateCustomer.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+updateCustomer = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "PUT";
+  const customerUid = "ID123456789ABC";
+  const path = `/api/v2/persona/resource/customers/${customerUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const updateData = {
+    custom_id: "CUST-001-UPDATED",
+    external_verification_url: "https://example.com/verify/updated",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: updateData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+updateCustomer();
+```
+
+`/persona/resource/customers/{uid}`
+
+### Description
+
+Update customer metadata (custom_id and external_verification_url).
+
+### Parameters
+
+| Name                      | Located in | Description                       | Required | Schema |
+| ------------------------- | ---------- | --------------------------------- | -------- | ------ |
+| uid                       | path       | Customer identifier               | Yes      | string |
+| custom_id                 | formData   | Updated custom identifier         | No       | string |
+| external_verification_url | formData   | Updated external verification URL | No       | string |
+
+### Responses
+
+| Code | Description                   | Schema                |
+| ---- | ----------------------------- | --------------------- |
+| 200  | Customer updated successfully | [Customer](#customer) |
+| 404  | Not found                     | Error array           |
+| 422  | Validation error              | Error array           |
+
+## <span class="request-type__post">POST</span> Upload Individual Customer Documents
+
+```javascript
+// uploadIndividualDocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadDocuments = async (customerUid) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/customers/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  // Document 1: ID Front
+  const formData1 = new FormData();
+  formData1.append("upload", fs.createReadStream("./id_front.jpg"));
+  formData1.append("doc_type", "Passport");
+  formData1.append("customer_uid", customerUid);
+  formData1.append("doc_number", "M12345678");
+  formData1.append("doc_expire", "2028-12-31");
+
+  try {
+    await axios.post(url, formData1, {
+      headers: { ...headers, ...formData1.getHeaders() },
+    });
+    console.log("ID front uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading ID front:", err);
+  }
+
+  // Document 2: ID Back
+  const formData2 = new FormData();
+  formData2.append("upload", fs.createReadStream("./id_back.jpg"));
+  formData2.append("doc_type", "Drivers license back");
+  formData2.append("customer_uid", customerUid);
+  formData2.append("doc_number", "DL987654");
+  formData2.append("doc_expire", "2028-12-31");
+
+  try {
+    await axios.post(url, formData2, {
+      headers: { ...headers, ...formData2.getHeaders() },
+    });
+    console.log("ID back uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading ID back:", err);
+  }
+
+  // Document 3: Selfie
+  const formData3 = new FormData();
+  formData3.append("upload", fs.createReadStream("./selfie.jpg"));
+  formData3.append("doc_type", "Selfie");
+  formData3.append("customer_uid", customerUid);
+
+  try {
+    await axios.post(url, formData3, {
+      headers: { ...headers, ...formData3.getHeaders() },
+    });
+    console.log("Selfie uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading selfie:", err);
+  }
+
+  // Document 4: Proof of Address
+  const formData4 = new FormData();
+  formData4.append("upload", fs.createReadStream("./proof_of_address.pdf"));
+  formData4.append("doc_type", "Proof of Address");
+  formData4.append("customer_uid", customerUid);
+
+  try {
+    await axios.post(url, formData4, {
+      headers: { ...headers, ...formData4.getHeaders() },
+    });
+    console.log("Proof of Address uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading proof of address:", err);
+  }
+
+  // Document 5: Liveness (upload last - triggers verification)
+  const formData5 = new FormData();
+  formData5.append("upload", fs.createReadStream("./liveness.jpg"));
+  formData5.append("doc_type", "Liveness");
+  formData5.append("customer_uid", customerUid);
+
+  try {
+    await axios.post(url, formData5, {
+      headers: { ...headers, ...formData5.getHeaders() },
+    });
+    console.log("Liveness uploaded successfully - verification triggered");
+  } catch (err) {
+    console.log("Error uploading liveness:", err);
+  }
+};
+
+// Upload documents after customer creation
+uploadDocuments("ID123456789ABC");
+```
+
+`/api/v2/verification/customers/documents`
+
+### Description
+
+Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:
+- **ID document** (front side, plus back side for identity_card/driver_license)
+- **Selfie** (holding ID document)
+- **Liveness** (live photo/video - triggers automatic verification)
+- **Proof of Address** (utility bill, bank statement, etc.)
+
+Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 10MB per document.
+
+**Note:** This endpoint should be called after creating an individual customer using the "Create Individual Customer" endpoint. Use the customer UID returned from the creation response. Upload the **Liveness** document last as it triggers the automated verification workflow.
+
+### Parameters
+
+| Name         | Located in | Description                                              | Required | Schema |
+| ------------ | ---------- | -------------------------------------------------------- | -------- | ------ |
+| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 4MB  | Yes      | File   |
+| doc_type     | formData   | Document type (see Available Document Types below)       | Yes      | string |
+| customer_uid | formData   | Customer UID from the customer creation response         | Yes      | string |
+| doc_number   | formData   | ID document number (optional for selfie)                 | No       | string |
+| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (optional for selfie) | No | string |
+
+### Required Documents
+
+The following documents must be uploaded for individual customers:
+
+1. **ID Document (Front)** - Front image of the identification document
+
+   - `doc_type`: Use the document type from customer creation ('Passport', 'Identity card', or 'Driver license')
+   - Include `doc_number` and `doc_expire`
+   - Note: Passport is single-sided; Identity card and Driver license require back side as well
+
+2. **ID Document (Back)** - Back image of identification document (Identity card and Driver license only)
+
+   - `doc_type`: Add " back" suffix to the document type (e.g., 'Drivers license back', 'Identity card back')
+   - Include `doc_number` and `doc_expire`
+   - Not required for Passport
+
+3. **Selfie** - Photograph of customer holding their ID document
+   - `doc_type`: 'Selfie'
+   - `doc_number` and `doc_expire` are optional
+
+4. **Liveness** - Live photo or video verification
+   - `doc_type`: 'Liveness'
+   - This document triggers the automated verification workflow
+   - Upload this document last, after all other documents are uploaded
+   - `doc_number` and `doc_expire` are optional
+
+5. **Proof of Address** - Utility bill, bank statement, or lease agreement
+   - `doc_type`: 'Proof of Address'
+   - Document must be less than 3 months old
+   - `doc_number` and `doc_expire` are optional
+
+### Available Document Types
+
+Valid `doc_type` values for individual customer KYC documents:
+
+**Note:** Use Title Case format exactly as shown below (e.g., "Passport", "Proof of Address", "Board Resolution"). The system automatically converts these to internal format.
+
+- `Passport`
+- `Passport other`
+- `Identity card`
+- `Identity book`
+- `Driver license`
+- `Identity card front`
+- `Driver license front`
+- `Identity card back`
+- `Driver license back`
+- `Proof of Address`
+- `Source of Funds`
+- `Selfie`
+- `Liveness`
+- `Drivers license`
+- `Drivers license back`
+- `Green Identity Book`
+
+### Responses
+
+| Code | Description                    | Schema          |
+| ---- | ------------------------------ | --------------- |
+| 200  | Document uploaded successfully | Success object  |
+| 400  | Invalid doc_type               | Error array     |
+| 422  | Validation error               | Error array     |
+
+## <span class="request-type__post">POST</span> Upload Business Customer Documents
+
+```javascript
+// uploadBusinessDocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadBusinessDocument = async (customerUid, documentType, filePath) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/customers/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const formData = new FormData();
+  formData.append("upload", fs.createReadStream(filePath));
+  formData.append("doc_type", documentType);
+  formData.append("customer_uid", customerUid);
+  formData.append("doc_number", "N/A");
+  formData.append("doc_expire", "N/A");
+
+  try {
+    const result = await axios.post(url, formData, {
+      headers: { ...headers, ...formData.getHeaders() },
+    });
+    console.log(`${documentType} uploaded successfully`);
+    return result.data;
+  } catch (err) {
+    console.log(`Error uploading ${documentType}:`, err);
+    throw err;
+  }
+};
+
+// Upload all required business documents
+const uploadAllBusinessDocuments = async (customerUid) => {
+  const documents = [
+    { type: "Board Resolution", file: "./board_resolution.pdf" },
+    { type: "Company Registration", file: "./company_registration.pdf" },
+    { type: "AML Policy", file: "./aml_policy.pdf" },
+    { type: "Business License", file: "./business_license.pdf" },
+    { type: "Business Proof of Address", file: "./proof_of_address.pdf" },
+    { type: "Shareholder Certificate", file: "./shareholder_certificate.pdf" },
+    { type: "Incorporation Certificate", file: "./incorporation_cert.pdf" },
+    { type: "Bank Statement", file: "./bank_statement.pdf" },
+    { type: "Tax Statement", file: "./tax_statement.pdf" },
+  ];
+
+  for (const doc of documents) {
+    await uploadBusinessDocument(customerUid, doc.type, doc.file);
+  }
+
+  console.log("All business documents uploaded successfully");
+};
+
+// Upload documents after business customer creation
+uploadAllBusinessDocuments("ID987654321XYZ");
+```
+
+`/api/v2/verification/customers/documents`
+
+### Description
+
+Upload KYB verification documents for business customers. Nine business documents are required for complete verification. Additionally, all UBOs (Ultimate Beneficial Owners) must upload their individual KYC documents (see "Upload UBO Documents" section below). Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 10MB per document.
+
+**Note:** This endpoint should be called after creating a business customer using the "Create Business Customer" endpoint. Use the customer UID returned from the creation response. When all 9 business documents and all UBO documents are uploaded, the system will notify administrators for manual review.
+
+### Parameters
+
+| Name         | Located in | Description                                               | Required | Schema |
+| ------------ | ---------- | --------------------------------------------------------- | -------- | ------ |
+| upload       | formData   | The document file (PDF, JPG, PNG) - Max 10MB              | Yes      | File   |
+| doc_type     | formData   | Business document type (see list below)                   | Yes      | string |
+| customer_uid | formData   | Customer UID from the business customer creation response | Yes      | string |
+| doc_number   | formData   | Use 'N/A' for business documents                          | No       | string |
+| doc_expire   | formData   | Use 'N/A' for business documents                          | No       | string |
+
+### Available Business Document Types
+
+Valid `doc_type` values for business customer KYB documents:
+
+**Note:** Use Title Case format exactly as shown below (e.g., "Board Resolution", "Company Registration"). The system automatically converts these to internal format.
+
+- `Board Resolution` - Board resolution authorizing account opening, signed by authorized directors
+- `Company Registration` - Official company registration certificate proving legal existence
+- `AML Policy` - Anti-Money Laundering policy document
+- `Business License` - Industry-specific operating license (if applicable)
+- `Business Proof of Address` - Utility bill or lease agreement (must be less than 3 months old)
+- `Shareholder Certificate` - Official list of company shareholders showing ownership structure
+- `Incorporation Certificate` - Certificate of incorporation / Articles of Association
+- `Bank Statement` - Recent company bank statement (must be less than 3 months old)
+- `Tax Statement` - Valid tax compliance certificate proving good standing with tax authorities
+
+### Responses
+
+| Code | Description                    | Schema          |
+| ---- | ------------------------------ | --------------- |
+| 200  | Document uploaded successfully | Success object  |
+| 400  | Invalid doc_type               | Error array     |
+| 422  | Validation error               | Error array     |
+
+## <span class="request-type__post">POST</span> Upload UBO Documents
+
+```javascript
+// uploadUBODocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadUBODocuments = async (uboUid) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/customers/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  // Document 1: ID Front (Passport example)
+  const formData1 = new FormData();
+  formData1.append("upload", fs.createReadStream("./ubo_passport.jpg"));
+  formData1.append("doc_type", "Passport");
+  formData1.append("customer_uid", uboUid);
+  formData1.append("doc_number", "M98765432");
+  formData1.append("doc_expire", "2029-06-30");
+
+  try {
+    await axios.post(url, formData1, {
+      headers: { ...headers, ...formData1.getHeaders() },
+    });
+    console.log("UBO ID uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO ID:", err);
+  }
+
+  // Document 2: Selfie
+  const formData2 = new FormData();
+  formData2.append("upload", fs.createReadStream("./ubo_selfie.jpg"));
+  formData2.append("doc_type", "Selfie");
+  formData2.append("customer_uid", uboUid);
+
+  try {
+    await axios.post(url, formData2, {
+      headers: { ...headers, ...formData2.getHeaders() },
+    });
+    console.log("UBO Selfie uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO selfie:", err);
+  }
+
+  // Document 3: Proof of Address
+  const formData3 = new FormData();
+  formData3.append("upload", fs.createReadStream("./ubo_proof_of_address.pdf"));
+  formData3.append("doc_type", "Proof of Address");
+  formData3.append("customer_uid", uboUid);
+
+  try {
+    await axios.post(url, formData3, {
+      headers: { ...headers, ...formData3.getHeaders() },
+    });
+    console.log("UBO Proof of Address uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO proof of address:", err);
+  }
+
+  // Document 4: Liveness (upload last - triggers verification)
+  const formData4 = new FormData();
+  formData4.append("upload", fs.createReadStream("./ubo_liveness.jpg"));
+  formData4.append("doc_type", "Liveness");
+  formData4.append("customer_uid", uboUid);
+
+  try {
+    await axios.post(url, formData4, {
+      headers: { ...headers, ...formData4.getHeaders() },
+    });
+    console.log("UBO Liveness uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO liveness:", err);
+  }
+};
+
+// Upload documents for each UBO
+// UBO UIDs are returned when creating the business customer
+uploadUBODocuments("ID_UBO_001_ABC");
+uploadUBODocuments("ID_UBO_002_XYZ");
+```
+
+`/api/v2/verification/customers/documents`
+
+### Description
+
+Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.
+
+**When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_uid` when uploading UBO documents.
+
+**Business KYB completion requires**:
+1. All 9 business entity documents uploaded
+2. **All UBOs must have complete KYC documents**
+
+Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 10MB per document.
+
+### Parameters
+
+| Name         | Located in | Description                                              | Required | Schema |
+| ------------ | ---------- | -------------------------------------------------------- | -------- | ------ |
+| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
+| doc_type     | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
+| customer_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
+| doc_number   | formData   | ID document number (optional for selfie and liveness)    | No       | string |
+| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+
+### Required UBO Documents
+
+Each UBO must upload the following documents:
+
+1. **ID Document (Front)** - Front image of the identification document
+
+   - `doc_type`: 'Passport', 'Identity card', or 'Driver license'
+   - Include `doc_number` and `doc_expire`
+   - Note: Passport is single-sided; Identity card and Driver license require back side as well
+
+2. **ID Document (Back)** - Back image (Identity card and Driver license only)
+
+   - `doc_type`: 'Identity card back' or 'Drivers license back'
+   - Include `doc_number` and `doc_expire`
+   - Not required for Passport
+
+3. **Selfie** - Photograph of UBO holding their ID document
+
+   - `doc_type`: 'Selfie'
+   - `doc_number` and `doc_expire` are optional
+
+4. **Proof of Address** - Utility bill, bank statement, or lease agreement
+
+   - `doc_type`: 'Proof of Address'
+   - Document must be less than 3 months old
+   - `doc_number` and `doc_expire` are optional
+
+5. **Liveness** - Live photo or video verification
+   - `doc_type`: 'Liveness'
+   - Upload this document last, after all other UBO documents
+   - `doc_number` and `doc_expire` are optional
+
+### Available Document Types for UBOs
+
+Valid `doc_type` values for UBO KYC documents (same as individual customers):
+
+- `Passport`
+- `Passport other`
+- `Identity card`
+- `Identity card front`
+- `Identity card back`
+- `Identity book`
+- `Green Identity Book`
+- `Driver license`
+- `Driver license front`
+- `Drivers license`
+- `Drivers license back`
+- `Driver license back`
+- `Selfie`
+- `Liveness`
+- `Proof of Address`
+
+### Responses
+
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
+
+### Business KYB Completion
+
+**When all requirements are met:**
+
+- All 9 business documents uploaded ✓
+- All UBOs have uploaded their complete KYC documents (4-5 documents each) ✓
+
+**The system will:**
+
+- Automatically notify administrators via Slack for manual review
+- Business customer remains in "pending" status until admin approval
+- No automatic verification for business customers (always requires manual review)
+
+# Merchant Management (Aggregators Only)
+
+**Note:** These endpoints are only available for **Aggregators** to manage their merchant accounts.
+
+## <span class="request-type__get">GET</span> List Merchants
+
+```javascript
+// listMerchants.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+listMerchants = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/persona/resource/merchants?page=1&limit=100`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+listMerchants();
+```
+
+`/persona/resource/merchants`
+
+### Description
+
+Get a paginated list of merchant accounts managed by the aggregator.
+
+### Parameters
+
+| Name  | Located in | Description                                          | Required | Schema  |
+| ----- | ---------- | ---------------------------------------------------- | -------- | ------- |
+| page  | query      | Page number (defaults to 1)                          | No       | integer |
+| limit | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
+
+### Responses
+
+| Code | Description                       | Schema                                         |
+| ---- | --------------------------------- | ---------------------------------------------- |
+| 200  | List of merchants with pagination | Array of merchants (see [Customer (Business)](#customer-business)) |
+
+**Note:** Pagination information is returned in HTTP headers (`Page`, `Per-Page`, `Total`), not in the response body.
+
+## <span class="request-type__get">GET</span> List Merchant's Customers
+
+```javascript
+// listMerchantCustomers.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+listMerchantCustomers = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const merchantUid = "ID987654321XYZ";
+  const path = `/api/v2/persona/resource/merchants/${merchantUid}/customers?page=1&limit=100`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+listMerchantCustomers();
+```
+
+`/persona/resource/merchants/{uid}/customers`
+
+### Description
+
+Get a paginated list of customers belonging to a specific merchant. This provides a nested view for aggregators to see which customers belong to which merchant.
+
+### Parameters
+
+| Name  | Located in | Description                                          | Required | Schema  |
+| ----- | ---------- | ---------------------------------------------------- | -------- | ------- |
+| uid   | path       | Merchant identifier                                  | Yes      | string  |
+| page  | query      | Page number (defaults to 1)                          | No       | integer |
+| limit | query      | Number of results per page (default: 100, max: 1000) | No       | integer |
+
+### Responses
+
+| Code | Description                                  | Schema                    |
+| ---- | -------------------------------------------- | ------------------------- |
+| 200  | List of merchant's customers with pagination | [ [Customer](#customer) ] |
+| 404  | Merchant not found                           | Error array               |
+
+**Note:** Pagination information is returned in HTTP headers (`Page`, `Per-Page`, `Total`), not in the response body.
 
 # Trading
 
@@ -913,13 +2864,14 @@ Get orders, result is paginated.
 
 ### Description
 
-Fetch your executed trades.
+Fetch your trades executed on your orders.
 
 ### Parameters
 
 | Name      | Located in | Description                                                  | Required | Schema  |
 | --------- | ---------- | ------------------------------------------------------------ | -------- | ------- |
 | market    | query      |                                                              | No       | string  |
+| order_id  | query      | Get the trades for a specific order_id                       | No       | integer |
 | limit     | query      | Limit the number of returned trades. Default to 100.         | No       | integer |
 | page      | query      | Paginated page number.                                       | No       | integer |
 | time_from | query      | Timestamp in ms. Return trades executed after the timestamp. | No       | integer |
@@ -1017,7 +2969,7 @@ async function connectWssPublic() {
   try {
     const baseUrl = `wss://trade.capecrypto.com/api/v2`;
     const streams = "?stream=btczar.ob-inc&stream=ethzar.ob-inc";
-    const path = `/stream/public${streams}`;
+    const path = `/websocket/public${streams}`;
 
     ws = new WebSocket(`${baseUrl}${path}`);
   } catch (err) {
@@ -1074,7 +3026,7 @@ async function connectWssPublic() {
   try {
     const baseUrl = `wss://trade.capecrypto.com/api/v2`;
     const streams = "?stream=btczar.kline-15m";
-    const path = `/stream/public${streams}`;
+    const path = `/websocket/public${streams}`;
 
     ws = new WebSocket(`${baseUrl}${path}`);
   } catch (err) {
@@ -1128,7 +3080,7 @@ async function connectWssPrivate() {
     const headers = await generateHeaders();
     const streams =
       "?stream=btczar.ob-inc&stream=ethzar.ob-inc&stream=order&stream=trade&stream=balance";
-    const path = `/stream/private?${streams}`;
+    const path = `/websocket/private${streams}`;
 
     ws = new WebSocket(`${baseUrl}${path}`, { headers });
   } catch (err) {
@@ -1143,17 +3095,16 @@ async function connectWssPrivate() {
     data = JSON.parse(data);
     console.log(JSON.stringify(data, undefined, 2));
 
-    if (["ob-snap", "ob-inc"].includes(data)) {
-      // handle all subscribed markets
+    if (data["xrpzar.ob-snap"] || data["xrpzar.ob-inc"]) {
+      // handle orderbook updates for subscribed markets
       // updateOrderBook(data);
-    }
-    if (data["trade"]) {
-      // handleOwnTradeUpdate(data);
     }
     if (data["order"]) {
       // handleOwnOrderUpdate(data);
     }
-
+    if (data["trade"]) {
+      // handleOwnTradeUpdate(data);
+    }
     if (data["balance"]) {
       // handleBalanceUpdate(data);
     }
@@ -1163,35 +3114,271 @@ async function connectWssPrivate() {
 connectWssPrivate();
 ```
 
-`?stream={subscription}`
+Subscribe to your account and receive real-time updates on your orders, trades, and balances.
 
-Combined into 1x:
-`?stream={order}&stream={trade}&stream={balance}`
+**Important:** You can subscribe to ALL streams (both public and private) in a single WebSocket connection using the `/websocket/private` endpoint. This is the recommended approach as it minimizes connection overhead and provides a unified stream of all market events.
 
-### Description
+**Private streams only:**
 
-Subscribe to your account, and receive updates on your placed orders, trades executed, and balance updates.
+`?stream=order&stream=trade&stream=balance`
 
-### Parameters
+**Combining public orderbook + private streams (recommended):**
 
-| Name    | Located in | Description                                   | Required | Schema |
-| ------- | ---------- | --------------------------------------------- | -------- | ------ |
-| order   | query      | Subscribe to order updates for your orders    | No       | string |
-| trade   | query      | Subscribe to trade executions for your orders | No       | string |
-| balance | query      | Subscribe to balance updates on your account  | No       | string |
+`?stream=btczar.ob-inc&stream=order&stream=trade&stream=balance`
 
-### Responses
+**Benefits of combining streams:**
+- Single WebSocket connection for all updates
+- Synchronized view of orderbook changes and your order executions
+- Real-time balance updates as trades execute
+- Reduced latency and connection overhead
 
-| Name      | Located in | Description                                                  | Required | Schema  |
-| --------- | ---------- | ------------------------------------------------------------ | -------- | ------- |
-| market    | query      |                                                              | No       | string  |
-| limit     | query      | Limit the number of returned trades. Default to 100.         | No       | integer |
-| page      | query      | Paginated page number.                                       | No       | integer |
-| time_from | query      | Timestamp in ms. Return trades executed after the timestamp. | No       | integer |
-| time_to   | query      | Timestamp in ms. Return trades executed after the timestamp. | No       | integer |
-| order_by  | query      | Order by created_at, defaults to 'desc'. [asc desc]          | No       | string  |
+### Order Stream
+
+**Subscription:** `?stream=order`
+
+Receive real-time updates when your orders are created, updated, filled, or canceled.
+
+**Response Format:**
+
+```json
+{
+  "order": {
+    "id": 173757,
+    "uuid": "7e86a4fa-fcae-4953-b9bc-d6f328beea48",
+    "side": "sell",
+    "ord_type": "limit",
+    "price": "800000.0",
+    "avg_price": "0.0",
+    "state": "wait",
+    "market": "btczar",
+    "created_at": "2023-12-08T08:46:59+01:00",
+    "updated_at": "2023-12-08T08:46:59+01:00",
+    "origin_volume": "0.00001",
+    "remaining_volume": "0.00001",
+    "executed_volume": "0.0",
+    "trades_count": 0
+  }
+}
+```
+
+**Order Update Triggers:**
+
+- Order created and accepted
+- Order partially filled
+- Order fully filled (state changes to "done")
+- Order canceled
+- Order rejected
+
+### Trade Stream
+
+**Subscription:** `?stream=trade`
+
+Receive real-time updates when your orders are matched and trades are executed.
+
+**Response Format:**
+
+```json
+{
+  "trade": {
+    "id": 12345,
+    "order_id": 173757,
+    "price": "800000.0",
+    "amount": "0.00001",
+    "total": "8.0",
+    "market": "btczar",
+    "side": "sell",
+    "taker_type": "buy",
+    "fee_currency": "zar",
+    "fee": "0.002",
+    "fee_amount": "0.016",
+    "created_at": "2023-12-08T08:47:01+01:00"
+  }
+}
+```
+
+**Trade Event Triggers:**
+
+- Your limit order is matched (you are the maker)
+- Your market order is executed (you are the taker)
+- Your order is partially filled
+
+### Balance Stream
+
+**Subscription:** `?stream=balance`
+
+Receive real-time updates when your account balances change. Balance updates are triggered by trading activity, order placement, and order cancellation.
+
+**Response Format:**
+
+```json
+{
+  "balance": {
+    "currency": "btc",
+    "balance": "0.05000000",
+    "locked": "0.00001000",
+    "available": "0.04999000",
+    "updated_at": 1702027621000
+  }
+}
+```
+
+**Response Fields:**
+
+| Field      | Type    | Description                                                      |
+| ---------- | ------- | ---------------------------------------------------------------- |
+| currency   | string  | Currency code (btc, eth, zar, usdt, etc.)                        |
+| balance    | string  | Total balance (available + locked). String for decimal precision |
+| locked     | string  | Amount currently locked in open orders                           |
+| available  | string  | Available balance for trading (balance - locked)                 |
+| updated_at | integer | Unix timestamp in milliseconds when balance was updated          |
+
+**Balance Update Triggers:**
+
+1. **Order Creation** - Locks balance when a limit or market order is placed
+2. **Order Cancellation** - Unlocks balance when an order is canceled
+3. **Trade Execution (Maker)** - Updates both base and quote currency balances
+4. **Trade Execution (Taker)** - Updates both base and quote currency balances with fee deduction
+5. **Partial Fill** - Each partial fill triggers separate balance updates
+6. **Order Rejection** - Balance unlock if order validation fails after initial lock
+
+**Example 1: Order Creation (Balance Lock)**
+
+When you place a buy order for 0.001 BTC @ 800,000 ZAR, your ZAR balance is locked:
+
+```json
+{
+  "balance": {
+    "currency": "zar",
+    "balance": "10000.00",
+    "locked": "800.00",
+    "available": "9200.00",
+    "updated_at": 1702027621000
+  }
+}
+```
+
+**Example 2: Order Cancellation (Balance Unlock)**
+
+When you cancel the order, the locked ZAR is released:
+
+```json
+{
+  "balance": {
+    "currency": "zar",
+    "balance": "10000.00",
+    "locked": "0.00",
+    "available": "10000.00",
+    "updated_at": 1702027625000
+  }
+}
+```
+
+**Example 3: Trade Execution - Sell Order (Base Currency)**
+
+When your sell order for 0.00001 BTC executes, you receive two balance updates. First, the BTC is deducted:
+
+```json
+{
+  "balance": {
+    "currency": "btc",
+    "balance": "0.04999000",
+    "locked": "0.00000000",
+    "available": "0.04999000",
+    "updated_at": 1702027630000
+  }
+}
+```
+
+**Example 4: Trade Execution - Sell Order (Quote Currency)**
+
+Immediately after, you receive ZAR (minus the taker fee of 0.2%):
+
+```json
+{
+  "balance": {
+    "currency": "zar",
+    "balance": "10007.984",
+    "locked": "0.00",
+    "available": "10007.984",
+    "updated_at": 1702027630001
+  }
+}
+```
+
+**Example 5: Partial Fill**
+
+When your order is partially filled (50% of 0.001 BTC order):
+
+```json
+{
+  "balance": {
+    "currency": "btc",
+    "balance": "0.04999500",
+    "locked": "0.00000500",
+    "available": "0.04999000",
+    "updated_at": 1702027635000
+  }
+}
+```
+
+**Important Notes:**
+
+- **Atomic Updates**: Balance updates are atomic - you receive one update per currency per event
+- **Dual Updates for Trades**: For each trade, expect **two balance updates** - one for the base currency and one for the quote currency
+- **Timestamp Precision**: The `updated_at` field uses **Unix milliseconds** (not seconds)
+- **String Values**: Balance values are strings to preserve decimal precision - parse them as decimals, not floats
+- **Rapid Updates**: Multiple rapid trades may result in several balance updates in quick succession
+- **Fee Inclusion**: Fees are already deducted from the amounts shown in balance updates
+
+**Edge Cases:**
+
+- **Insufficient Funds**: No balance update is sent (order is rejected before locking funds)
+- **Self-Trade Prevention**: If a self-trade is prevented, balance may lock and then immediately unlock
+- **Partial Fills**: Each partial fill of an order triggers separate balance updates for both currencies
+- **Maker vs Taker Fees**: Fee amounts differ based on whether you're the maker (0.1%) or taker (0.2%)
+
+**Integration Example:**
+
+```javascript
+ws.on("message", (data) => {
+  data = JSON.parse(data);
+
+  if (data["balance"]) {
+    const { currency, balance, locked, available, updated_at } = data.balance;
+
+    console.log(`Balance Update: ${currency}`);
+    console.log(`  Total: ${balance}`);
+    console.log(`  Locked: ${locked}`);
+    console.log(`  Available: ${available}`);
+    console.log(`  Updated: ${new Date(updated_at).toISOString()}`);
+
+    // Update your UI
+    updateBalanceDisplay(currency, available, locked);
+  }
+
+  if (data["order"]) {
+    // Handle order updates
+    handleOrderUpdate(data.order);
+  }
+
+  if (data["trade"]) {
+    // Handle trade updates - expect balance updates to follow immediately
+    handleTradeUpdate(data.trade);
+  }
+});
+```
 
 # Models
+
+### Pagination
+
+All paginated list endpoints return an array of items in the response body, with pagination information provided in HTTP response headers:
+
+| Header   | Description                           | Example |
+| -------- | ------------------------------------- | ------- |
+| Page     | Current page number                   | 1       |
+| Per-Page | Number of items per page              | 100     |
+| Total    | Total number of items across all pages | 150     |
 
 ### Ticker
 
@@ -1245,7 +3432,6 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 | Name             | Type              | Description                                             |
 | ---------------- | ----------------- | ------------------------------------------------------- |
 | id               | integer           | Unique order id.                                        |
-| uuid             | string            | Unique order UUID.                                      |
 | custom_order_id  | string            | Custom order id if supplied during order creation.      |
 | side             | string            | Either 'sell' or 'buy'.                                 |
 | ord_type         | string            | Type of order, either 'limit' or 'market'.              |
@@ -1279,27 +3465,30 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 
 ### Currency
 
-| Name                 | Type   | Description                                                           |
-| -------------------- | ------ | --------------------------------------------------------------------- |
-| id                   | string | Currency code.                                                        |
-| name                 | string | Currency name                                                         |
-| symbol               | string | Currency symbol                                                       |
-| explorer_transaction | string | Currency transaction exprorer url template                            |
-| explorer_address     | string | Currency address exprorer url template                                |
-| type                 | string | Currency type                                                         |
-| deposit_enabled      | string | Currency deposit possibility status (true/false).                     |
-| withdrawal_enabled   | string | Currency withdrawal possibility status (true/false).                  |
-| deposit_fee          | string | Currency deposit fee                                                  |
-| min_deposit_amount   | string | Minimal deposit amount                                                |
-| withdraw_fee         | string | Currency withdraw fee                                                 |
-| min_withdraw_amount  | string | Minimal withdraw amount                                               |
-| withdraw_limit_24h   | string | Currency 24h withdraw limit                                           |
-| withdraw_limit_72h   | string | Currency 72h withdraw limit                                           |
-| base_factor          | string | Currency base factor                                                  |
-| precision            | string | Currency precision                                                    |
-| position             | string | Position used for defining currencies order                           |
-| icon_url             | string | Currency icon                                                         |
-| min_confirmations    | string | Number of confirmations required for confirming deposit or withdrawal |
+| Name                          | Type   | Description                                                           |
+| ----------------------------- | ------ | --------------------------------------------------------------------- |
+| id                            | string | Currency code.                                                        |
+| name                          | string | Currency name                                                         |
+| symbol                        | string | Currency symbol                                                       |
+| explorer_transaction          | string | Currency transaction exprorer url template                            |
+| explorer_address              | string | Currency address exprorer url template                                |
+| type                          | string | Currency type                                                         |
+| deposit_enabled               | string | Currency deposit possibility status (true/false).                     |
+| withdrawal_enabled            | string | Currency withdrawal possibility status (true/false).                  |
+| deposit_fee                   | string | Currency deposit fee                                                  |
+| min_deposit_amount            | string | Minimal deposit amount                                                |
+| withdraw_fee                  | string | Currency withdraw fee                                                 |
+| min_withdraw_amount           | string | Minimal withdraw amount                                               |
+| withdraw_limit_24h            | string | Currency 24h withdraw limit                                           |
+| withdraw_limit_72h            | string | Currency 72h withdraw limit                                           |
+| base_factor                   | string | Currency base factor                                                  |
+| precision                     | string | Currency precision                                                    |
+| position                      | string | Position used for defining currencies order                           |
+| icon_url                      | string | Currency icon                                                         |
+| min_confirmations             | string | Number of confirmations required for confirming deposit or withdrawal |
+| layer_two_withdraw_fee        | string | (Layer two dependant) The base layer two withdraw fee                 |
+| layer_two_max_deposit_amount  | string | (Layer two dependant) The maximum deposit amount                      |
+| layer_two_max_withdraw_amount | string | (Layer two dependant) The maxumum withdrawal amount                   |
 
 ### Withdraw
 
@@ -1332,20 +3521,68 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 
 ### Beneficiary
 
-| Name        | Type    | Description                                                                                   |
-| ----------- | ------- | --------------------------------------------------------------------------------------------- |
-| uuid        | integer | Beneficiary Identifier                                                                        |
-| currency    | string  | Beneficiary currency code.                                                                    |
-| name        | string  | Name of the beneficiary.                                                                      |
-| description | string  | A personal description of the beneficiary for your records.                                   |
-| data        | json    | Bank Account details for FIAT Beneficiary in JSON format. For crypto it's blockchain address. |
-| state       | string  | Pending, Active, Archived (0,1,2)                                                             |
+| Name        | Type    | Description                                                                                                                                     |
+| ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| uuid        | integer | Beneficiary Identifier                                                                                                                          |
+| currency    | string  | Beneficiary currency code.                                                                                                                      |
+| name        | string  | Name of the beneficiary.                                                                                                                        |
+| description | string  | A personal description of the beneficiary for your records.                                                                                     |
+| data        | json    | Bank Account details for FIAT Beneficiary in JSON format. For crypto it's blockchain address and or tag, as well as the travel rule information |
+| state       | string  | Pending, Active, Archived (0,1,2)                                                                                                               |
+
+### SubAccount
+
+| Name           | Type   | Description                                                                               |
+| -------------- | ------ | ----------------------------------------------------------------------------------------- |
+| uid            | string | Sub-account unique identifier                                                             |
+| account_name   | string | Display name for the sub-account                                                          |
+| state          | string | Account state (active, deleted)                                                           |
+| deposit_action | string | Action for deposits: 'none' (keep in sub-account) or 'transfer_to_parent' (auto-transfer) |
+| created_at     | string | Timestamp when the sub-account was created in ISO 8601 format                             |
+
+### Customer
+
+Customer accounts come in two types with different response structures:
+- **Individual Customers** - See [Customer (Individual)](#customer-individual) for personal account structure
+- **Business Customers** - See [Customer (Business)](#customer-business) for business account structure
+
+### Customer (Individual)
+
+| Name                      | Type   | Description                                                              |
+| ------------------------- | ------ | ------------------------------------------------------------------------ |
+| uid                       | string | Customer unique identifier                                               |
+| account_name              | string | Display name for the customer (usually custom_id)                        |
+| state                     | string | Account state (active, deleted)                                          |
+| custom_id                 | string | Custom identifier set by merchant/aggregator                             |
+| external_verification_url | string | URL for external verification system                                     |
+| kyc_status                | string | KYC verification status (verified, pending, rejected)                    |
+| created_at                | string | Timestamp when customer was created in ISO 8601 format                   |
+| profile                   | object | Customer profile information (first_name, last_name, dob, address, etc.) |
+| phone                     | object | Phone information (country, number, validated_at)                        |
+
+### Customer (Business)
+
+| Name             | Type    | Description                                                                                                                                                      |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id               | integer | Customer database ID                                                                                                                                             |
+| uid              | string  | Customer unique identifier                                                                                                                                       |
+| email            | string  | Business email address                                                                                                                                           |
+| role             | string  | Account role (customer)                                                                                                                                          |
+| entity_type      | string  | Entity type (business)                                                                                                                                           |
+| level            | integer | Account level                                                                                                                                                    |
+| state            | string  | Account state (active, pending, deleted)                                                                                                                         |
+| custom_id        | string  | Custom identifier set by merchant/aggregator                                                                                                                     |
+| business_profile | object  | Business details (legal_name, trading_name, registration_number, tax_id, incorporation_date, business_type, industry, address, city, postcode, country, website) |
+| ubos             | array   | Array of Ultimate Beneficial Owners with ownership details                                                                                                       |
+| created_at       | string  | Timestamp when customer was created in ISO 8601 format                                                                                                           |
+| updated_at       | string  | Timestamp when customer was last updated in ISO 8601 format                                                                                                      |
 
 ### Deposit
 
 | Name          | Type    | Description                               |
 | ------------- | ------- | ----------------------------------------- |
 | id            | integer | Unique deposit id.                        |
+| blockchain    | string  | Blockchain id.                            |
 | currency      | string  | Deposit currency id.                      |
 | amount        | double  | Deposit amount.                           |
 | fee           | double  | Deposit fee.                              |
@@ -1356,6 +3593,59 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 | completed_at  | string  | The datetime when deposit was completed.. |
 | tid           | string  | The shared transaction ID                 |
 
+### Transaction
+
+| Name                     | Type    | Description                                                                            |
+| ------------------------ | ------- | -------------------------------------------------------------------------------------- |
+| id                       | integer | Unique transaction identifier                                                          |
+| type                     | string  | Transaction type (deposit, withdraw, internal_transfer, trade, referral, maker_reward) |
+| reference_type           | string  | Related entity type (Deposit, Withdraw, Order, etc.)                                   |
+| reference_id             | integer | Related entity ID                                                                      |
+| credit_currency          | string  | Currency received (if applicable)                                                      |
+| credit_amount            | decimal | Amount received                                                                        |
+| debit_currency           | string  | Currency sent (if applicable)                                                          |
+| debit_amount             | decimal | Amount sent                                                                            |
+| fee_currency             | string  | Fee currency                                                                           |
+| fee                      | decimal | Fee amount                                                                             |
+| blockchain_key           | string  | Blockchain identifier (for crypto transactions)                                        |
+| blockchain_name          | string  | Blockchain name                                                                        |
+| market_id                | string  | Market ID (for trades)                                                                 |
+| order_id                 | string  | Order ID (for trades)                                                                  |
+| price                    | decimal | Trade price (for trades)                                                               |
+| origin_volume            | decimal | Original order volume (for trades)                                                     |
+| payment_method_provider  | string  | Payment provider (for fiat transactions)                                               |
+| payment_method_name      | string  | Payment method name                                                                    |
+| payment_method_precision | integer | Decimal precision for payment method                                                   |
+| payment_method_icon_url  | string  | Payment method icon URL                                                                |
+| voucher_pin              | string  | Voucher PIN (if applicable)                                                            |
+| change_voucher_pin       | string  | Change voucher PIN (if change was issued)                                              |
+| change_voucher_expiry    | string  | Change voucher expiry date (ISO8601)                                                   |
+| change_voucher_amount    | decimal | Change voucher amount                                                                  |
+| description              | string  | Transaction description                                                                |
+| member_description       | string  | Your personal note for this transaction                                                |
+| sender                   | string  | Sender information                                                                     |
+| receiver                 | string  | Receiver information                                                                   |
+| state                    | string  | Transaction state                                                                      |
+| address                  | string  | Blockchain address (for crypto transactions)                                           |
+| txid                     | string  | Transaction ID (blockchain txid or internal reference)                                 |
+| beneficiary_id           | integer | Beneficiary ID (for withdrawals)                                                       |
+| paid_at                  | string  | Payment completion timestamp (ISO8601)                                                 |
+| expires_at               | string  | Expiry timestamp (ISO8601, for vouchers)                                               |
+| created_at               | string  | Transaction creation timestamp (ISO8601)                                               |
+| updated_at               | string  | Last update timestamp (ISO8601)                                                        |
+
+### VASP
+
+| Name       | Type    | Description                                       |
+| ---------- | ------- | ------------------------------------------------- |
+| id         | integer | Unique VASP identifier (use for vasp_id)          |
+| name       | string  | VASP name                                         |
+| url        | string  | VASP website URL                                  |
+| email      | string  | VASP contact email                                |
+| state      | string  | VASP state (active, pending, rejected, requested) |
+| icon_url   | string  | VASP icon/logo URL                                |
+| created_at | string  | ISO8601 timestamp of VASP registration            |
+
 ### Account
 
 | Name     | Type   | Description           |
@@ -1364,17 +3654,67 @@ Subscribe to your account, and receive updates on your placed orders, trades exe
 | balance  | double | Account balance.      |
 | locked   | double | Account locked funds. |
 
-### Instant Deposit Method
+### Deposit Method
 
-| Name        | Type   | Description                            |
-| ----------- | ------ | -------------------------------------- |
-| id          | string | Method id, used when redeeming voucher |
-| provider_id | string | ID of the provider                     |
-| name        | string | Name of the provider method            |
-| type        | string | Type of method [voucher instanteft]    |
-| description | string | Description of this provider           |
-| min_amount  | number | Minimum deposit / redemption amount    |
-| max_amount  | number | Maximum deposit / redemption amount    |
+| Name            | Type    | Description                                                           |
+| --------------- | ------- | --------------------------------------------------------------------- |
+| uuid            | string  | Unique identifier for the deposit method                              |
+| name            | string  | Display name of the deposit method                                    |
+| description     | string  | Human-readable description of the method                              |
+| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                              |
+| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                                  |
+| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")         |
+| type            | string  | Method type (e.g., "bank", "crypto", "voucher")                       |
+| currencyType    | string  | Currency type: "fiat" or "crypto"                                     |
+| providerId      | string  | Payment provider identifier (e.g., "stitch", "xago", "cape")          |
+| minAmount       | number  | Minimum deposit amount (after baseFactor conversion)                  |
+| maxAmount       | number  | Maximum deposit amount (derived from remaining limits)                |
+| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)         |
+| precision       | number  | Decimal precision for display                                         |
+| feeCape         | number  | Cape's fee amount or percentage                                       |
+| feeProvider     | number  | Provider's fee amount or percentage                                   |
+| position        | number  | Display order position                                                |
+| iconUrl         | string  | Icon URL for UI display                                               |
+| verified        | boolean | Whether user is verified for this method                              |
+| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below)      |
+
+### Withdraw Method
+
+| Name            | Type    | Description                                                           |
+| --------------- | ------- | --------------------------------------------------------------------- |
+| uuid            | string  | Unique identifier for the withdraw method                             |
+| id              | number  | Database ID (included for legacy support)                             |
+| name            | string  | Display name of the withdraw method                                   |
+| description     | string  | Human-readable description of the method                              |
+| currencyId      | string  | Currency identifier (e.g., "btc", "zar")                              |
+| symbol          | string  | Currency symbol (e.g., "BTC", "ZAR")                                  |
+| blockchainName  | string  | Blockchain network name (e.g., "bitcoin", "ethereum", "fiat")         |
+| type            | string  | Method type (e.g., "crypto", "bank", "wallet")                        |
+| currencyType    | string  | Currency type: "fiat" or "crypto"                                     |
+| providerId      | string  | Payment provider identifier (e.g., "xago", "celbux", "cape")          |
+| processorId     | string  | Processor that handles withdrawals for this method                    |
+| minAmount       | number  | Minimum withdrawal amount (after baseFactor conversion)               |
+| maxAmount       | number  | Maximum withdrawal amount (derived from remaining limits)             |
+| baseFactor      | number  | Conversion factor (divide stored amounts by this for display)         |
+| precision       | number  | Decimal precision for display                                         |
+| feeCape         | number  | Cape's withdrawal fee amount or percentage                            |
+| feeProvider     | number  | Provider's withdrawal fee amount or percentage                        |
+| position        | number  | Display order position                                                |
+| iconUrl         | string  | Icon URL for UI display                                               |
+| verified        | boolean | Whether user is verified for this method                              |
+| remainingLimits | object  | Remaining transaction limits (see Remaining Limits object below)      |
+
+### Remaining Limits
+
+The `remainingLimits` object is included in both Deposit Method and Withdraw Method responses.
+
+| Name             | Type   | Description                                   |
+| ---------------- | ------ | --------------------------------------------- |
+| transaction_max  | number | Maximum amount allowed per single transaction |
+| day              | number | Remaining limit for the current day           |
+| week             | number | Remaining limit for the current week          |
+| month            | number | Remaining limit for the current month         |
+| year_to_date     | number | Remaining limit for the current year          |
 
 ### Voucher Redemption
 

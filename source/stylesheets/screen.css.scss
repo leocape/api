@@ -40,6 +40,7 @@ body {
 .request-type {
   &__get,
   &__post,
+  &__put,
   &__patch,
   &__delete,
   &__subscribe {
@@ -60,6 +61,10 @@ body {
 
   &__post {
     background: #10a449;
+  }
+
+  &__put {
+    background: #c5862c;
   }
 
   &__patch {
