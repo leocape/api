@@ -2669,6 +2669,347 @@ Valid `doc_type` values for UBO KYC documents (same as individual customers):
 - Business customer remains in "pending" status until admin approval
 - No automatic verification for business customers (always requires manual review)
 
+## <span class="request-type__get">GET</span> List payment references
+
+```javascript
+// listPaymentReferences.js
+const axios = require("axios");
+
+const url = "https://trade.capecrypto.com/api/v2/atlas/account/payments";
+
+const listPaymentReferences = async () => {
+  const headers = {
+    "X-Auth-Apikey": "your_api_key",
+    "X-Auth-Nonce": Date.now(),
+    "X-Auth-Signature": "your_generated_signature",
+  };
+
+  const axiosConfig = {
+    method: "get",
+    url: url,
+    headers: headers,
+    params: {
+      page: 1,
+      limit: 50,
+    },
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+listPaymentReferences();
+```
+
+`/api/v2/account/payments`
+
+### Description
+
+List all payment references for your customer accounts. Returns paginated results.
+
+**Access:** Merchants and Aggregators only
+
+**Acting as a Customer:** Provide `uid` parameter to list payment references for that customer sub-account. The customer must belong to your merchant account.
+
+---
+
+### Parameters
+
+| Name  | Located in | Description                 | Required | Schema  |
+| ----- | ---------- | --------------------------- | -------- | ------- |
+| uid   | query      | Customer sub-account UID    | No       | string  |
+| page  | query      | Page number (default: 1)    | No       | integer |
+| limit | query      | Results per page (max: 100) | No       | integer |
+
+### Responses
+
+**Headers:**
+
+| Header   | Description               |
+| -------- | ------------------------- |
+| Total    | Total number of records   |
+| Page     | Current page number       |
+| Per-Page | Records returned per page |
+
+| Code | Description                         | Schema                    |
+| ---- | ----------------------------------- | ------------------------- |
+| 200  | Payment references retrieved        | Array of PaymentReference |
+| 403  | Forbidden (not merchant/aggregator) | Error array               |
+| 422  | Validation error                    | Error array               |
+
+**Example Response:**
+
+```json
+[
+  {
+    "id": 123,
+    "reference": "PAY-ABC123",
+    "uid": "ID123456789",
+    "currency": "btc",
+    "deposit_action": {
+      "action": "convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 456,
+      "max_slippage": 0.5
+    },
+    "state": "pending_deposit",
+    "webhook_url": "https://merchant.com/webhooks/deposits",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+]
+```
+
+## <span class="request-type__get">GET</span> Show payment reference
+
+```javascript
+// showPaymentReference.js
+const axios = require("axios");
+
+const paymentId = 123;
+const url = `https://trade.capecrypto.com/api/v2/atlas/account/payments/${paymentId}`;
+
+const showPaymentReference = async () => {
+  const headers = {
+    "X-Auth-Apikey": "your_api_key",
+    "X-Auth-Nonce": Date.now(),
+    "X-Auth-Signature": "your_generated_signature",
+  };
+
+  const axiosConfig = {
+    method: "get",
+    url: url,
+    headers: headers,
+    params: {
+      includeSecret: true, // Optional: include webhook secret
+    },
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+showPaymentReference();
+```
+
+`/api/v2/account/payments/:id`
+
+### Description
+
+Retrieve details of a specific payment reference.
+
+**Access:** Merchants and Aggregators only
+
+---
+
+### Parameters
+
+| Name          | Located in | Description                                         | Required | Schema  |
+| ------------- | ---------- | --------------------------------------------------- | -------- | ------- |
+| id            | path       | Payment reference ID                                | Yes      | integer |
+| includeSecret | query      | Include webhook secret in response (default: false) | No       | boolean |
+
+### Responses
+
+| Code | Description                         | Schema           |
+| ---- | ----------------------------------- | ---------------- |
+| 200  | Payment reference retrieved         | PaymentReference |
+| 403  | Forbidden (not merchant/aggregator) | Error array      |
+| 404  | Payment reference not found         | Error array      |
+
+**Example Response (with includeSecret=true):**
+
+```json
+{
+  "id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "aggregate_convert_and_withdraw",
+    "target_currency": "zar",
+    "beneficiary_id": 456,
+    "lightning_invoice": null,
+    "max_slippage": 0.5
+  },
+  "state": "completed",
+  "webhook_url": "https://merchant.com/webhooks/deposits",
+  "webhook_secret": "wh_secret_abc123xyz",
+  "webhook_protocol": "hmac",
+  "deposit_id": 789,
+  "order_id": 1011,
+  "withdraw_id": 1213,
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T14:45:00Z"
+}
+```
+
+## <span class="request-type__post">POST</span> Create payment reference
+
+```javascript
+// createPaymentReference.js
+const axios = require("axios");
+
+const url = "https://trade.capecrypto.com/api/v2/atlas/account/payments";
+
+const createPaymentReference = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Auth-Apikey": "your_api_key",
+    "X-Auth-Nonce": Date.now(),
+    "X-Auth-Signature": "your_generated_signature",
+  };
+
+  const paymentData = {
+    uid: "ID123456789",
+    currency: "btc",
+    deposit_action: {
+      action: "aggregate_convert_and_withdraw",
+      target_currency: "zar",
+      beneficiary_id: 456,
+      max_slippage: 0.5,
+    },
+    webhook_url: "https://merchant.com/webhooks/deposits",
+    webhook_secret: "my_secret_key",
+    webhook_protocol: "hmac",
+  };
+
+  const axiosConfig = {
+    method: "post",
+    url: url,
+    headers: headers,
+    data: paymentData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createPaymentReference();
+```
+
+`/api/v2/account/payments`
+
+### Description
+
+Create a new payment reference for a customer sub-account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received.
+
+**Access:** Merchants and Aggregators only
+
+**Webhook Notifications:** When the configured action completes successfully, a webhook notification will be sent to the provided webhook URL.
+
+---
+
+### Parameters
+
+| Name             | Located in | Description                                                         | Required | Schema |
+| ---------------- | ---------- | ------------------------------------------------------------------- | -------- | ------ |
+| uid              | body       | Customer sub-account UID                                            | Yes      | string |
+| currency         | body       | Currency code (e.g., "btc", "zar")                                  | Yes      | string |
+| deposit_action   | body       | Automated action configuration (see Deposit Action Object below)    | No       | object |
+| webhook_url      | body       | Webhook URL for notifications                                       | No       | string |
+| webhook_secret   | body       | Webhook secret for HMAC signing                                     | No       | string |
+| webhook_protocol | body       | Webhook protocol: "hmac", "plain_text", or "none" (default: "none") | No       | string |
+
+**Deposit Action Object:**
+
+| Field             | Description                                                                                | Required    | Schema  |
+| ----------------- | ------------------------------------------------------------------------------------------ | ----------- | ------- |
+| action            | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" | Yes         | string  |
+| target_currency   | Target currency for conversion (required if action includes conversion)                    | Conditional | string  |
+| beneficiary_id    | Beneficiary ID for withdrawal (required if action includes withdrawal)                     | Conditional | integer |
+| lightning_invoice | Lightning invoice for withdrawal (alternative to beneficiary_id)                           | No          | string  |
+| max_slippage      | Maximum slippage percentage for conversion (default: 1.0, max: 5.0)                        | No          | decimal |
+
+**Deposit Action Types:**
+
+- **none**: No automated action, deposit sits in account
+- **aggregate**: Combine multiple small deposits into one before processing
+- **convert_and_withdraw**: Convert currency and withdraw to beneficiary
+- **aggregate_convert_and_withdraw**: Aggregate deposits, then convert and withdraw
+
+### Responses
+
+| Code | Description                         | Schema           |
+| ---- | ----------------------------------- | ---------------- |
+| 201  | Payment reference created           | PaymentReference |
+| 403  | Forbidden (not merchant/aggregator) | Error array      |
+| 422  | Validation error                    | Error array      |
+
+**Example Response:**
+
+```json
+{
+  "id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "aggregate_convert_and_withdraw",
+    "target_currency": "zar",
+    "beneficiary_id": 456,
+    "lightning_invoice": null,
+    "max_slippage": 0.5
+  },
+  "state": "pending_deposit",
+  "webhook_url": "https://merchant.com/webhooks/deposits",
+  "webhook_protocol": "hmac",
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+}
+```
+
+**Example: Simple Deposit (No Action)**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc"
+}
+```
+
+**Example: Aggregate Only**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "aggregate"
+  }
+}
+```
+
+**Example: Convert and Withdraw (Lightning)**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "convert_and_withdraw",
+    "target_currency": "btc",
+    "lightning_invoice": "lnbc100n1...",
+    "max_slippage": 1.0
+  },
+  "webhook_url": "https://merchant.com/webhooks/deposits",
+  "webhook_secret": "my_secret_key",
+  "webhook_protocol": "hmac"
+}
+```
+
 # Merchant Management (Aggregators Only)
 
 **Note:** These endpoints are only available for **Aggregators** to manage their merchant accounts.
@@ -3651,6 +3992,55 @@ Customer accounts come in two types with different response structures:
 | state      | string  | VASP state (active, pending, rejected, requested) |
 | icon_url   | string  | VASP icon/logo URL                                |
 | created_at | string  | ISO8601 timestamp of VASP registration            |
+
+### PaymentReference
+
+| Name                 | Type    | Description                                                            |
+| -------------------- | ------- | ---------------------------------------------------------------------- |
+| id                   | integer | Payment reference ID                                                   |
+| reference            | string  | Unique payment reference code (used by customer for deposits)          |
+| uid                  | string  | Customer sub-account UID                                               |
+| currency             | string  | Currency code (e.g., "btc", "zar")                                     |
+| expected_amount      | string  | Expected deposit amount (null if not specified)                        |
+| deposit_action       | object  | Automated action configuration (null if not configured)                |
+| state                | string  | Current state (see PaymentReference States)                            |
+| expires_at           | string  | ISO8601 expiration timestamp                                           |
+| usage_count          | integer | Number of times the reference has been used                            |
+| last_used_at         | string  | ISO8601 timestamp of last use (null if never used)                     |
+| webhook_url          | string  | Webhook URL (only included if configured)                              |
+| webhook_protocol     | string  | Webhook protocol: "hmac", "plain_text", or "none" (only if configured) |
+| webhook_secret       | string  | Webhook secret (only included for owner with includeSecret option)     |
+| deposit_id           | integer | Linked deposit ID (only included if linked)                            |
+| order_id             | integer | Linked order ID (only included if linked)                              |
+| withdraw_id          | integer | Linked withdrawal ID (only included if linked)                         |
+| internal_transfer_id | integer | Linked internal transfer ID (only included if linked)                  |
+| error                | string  | Error message (only included if state is "failed")                     |
+| created_at           | string  | ISO8601 creation timestamp                                             |
+| updated_at           | string  | ISO8601 last update timestamp                                          |
+
+**Deposit Action Object Structure:**
+
+| Field             | Type    | Description                                                                                |
+| ----------------- | ------- | ------------------------------------------------------------------------------------------ |
+| action            | string  | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" |
+| target_currency   | string  | Target currency for conversion (only for convert actions)                                  |
+| beneficiary_id    | integer | Beneficiary ID for withdrawals (only for withdraw actions)                                 |
+| lightning_invoice | string  | Lightning invoice for lightning withdrawals (alternative to beneficiary_id)                |
+| max_slippage      | number  | Maximum slippage percentage (0.1-10, default: 2.0)                                         |
+
+**PaymentReference States:**
+
+Payment references progress through various states based on the configured actions. Webhook notifications are sent when the reference reaches `completed` or `failed` state.
+
+| State                     | Description                         |
+| ------------------------- | ----------------------------------- |
+| pending_deposit           | Waiting for deposit                 |
+| pending_internal_transfer | Processing aggregation              |
+| pending_buy_order         | Processing conversion (buy)         |
+| pending_sell_order        | Processing conversion (sell)        |
+| pending_withdraw          | Processing withdrawal               |
+| completed                 | All actions completed successfully  |
+| failed                    | Processing failed (see error field) |
 
 ### Account
 
