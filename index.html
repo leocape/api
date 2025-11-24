@@ -5130,7 +5130,8 @@ Total: 150
 
   <span class="kd">const</span> <span class="nx">paymentData</span> <span class="o">=</span> <span class="p">{</span>
     <span class="na">uid</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ID123456789</span><span class="dl">"</span><span class="p">,</span>
-    <span class="na">currency</span><span class="p">:</span> <span class="dl">"</span><span class="s2">btc</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">currency</span><span class="p">:</span> <span class="dl">"</span><span class="s2">zar</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">expected_amount</span><span class="p">:</span> <span class="dl">"</span><span class="s2">100</span><span class="dl">"</span>
     <span class="na">deposit_action</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">aggregate_convert_and_withdraw</span><span class="dl">"</span><span class="p">,</span>
       <span class="na">target_currency</span><span class="p">:</span> <span class="dl">"</span><span class="s2">zar</span><span class="dl">"</span><span class="p">,</span>
@@ -5284,6 +5285,13 @@ Total: 150
 <td>body</td>
 <td>Currency code (e.g., &quot;btc&quot;, &quot;zar&quot;)</td>
 <td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>expected_amount</td>
+<td>body</td>
+<td>Expected amount the customer will deposit (e.g., &quot;1000&quot;)</td>
+<td>No</td>
 <td>string</td>
 </tr>
 <tr>
