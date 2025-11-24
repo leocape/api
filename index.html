@@ -1579,7 +1579,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <h3 id='description-12'>Description</h3>
 <p>Create a new beneficiary for cryptocurrency or fiat withdrawals. Beneficiaries can be cryptocurrency wallet addresses (with required travel rule information) or bank accounts for fiat transfers. All beneficiaries created via the API are automatically activated and ready for use.</p>
 
-<p>For cryptocurrency beneficiaries with travel rule requirements, you can specify whether the wallet is your own (<code>is_own</code>), unhosted (<code>is_unhosted</code>), or associated with a Virtual Asset Service Provider (VASP). Use the <a href="#get-vasps">Get VASPs</a> endpoint to retrieve available VASP IDs.</p>
+<p>For cryptocurrency beneficiaries with travel rule requirements, you can specify whether the wallet is your own (<code>is_own</code>), unhosted (<code>is_unhosted</code>), or associated with a Virtual Asset Service Provider (VASP). Use the <a href="#get-get-vasps">Get VASPs</a> endpoint to retrieve available VASP IDs.</p>
 <h3 id='parameters-10'>Parameters</h3>
 <table><thead>
 <tr>
@@ -1679,7 +1679,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>vasp_id</td>
 <td>number</td>
 <td>No</td>
-<td>Travel rule: VASP ID (obtain from <a href="#get-vasps">Get VASPs</a> endpoint)</td>
+<td>Travel rule: VASP ID (obtain from <a href="#get-get-vasps">Get VASPs</a> endpoint)</td>
 </tr>
 <tr>
 <td>recipient_data</td>
@@ -2823,7 +2823,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <tr>
 <td>vasp_id</td>
 <td>number</td>
-<td>VASP ID (obtain from <a href="#get-vasps">Get VASPs</a> endpoint)</td>
+<td>VASP ID (obtain from <a href="#get-get-vasps">Get VASPs</a> endpoint)</td>
 </tr>
 <tr>
 <td>address</td>
