@@ -647,7 +647,7 @@ getTransactions();
 
 Create a new beneficiary for cryptocurrency or fiat withdrawals. Beneficiaries can be cryptocurrency wallet addresses (with required travel rule information) or bank accounts for fiat transfers. All beneficiaries created via the API are automatically activated and ready for use.
 
-For cryptocurrency beneficiaries with travel rule requirements, you can specify whether the wallet is your own (`is_own`), unhosted (`is_unhosted`), or associated with a Virtual Asset Service Provider (VASP). Use the [Get VASPs](#get-vasps) endpoint to retrieve available VASP IDs.
+For cryptocurrency beneficiaries with travel rule requirements, you can specify whether the wallet is your own (`is_own`), unhosted (`is_unhosted`), or associated with a Virtual Asset Service Provider (VASP). Use the [Get VASPs](#get-get-vasps) endpoint to retrieve available VASP IDs.
 
 ### Parameters
 
@@ -662,14 +662,14 @@ For cryptocurrency beneficiaries with travel rule requirements, you can specify 
 
 Cryptocurrency `data` Object Fields
 
-| Field          | Type    | Required | Description                                                         |
-| -------------- | ------- | -------- | ------------------------------------------------------------------- |
-| address        | string  | Yes      | Cryptocurrency wallet address                                       |
-| tag            | string  | No       | Destination tag (for XRP, Stellar, etc.) - max: 4294967295          |
-| is_own         | boolean | No       | Travel rule: Is this your own wallet?                               |
-| is_unhosted    | boolean | No       | Travel rule: Is this an unhosted wallet?                            |
-| vasp_id        | number  | No       | Travel rule: VASP ID (obtain from [Get VASPs](#get-vasps) endpoint) |
-| recipient_data | object  | No       | Travel rule: Recipient information (see travel rule fields)         |
+| Field          | Type    | Required | Description                                                             |
+| -------------- | ------- | -------- | ----------------------------------------------------------------------- |
+| address        | string  | Yes      | Cryptocurrency wallet address                                           |
+| tag            | string  | No       | Destination tag (for XRP, Stellar, etc.) - max: 4294967295              |
+| is_own         | boolean | No       | Travel rule: Is this your own wallet?                                   |
+| is_unhosted    | boolean | No       | Travel rule: Is this an unhosted wallet?                                |
+| vasp_id        | number  | No       | Travel rule: VASP ID (obtain from [Get VASPs](#get-get-vasps) endpoint) |
+| recipient_data | object  | No       | Travel rule: Recipient information (see travel rule fields)             |
 
 Fiat `data` Object Fields
 
@@ -1241,13 +1241,13 @@ For compliance with travel rule requirements, you can include recipient informat
 
 **Travel Rule Fields:**
 
-| Field          | Type    | Description                                            |
-| -------------- | ------- | ------------------------------------------------------ |
-| is_own         | boolean | Is this your own wallet?                               |
-| is_unhosted    | boolean | Is this an unhosted wallet?                            |
-| vasp_id        | number  | VASP ID (obtain from [Get VASPs](#get-vasps) endpoint) |
-| address        | string  | Lightning address or BOLT11 invoice                    |
-| recipient_data | object  | Recipient information (see fields below)               |
+| Field          | Type    | Description                                                |
+| -------------- | ------- | ---------------------------------------------------------- |
+| is_own         | boolean | Is this your own wallet?                                   |
+| is_unhosted    | boolean | Is this an unhosted wallet?                                |
+| vasp_id        | number  | VASP ID (obtain from [Get VASPs](#get-get-vasps) endpoint) |
+| address        | string  | Lightning address or BOLT11 invoice                        |
+| recipient_data | object  | Recipient information (see fields below)                   |
 
 **Recipient Data Fields:**
 
