@@ -488,6 +488,15 @@
                   <li>
                     <a href="#post-upload-ubo-documents" class="toc-h2 toc-link" data-title="POST Upload UBO Documents"><span class="request-type__post">POST</span> Upload UBO Documents</a>
                   </li>
+                  <li>
+                    <a href="#get-list-payment-references" class="toc-h2 toc-link" data-title="GET List payment references"><span class="request-type__get">GET</span> List payment references</a>
+                  </li>
+                  <li>
+                    <a href="#get-show-payment-reference" class="toc-h2 toc-link" data-title="GET Show payment reference"><span class="request-type__get">GET</span> Show payment reference</a>
+                  </li>
+                  <li>
+                    <a href="#post-create-payment-reference" class="toc-h2 toc-link" data-title="POST Create payment reference"><span class="request-type__post">POST</span> Create payment reference</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -594,6 +603,9 @@
                   </li>
                   <li>
                     <a href="#vasp" class="toc-h2 toc-link" data-title="VASP">VASP</a>
+                  </li>
+                  <li>
+                    <a href="#paymentreference" class="toc-h2 toc-link" data-title="PaymentReference">PaymentReference</a>
                   </li>
                   <li>
                     <a href="#account-2" class="toc-h2 toc-link" data-title="Account">Account</a>
@@ -5103,7 +5115,489 @@ Total: 150
 <li>Business customer remains in &quot;pending&quot; status until admin approval</li>
 <li>No automatic verification for business customers (always requires manual review)</li>
 </ul>
-<h1 id='merchant-management-aggregators-only'>Merchant Management (Aggregators Only)</h1>
+<h2 id='get-list-payment-references'><span class="request-type__get">GET</span> List payment references</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// listPaymentReferences.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com/api/v2/atlas/account/payments</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">listPaymentReferences</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_api_key</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_generated_signature</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">params</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">page</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">limit</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">listPaymentReferences</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/api/v2/account/payments</code></p>
+<h3 id='description-44'>Description</h3>
+<p>List all payment references for your customer accounts. Returns paginated results.</p>
+
+<p><strong>Access:</strong> Merchants and Aggregators only</p>
+
+<p><strong>Acting as a Customer:</strong> Provide <code>uid</code> parameter to list payment references for that customer sub-account. The customer must belong to your merchant account.</p>
+
+<hr>
+<h3 id='parameters-40'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>uid</td>
+<td>query</td>
+<td>Customer sub-account UID</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>page</td>
+<td>query</td>
+<td>Page number (default: 1)</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>query</td>
+<td>Results per page (max: 100)</td>
+<td>No</td>
+<td>integer</td>
+</tr>
+</tbody></table>
+<h3 id='responses-44'>Responses</h3>
+<p><strong>Headers:</strong></p>
+
+<table><thead>
+<tr>
+<th>Header</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Total</td>
+<td>Total number of records</td>
+</tr>
+<tr>
+<td>Page</td>
+<td>Current page number</td>
+</tr>
+<tr>
+<td>Per-Page</td>
+<td>Records returned per page</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Payment references retrieved</td>
+<td>Array of PaymentReference</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden (not merchant/aggregator)</td>
+<td>Error array</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validation error</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+
+<p><strong>Example Response:</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAY-ABC123"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending_deposit"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"webhook_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://merchant.com/webhooks/deposits"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T10:30:00Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T10:30:00Z"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h2 id='get-show-payment-reference'><span class="request-type__get">GET</span> Show payment reference</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// showPaymentReference.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">paymentId</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`https://trade.capecrypto.com/api/v2/atlas/account/payments/</span><span class="p">${</span><span class="nx">paymentId</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">showPaymentReference</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_api_key</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_generated_signature</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">params</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">includeSecret</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// Optional: include webhook secret</span>
+    <span class="p">},</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">showPaymentReference</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/api/v2/account/payments/:id</code></p>
+<h3 id='description-45'>Description</h3>
+<p>Retrieve details of a specific payment reference.</p>
+
+<p><strong>Access:</strong> Merchants and Aggregators only</p>
+
+<hr>
+<h3 id='parameters-41'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>path</td>
+<td>Payment reference ID</td>
+<td>Yes</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>includeSecret</td>
+<td>query</td>
+<td>Include webhook secret in response (default: false)</td>
+<td>No</td>
+<td>boolean</td>
+</tr>
+</tbody></table>
+<h3 id='responses-45'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Payment reference retrieved</td>
+<td>PaymentReference</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden (not merchant/aggregator)</td>
+<td>Error array</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Payment reference not found</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+
+<p><strong>Example Response (with includeSecret=true):</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAY-ABC123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate_convert_and_withdraw"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lightning_invoice"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"completed"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://merchant.com/webhooks/deposits"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"wh_secret_abc123xyz"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1011</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"withdraw_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1213</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T10:30:00Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T14:45:00Z"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h2 id='post-create-payment-reference'><span class="request-type__post">POST</span> Create payment reference</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// createPaymentReference.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com/api/v2/atlas/account/payments</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">createPaymentReference</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">Content-Type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/json</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Apikey</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_api_key</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Nonce</span><span class="dl">"</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+    <span class="dl">"</span><span class="s2">X-Auth-Signature</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">your_generated_signature</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">paymentData</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">uid</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ID123456789</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">currency</span><span class="p">:</span> <span class="dl">"</span><span class="s2">btc</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">deposit_action</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">aggregate_convert_and_withdraw</span><span class="dl">"</span><span class="p">,</span>
+      <span class="na">target_currency</span><span class="p">:</span> <span class="dl">"</span><span class="s2">zar</span><span class="dl">"</span><span class="p">,</span>
+      <span class="na">beneficiary_id</span><span class="p">:</span> <span class="mi">456</span><span class="p">,</span>
+      <span class="na">max_slippage</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">webhook_url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">https://merchant.com/webhooks/deposits</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">webhook_secret</span><span class="p">:</span> <span class="dl">"</span><span class="s2">my_secret_key</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">webhook_protocol</span><span class="p">:</span> <span class="dl">"</span><span class="s2">hmac</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">post</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">paymentData</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">createPaymentReference</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/api/v2/account/payments</code></p>
+<h3 id='description-46'>Description</h3>
+<p>Create a new payment reference for a customer sub-account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received.</p>
+
+<p><strong>Access:</strong> Merchants and Aggregators only</p>
+
+<p><strong>Webhook Notifications:</strong> When the configured action completes successfully, a webhook notification will be sent to the provided webhook URL.</p>
+
+<hr>
+<h3 id='parameters-42'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>uid</td>
+<td>body</td>
+<td>Customer sub-account UID</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>body</td>
+<td>Currency code (e.g., &quot;btc&quot;, &quot;zar&quot;)</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>deposit_action</td>
+<td>body</td>
+<td>Automated action configuration (see Deposit Action Object below)</td>
+<td>No</td>
+<td>object</td>
+</tr>
+<tr>
+<td>webhook_url</td>
+<td>body</td>
+<td>Webhook URL for notifications</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>webhook_secret</td>
+<td>body</td>
+<td>Webhook secret for HMAC signing</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>webhook_protocol</td>
+<td>body</td>
+<td>Webhook protocol: &quot;hmac&quot;, &quot;plain_text&quot;, or &quot;none&quot; (default: &quot;none&quot;)</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+
+<p><strong>Deposit Action Object:</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>Action type: &quot;none&quot;, &quot;aggregate&quot;, &quot;convert_and_withdraw&quot;, &quot;aggregate_convert_and_withdraw&quot;</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>target_currency</td>
+<td>Target currency for conversion (required if action includes conversion)</td>
+<td>Conditional</td>
+<td>string</td>
+</tr>
+<tr>
+<td>beneficiary_id</td>
+<td>Beneficiary ID for withdrawal (required if action includes withdrawal)</td>
+<td>Conditional</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>lightning_invoice</td>
+<td>Lightning invoice for withdrawal (alternative to beneficiary_id)</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>max_slippage</td>
+<td>Maximum slippage percentage for conversion (default: 1.0, max: 5.0)</td>
+<td>No</td>
+<td>decimal</td>
+</tr>
+</tbody></table>
+
+<p><strong>Deposit Action Types:</strong></p>
+
+<ul>
+<li><strong>none</strong>: No automated action, deposit sits in account</li>
+<li><strong>aggregate</strong>: Combine multiple small deposits into one before processing</li>
+<li><strong>convert_and_withdraw</strong>: Convert currency and withdraw to beneficiary</li>
+<li><strong>aggregate_convert_and_withdraw</strong>: Aggregate deposits, then convert and withdraw</li>
+</ul>
+<h3 id='responses-46'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Payment reference created</td>
+<td>PaymentReference</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden (not merchant/aggregator)</td>
+<td>Error array</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validation error</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+
+<p><strong>Example Response:</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAY-ABC123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate_convert_and_withdraw"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lightning_invoice"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending_deposit"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://merchant.com/webhooks/deposits"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T10:30:00Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-15T10:30:00Z"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p><strong>Example: Simple Deposit (No Action)</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p><strong>Example: Aggregate Only</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p><strong>Example: Convert and Withdraw (Lightning)</strong></p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lightning_invoice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lnbc100n1..."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"webhook_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://merchant.com/webhooks/deposits"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my_secret_key"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webhook_protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h1 id='merchant-management-aggregators-only'>Merchant Management (Aggregators Only)</h1>
 <p><strong>Note:</strong> These endpoints are only available for <strong>Aggregators</strong> to manage their merchant accounts.</p>
 <h2 id='get-list-merchants'><span class="request-type__get">GET</span> List Merchants</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// listMerchants.js</span>
 <span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
@@ -5133,9 +5627,9 @@ Total: 150
 <span class="nx">listMerchants</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants</code></p>
-<h3 id='description-44'>Description</h3>
+<h3 id='description-47'>Description</h3>
 <p>Get a paginated list of merchant accounts managed by the aggregator.</p>
-<h3 id='parameters-40'>Parameters</h3>
+<h3 id='parameters-43'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5160,7 +5654,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-44'>Responses</h3>
+<h3 id='responses-47'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5205,9 +5699,9 @@ Total: 150
 <span class="nx">listMerchantCustomers</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants/{uid}/customers</code></p>
-<h3 id='description-45'>Description</h3>
+<h3 id='description-48'>Description</h3>
 <p>Get a paginated list of customers belonging to a specific merchant. This provides a nested view for aggregators to see which customers belong to which merchant.</p>
-<h3 id='parameters-41'>Parameters</h3>
+<h3 id='parameters-44'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5239,7 +5733,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-45'>Responses</h3>
+<h3 id='responses-48'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5262,13 +5756,13 @@ Total: 150
 <p><strong>Note:</strong> Pagination information is returned in HTTP headers (<code>Page</code>, <code>Per-Page</code>, <code>Total</code>), not in the response body.</p>
 <h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-46'>Description</h3>
+<h3 id='description-49'>Description</h3>
 <p>Submits a Buy/Sell order to the order book. Orders should be confirmed that they have been created either by querying the order ID that is returned in the response, or subscribing to the websockets for order updates.</p>
 
 <p>You can supply your own custom_order_id for tracking purposes for you own system.</p>
 
 <p>For limit orders, you can specify post_only to ensure that orders wont complete if they would have matched. The order request will fail if post_only is true, and the order would have matched.</p>
-<h3 id='parameters-42'>Parameters</h3>
+<h3 id='parameters-45'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5320,7 +5814,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-46'>Responses</h3>
+<h3 id='responses-49'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5336,9 +5830,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-order-by-id'><span class="request-type__get">GET</span> Order by id</h2>
 <p><code>/market/orders/{id}</code></p>
-<h3 id='description-47'>Description</h3>
+<h3 id='description-50'>Description</h3>
 <p>Get single order details.</p>
-<h3 id='parameters-43'>Parameters</h3>
+<h3 id='parameters-46'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5356,7 +5850,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-47'>Responses</h3>
+<h3 id='responses-50'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5372,9 +5866,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-all-orders'><span class="request-type__post">GET</span> All orders</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-48'>Description</h3>
+<h3 id='description-51'>Description</h3>
 <p>Get orders, result is paginated.</p>
-<h3 id='parameters-44'>Parameters</h3>
+<h3 id='parameters-47'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5462,7 +5956,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-48'>Responses</h3>
+<h3 id='responses-51'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5478,9 +5972,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
 <p><code>/market/trades</code></p>
-<h3 id='description-49'>Description</h3>
+<h3 id='description-52'>Description</h3>
 <p>Fetch your trades executed on your orders.</p>
-<h3 id='parameters-45'>Parameters</h3>
+<h3 id='parameters-48'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5540,7 +6034,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-49'>Responses</h3>
+<h3 id='responses-52'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5556,9 +6050,9 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-order'><span class="request-type__post">POST</span> Cancel Order</h2>
 <p><code>/market/orders/{id}/cancel</code></p>
-<h3 id='description-50'>Description</h3>
+<h3 id='description-53'>Description</h3>
 <p>Cancel a specific order by Order id.</p>
-<h3 id='parameters-46'>Parameters</h3>
+<h3 id='parameters-49'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5576,7 +6070,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-50'>Responses</h3>
+<h3 id='responses-53'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5590,9 +6084,9 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
 <p><code>/market/orders/cancel</code></p>
-<h3 id='description-51'>Description</h3>
+<h3 id='description-54'>Description</h3>
 <p>Cancel all of your open orders.</p>
-<h3 id='parameters-47'>Parameters</h3>
+<h3 id='parameters-50'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5617,7 +6111,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-51'>Responses</h3>
+<h3 id='responses-54'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5692,13 +6186,13 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.ob-inc</code></p>
-<h3 id='description-52'>Description</h3>
+<h3 id='description-55'>Description</h3>
 <p>Subscribe to orderbook updates for the specified market. You can subscribe to multiple markets at the same time by adding each market as a param, eg</p>
 
 <p><code>?stream=btczar.ob-inc&amp;ethzar.ob-inc</code></p>
 
 <p>Note: if the amount is empty &quot;&quot;, the order has been removed from the orderbook</p>
-<h3 id='parameters-48'>Parameters</h3>
+<h3 id='parameters-51'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5716,7 +6210,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-52'>Responses</h3>
+<h3 id='responses-55'>Responses</h3>
 <table><thead>
 <tr>
 <th>Description</th>
@@ -5763,9 +6257,9 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.kline-{period}</code></p>
-<h3 id='description-53'>Description</h3>
+<h3 id='description-56'>Description</h3>
 <p>Subscribe to the K-LINE (OHLC) for the specified market to get updates on the OHLC for each period. Similary to the otherendpoints, you can combine streams into a single subscription request.</p>
-<h3 id='parameters-49'>Parameters</h3>
+<h3 id='parameters-52'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5790,7 +6284,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-53'>Responses</h3>
+<h3 id='responses-56'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7182,6 +7676,191 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>created_at</td>
 <td>string</td>
 <td>ISO8601 timestamp of VASP registration</td>
+</tr>
+</tbody></table>
+<h3 id='paymentreference'>PaymentReference</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Payment reference ID</td>
+</tr>
+<tr>
+<td>reference</td>
+<td>string</td>
+<td>Unique payment reference code (used by customer for deposits)</td>
+</tr>
+<tr>
+<td>uid</td>
+<td>string</td>
+<td>Customer sub-account UID</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>string</td>
+<td>Currency code (e.g., &quot;btc&quot;, &quot;zar&quot;)</td>
+</tr>
+<tr>
+<td>expected_amount</td>
+<td>string</td>
+<td>Expected deposit amount (null if not specified)</td>
+</tr>
+<tr>
+<td>deposit_action</td>
+<td>object</td>
+<td>Automated action configuration (null if not configured)</td>
+</tr>
+<tr>
+<td>state</td>
+<td>string</td>
+<td>Current state (see PaymentReference States)</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>string</td>
+<td>ISO8601 expiration timestamp</td>
+</tr>
+<tr>
+<td>usage_count</td>
+<td>integer</td>
+<td>Number of times the reference has been used</td>
+</tr>
+<tr>
+<td>last_used_at</td>
+<td>string</td>
+<td>ISO8601 timestamp of last use (null if never used)</td>
+</tr>
+<tr>
+<td>webhook_url</td>
+<td>string</td>
+<td>Webhook URL (only included if configured)</td>
+</tr>
+<tr>
+<td>webhook_protocol</td>
+<td>string</td>
+<td>Webhook protocol: &quot;hmac&quot;, &quot;plain_text&quot;, or &quot;none&quot; (only if configured)</td>
+</tr>
+<tr>
+<td>webhook_secret</td>
+<td>string</td>
+<td>Webhook secret (only included for owner with includeSecret option)</td>
+</tr>
+<tr>
+<td>deposit_id</td>
+<td>integer</td>
+<td>Linked deposit ID (only included if linked)</td>
+</tr>
+<tr>
+<td>order_id</td>
+<td>integer</td>
+<td>Linked order ID (only included if linked)</td>
+</tr>
+<tr>
+<td>withdraw_id</td>
+<td>integer</td>
+<td>Linked withdrawal ID (only included if linked)</td>
+</tr>
+<tr>
+<td>internal_transfer_id</td>
+<td>integer</td>
+<td>Linked internal transfer ID (only included if linked)</td>
+</tr>
+<tr>
+<td>error</td>
+<td>string</td>
+<td>Error message (only included if state is &quot;failed&quot;)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>ISO8601 creation timestamp</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>string</td>
+<td>ISO8601 last update timestamp</td>
+</tr>
+</tbody></table>
+
+<p><strong>Deposit Action Object Structure:</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>string</td>
+<td>Action type: &quot;none&quot;, &quot;aggregate&quot;, &quot;convert_and_withdraw&quot;, &quot;aggregate_convert_and_withdraw&quot;</td>
+</tr>
+<tr>
+<td>target_currency</td>
+<td>string</td>
+<td>Target currency for conversion (only for convert actions)</td>
+</tr>
+<tr>
+<td>beneficiary_id</td>
+<td>integer</td>
+<td>Beneficiary ID for withdrawals (only for withdraw actions)</td>
+</tr>
+<tr>
+<td>lightning_invoice</td>
+<td>string</td>
+<td>Lightning invoice for lightning withdrawals (alternative to beneficiary_id)</td>
+</tr>
+<tr>
+<td>max_slippage</td>
+<td>number</td>
+<td>Maximum slippage percentage (0.1-10, default: 2.0)</td>
+</tr>
+</tbody></table>
+
+<p><strong>PaymentReference States:</strong></p>
+
+<p>Payment references progress through various states based on the configured actions. Webhook notifications are sent when the reference reaches <code>completed</code> or <code>failed</code> state.</p>
+
+<table><thead>
+<tr>
+<th>State</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>pending_deposit</td>
+<td>Waiting for deposit</td>
+</tr>
+<tr>
+<td>pending_internal_transfer</td>
+<td>Processing aggregation</td>
+</tr>
+<tr>
+<td>pending_buy_order</td>
+<td>Processing conversion (buy)</td>
+</tr>
+<tr>
+<td>pending_sell_order</td>
+<td>Processing conversion (sell)</td>
+</tr>
+<tr>
+<td>pending_withdraw</td>
+<td>Processing withdrawal</td>
+</tr>
+<tr>
+<td>completed</td>
+<td>All actions completed successfully</td>
+</tr>
+<tr>
+<td>failed</td>
+<td>Processing failed (see error field)</td>
 </tr>
 </tbody></table>
 <h3 id='account-2'>Account</h3>
