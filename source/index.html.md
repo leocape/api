@@ -2687,7 +2687,8 @@ const createPaymentReference = async () => {
 
   const paymentData = {
     uid: "ID123456789",
-    currency: "btc",
+    currency: "zar",
+    expected_amount: "100"
     deposit_action: {
       action: "aggregate_convert_and_withdraw",
       target_currency: "zar",
@@ -2785,6 +2786,7 @@ For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is se
 | ---------------- | ---------- | ------------------------------------------------------------------- | -------- | ------ |
 | uid              | body       | Customer sub-account UID                                            | Yes      | string |
 | currency         | body       | Currency code (e.g., "btc", "zar")                                  | Yes      | string |
+| expected_amount  | body       | Expected amount the customer will deposit (e.g., "1000")            | No       | string |
 | deposit_action   | body       | Automated action configuration (see Deposit Action Object below)    | No       | object |
 | webhook_url      | body       | Webhook URL for notifications                                       | No       | string |
 | webhook_secret   | body       | Webhook secret for HMAC signing                                     | No       | string |
