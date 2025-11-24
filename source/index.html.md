@@ -2669,6 +2669,368 @@ Valid `doc_type` values for UBO KYC documents (same as individual customers):
 - Business customer remains in "pending" status until admin approval
 - No automatic verification for business customers (always requires manual review)
 
+## <span class="request-type__post">POST</span> Create payment reference
+
+```javascript
+// createPaymentReference.js
+const axios = require("axios");
+
+const url = "https://trade.capecrypto.com/api/v2/atlas/account/payments";
+
+const createPaymentReference = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Auth-Apikey": "your_api_key",
+    "X-Auth-Nonce": Date.now(),
+    "X-Auth-Signature": "your_generated_signature",
+  };
+
+  const paymentData = {
+    uid: "ID123456789",
+    currency: "btc",
+    deposit_action: {
+      action: "aggregate_convert_and_withdraw",
+      target_currency: "zar",
+      beneficiary_id: 456,
+      max_slippage: 0.5,
+    },
+    webhook_url: "https://merchant.com/webhooks/deposits",
+    webhook_secret: "my_secret_key",
+    webhook_protocol: "hmac",
+  };
+
+  const axiosConfig = {
+    method: "post",
+    url: url,
+    headers: headers,
+    data: paymentData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createPaymentReference();
+```
+
+`/api/v2/account/payments`
+
+### Description
+
+Create a new payment reference for a customer account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received. You can optionally provide a webhook url, with optional secret and protocol that will be sent as a header with the webhook notification.
+
+**Access:** Merchants and Aggregators only
+
+**Webhook Notifications:** When the configured action completes successfully, a webhook notification will be sent to the provided webhook URL (optional).
+
+When the configured action completes **successfully**, a webhook notification will be sent to the provided webhook URL (optional).
+
+### Request Details
+
+- **HTTP Method**: `POST`
+- **Content-Type**: `application/json`
+
+### Authentication / Protocol Modes (`webhook_protocol`)
+
+| webhook_protocol     | Behavior                                                                                                              | Header `X-Auth-Webhook` contains            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `hmac` (recommended) | The raw request body is signed with **HMAC-SHA256** using your `webhook_secret`. The signature is **base64-encoded**. | `Base64(HMAC-SHA256(body, webhook_secret))` |
+| `plain_text`         | The secret itself is sent in clear text (not recommended for production)                                              | The raw `webhook_secret` value              |
+| not set (default)    | No authentication header is added                                                                                     | Header is omitted                           |
+
+### Successful Response Requirement
+
+Your endpoint **must** return an HTTP `2xx` status code (e.g., 200, 201, 204) as quickly as possible.
+
+- Any non-2xx response or timeout will trigger retries.
+- Retry schedule (exponential backoff):
+
+| Attempt | Delay      | Notes                             |
+| ------- | ---------- | --------------------------------- |
+| 1       | 30 seconds | Initial retry after first failure |
+| 2       | 60 seconds |                                   |
+| 3       | 5 minutes  |                                   |
+| 4       | 10 minutes |                                   |
+| 5       | 30 minutes |                                   |
+| 6       | 1 hour     |                                   |
+| 7       | 2 hours    | Final retry attempt               |
+
+### Recommendations
+
+- Use `hmac` mode in production.
+- Verify the `X-Auth-Webhook` signature on your side by recomputing HMAC-SHA256 of the raw request body with your secret and comparing it to the header value.
+- Respond immediately with `200 OK` (you can validate the signature asynchronously if needed).
+
+### Webhook Verification
+
+When you receive a webhook notification, you should verify its authenticity before processing.
+
+#### Verifying HMAC Signatures (Recommended)
+
+For `webhook_protocol: "hmac"`, the payload is HMAC signed and BASE64 encoded (`BASE64(HMAC(payload, secret))`), and then sent. Validate the sent HMAC signature by repeating what was done by Cape Crypto: HMAC sign the received body with your secret, then encode the resulting HMAC signature to BASE64, and finally compare the received BASE64 encoded signture with your calculated BASE64 encoded signature.
+
+**Warning:** Plain text mode is not recommended for production as the secret is transmitted in clear text.
+
+#### No Authentication Mode
+
+For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is sent. Consider implementing additional security measures like IP whitelisting or using webhook signing URLs.
+
+### Parameters
+
+| Name             | Located in | Description                                                         | Required | Schema |
+| ---------------- | ---------- | ------------------------------------------------------------------- | -------- | ------ |
+| uid              | body       | Customer sub-account UID                                            | Yes      | string |
+| currency         | body       | Currency code (e.g., "btc", "zar")                                  | Yes      | string |
+| deposit_action   | body       | Automated action configuration (see Deposit Action Object below)    | No       | object |
+| webhook_url      | body       | Webhook URL for notifications                                       | No       | string |
+| webhook_secret   | body       | Webhook secret for HMAC signing                                     | No       | string |
+| webhook_protocol | body       | Webhook protocol: "hmac", "plain_text", or "none" (default: "none") | No       | string |
+
+**Deposit Action Object:**
+
+| Field             | Description                                                                                | Required    | Schema  |
+| ----------------- | ------------------------------------------------------------------------------------------ | ----------- | ------- |
+| action            | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" | Yes         | string  |
+| target_currency   | Target currency for conversion (required if action includes conversion)                    | Conditional | string  |
+| beneficiary_id    | Beneficiary ID for withdrawal (required if action includes withdrawal)                     | Conditional | integer |
+| lightning_invoice | Lightning invoice for withdrawal (alternative to beneficiary_id)                           | No          | string  |
+| max_slippage      | Maximum slippage percentage for conversion (default: 1.0, max: 5.0)                        | No          | decimal |
+
+**Deposit Action Types:**
+
+- **none**: No automated action, deposit sits in account
+- **aggregate**: Combine multiple small deposits into one before processing
+- **convert_and_withdraw**: Convert currency and withdraw to beneficiary
+- **aggregate_convert_and_withdraw**: Aggregate deposits, then convert and withdraw
+
+### Responses
+
+| Code | Description                         | Schema           |
+| ---- | ----------------------------------- | ---------------- |
+| 201  | Payment reference created           | PaymentReference |
+| 403  | Forbidden (not merchant/aggregator) | Error array      |
+| 422  | Validation error                    | Error array      |
+
+**Example Response:**
+
+**API Response - Payment Reference Created:**
+
+```javascript
+// Request Body examples - POST /api/v2/account/payments
+```
+
+```json
+{
+  "id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "aggregate_convert_and_withdraw",
+    "target_currency": "zar",
+    "beneficiary_id": 456,
+    "lightning_invoice": null,
+    "max_slippage": 0.5
+  },
+  "state": "pending_deposit",
+  "webhook_url": "https://merchant.com/webhooks/deposits",
+  "webhook_protocol": "hmac",
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+}
+```
+
+### Additional Request Examples
+
+**Example: Simple Deposit (No Action)**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc"
+}
+```
+
+**Example: Aggregate Only**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "aggregate"
+  }
+}
+```
+
+**Example: Convert and Withdraw (Lightning)**
+
+```json
+{
+  "uid": "ID123456789",
+  "currency": "btc",
+  "deposit_action": {
+    "action": "convert_and_withdraw",
+    "target_currency": "btc",
+    "lightning_invoice": "lnbc100n1...",
+    "max_slippage": 1.0
+  },
+  "webhook_url": "https://merchant.com/webhooks/deposits",
+  "webhook_secret": "my_secret_key",
+  "webhook_protocol": "hmac"
+}
+```
+
+### Webhook Payload Examples
+
+When a payment reference progresses through its lifecycle, webhook notifications are sent to your configured `webhook_url` with different event payloads. Below are the four event types and their payload structures.
+
+---
+
+#### Event 1: Deposit Matched
+
+**Event Name:** `payment_reference.deposit_matched`
+
+**When Triggered:** When a deposit is successfully linked to the payment reference
+
+**Payload:**
+
+```javascript
+// Webhook Payload - POST to your webhook_url
+```
+
+```json
+{
+  "event": "payment_reference.deposit_matched",
+  "payment_reference_id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "deposit_id": 456,
+  "amount": "100.00",
+  "currency": "usd",
+  "deposit_blockchain": "ethereum-erc20",
+  "txid": "0xabc123def456...",
+  "invoice": "lnbc1000u1...",
+  "created_at": "2025-01-17T10:00:00.000Z"
+}
+```
+
+**Field Notes:**
+
+- `invoice`: Only present for Lightning deposits
+- `deposit_blockchain`: Blockchain key (e.g., "bitcoin", "ethereum-erc20", "tron-trc20")
+
+---
+
+#### Event 2: Completed
+
+**Event Name:** `payment_reference.completed`
+
+**When Triggered:** When all configured actions (aggregate, convert, withdraw) complete successfully
+
+**Payload:**
+
+```javascript
+// Webhook Payload - POST to your webhook_url
+```
+
+```json
+{
+  "event": "payment_reference.completed",
+  "payment_reference_id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "deposit_id": 456,
+  "internal_transfer_id": 202,
+  "order_id": 789,
+  "withdraw_id": 101,
+  "deposit_blockchain": "ethereum-erc20",
+  "invoice": "lnbc1000u1...",
+  "withdraw_blockchain": "bitcoin",
+  "created_at": "2025-01-17T10:05:00.000Z"
+}
+```
+
+**Field Notes (Conditional):**
+
+- `internal_transfer_id`: Only present if `deposit_action` was `aggregate` or `aggregate_convert_and_withdraw`
+- `order_id`: Only present if `deposit_action` included conversion (`convert_and_withdraw` or `aggregate_convert_and_withdraw`)
+- `withdraw_id`: Only present if `deposit_action` included withdrawal
+- `invoice`: Only present for Lightning deposits
+- `withdraw_blockchain`: Only present if withdrawal occurred
+
+---
+
+#### Event 3: Failed
+
+**Event Name:** `payment_reference.failed`
+
+**When Triggered:** When processing encounters a permanent failure
+
+**Payload:**
+
+```javascript
+// Webhook Payload - POST to your webhook_url
+```
+
+```json
+{
+  "event": "payment_reference.failed",
+  "payment_reference_id": 123,
+  "reference": "PAY-ABC123",
+  "uid": "ID123456789",
+  "deposit_id": 456,
+  "error": "Insufficient liquidity for market order on btcusd",
+  "deposit_blockchain": "ethereum-erc20",
+  "invoice": "lnbc1000u1...",
+  "created_at": "2025-01-17T10:10:00.000Z"
+}
+```
+
+**Field Notes:**
+
+- `error`: Detailed error message describing the failure reason
+- `invoice`: Only present for Lightning deposits
+
+---
+
+#### Event 4: Duplicate Deposit
+
+**Event Name:** `payment_reference.duplicate_deposit`
+
+**When Triggered:** When a second deposit is received for a payment reference that already has a deposit linked
+
+**Payload:**
+
+```javascript
+// Webhook Payload - POST to your webhook_url
+```
+
+```json
+{
+  "event": "payment_reference.duplicate_deposit",
+  "reference": "PAY-ABC123",
+  "member_uid": "ID123456789",
+  "currency_id": "usd",
+  "amount": "100.00",
+  "original_deposit_id": 456,
+  "duplicate_deposit_id": 789,
+  "duplicate_count": 1,
+  "timestamp": "2025-01-17T10:15:00.000Z"
+}
+```
+
+**Field Notes:**
+
+- `duplicate_count`: Number of duplicate deposits received (increments with each duplicate)
+- This event helps you track and handle unexpected duplicate payments from customers
+
+---
+
 ## <span class="request-type__get">GET</span> List payment references
 
 ```javascript
@@ -2764,7 +3126,7 @@ List all payment references for your customer accounts. Returns paginated result
 ]
 ```
 
-## <span class="request-type__get">GET</span> Show payment reference
+## <span class="request-type__get">GET</span> Get payment reference by id
 
 ```javascript
 // showPaymentReference.js
@@ -2849,164 +3211,6 @@ Retrieve details of a specific payment reference.
   "withdraw_id": 1213,
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-15T14:45:00Z"
-}
-```
-
-## <span class="request-type__post">POST</span> Create payment reference
-
-```javascript
-// createPaymentReference.js
-const axios = require("axios");
-
-const url = "https://trade.capecrypto.com/api/v2/atlas/account/payments";
-
-const createPaymentReference = async () => {
-  const headers = {
-    "Content-Type": "application/json",
-    "X-Auth-Apikey": "your_api_key",
-    "X-Auth-Nonce": Date.now(),
-    "X-Auth-Signature": "your_generated_signature",
-  };
-
-  const paymentData = {
-    uid: "ID123456789",
-    currency: "btc",
-    deposit_action: {
-      action: "aggregate_convert_and_withdraw",
-      target_currency: "zar",
-      beneficiary_id: 456,
-      max_slippage: 0.5,
-    },
-    webhook_url: "https://merchant.com/webhooks/deposits",
-    webhook_secret: "my_secret_key",
-    webhook_protocol: "hmac",
-  };
-
-  const axiosConfig = {
-    method: "post",
-    url: url,
-    headers: headers,
-    data: paymentData,
-  };
-
-  try {
-    const results = await axios(axiosConfig);
-    console.log(JSON.stringify(results.data, undefined, 2));
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-createPaymentReference();
-```
-
-`/api/v2/account/payments`
-
-### Description
-
-Create a new payment reference for a customer sub-account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received.
-
-**Access:** Merchants and Aggregators only
-
-**Webhook Notifications:** When the configured action completes successfully, a webhook notification will be sent to the provided webhook URL.
-
----
-
-### Parameters
-
-| Name             | Located in | Description                                                         | Required | Schema |
-| ---------------- | ---------- | ------------------------------------------------------------------- | -------- | ------ |
-| uid              | body       | Customer sub-account UID                                            | Yes      | string |
-| currency         | body       | Currency code (e.g., "btc", "zar")                                  | Yes      | string |
-| deposit_action   | body       | Automated action configuration (see Deposit Action Object below)    | No       | object |
-| webhook_url      | body       | Webhook URL for notifications                                       | No       | string |
-| webhook_secret   | body       | Webhook secret for HMAC signing                                     | No       | string |
-| webhook_protocol | body       | Webhook protocol: "hmac", "plain_text", or "none" (default: "none") | No       | string |
-
-**Deposit Action Object:**
-
-| Field             | Description                                                                                | Required    | Schema  |
-| ----------------- | ------------------------------------------------------------------------------------------ | ----------- | ------- |
-| action            | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" | Yes         | string  |
-| target_currency   | Target currency for conversion (required if action includes conversion)                    | Conditional | string  |
-| beneficiary_id    | Beneficiary ID for withdrawal (required if action includes withdrawal)                     | Conditional | integer |
-| lightning_invoice | Lightning invoice for withdrawal (alternative to beneficiary_id)                           | No          | string  |
-| max_slippage      | Maximum slippage percentage for conversion (default: 1.0, max: 5.0)                        | No          | decimal |
-
-**Deposit Action Types:**
-
-- **none**: No automated action, deposit sits in account
-- **aggregate**: Combine multiple small deposits into one before processing
-- **convert_and_withdraw**: Convert currency and withdraw to beneficiary
-- **aggregate_convert_and_withdraw**: Aggregate deposits, then convert and withdraw
-
-### Responses
-
-| Code | Description                         | Schema           |
-| ---- | ----------------------------------- | ---------------- |
-| 201  | Payment reference created           | PaymentReference |
-| 403  | Forbidden (not merchant/aggregator) | Error array      |
-| 422  | Validation error                    | Error array      |
-
-**Example Response:**
-
-```json
-{
-  "id": 123,
-  "reference": "PAY-ABC123",
-  "uid": "ID123456789",
-  "currency": "btc",
-  "deposit_action": {
-    "action": "aggregate_convert_and_withdraw",
-    "target_currency": "zar",
-    "beneficiary_id": 456,
-    "lightning_invoice": null,
-    "max_slippage": 0.5
-  },
-  "state": "pending_deposit",
-  "webhook_url": "https://merchant.com/webhooks/deposits",
-  "webhook_protocol": "hmac",
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
-}
-```
-
-**Example: Simple Deposit (No Action)**
-
-```json
-{
-  "uid": "ID123456789",
-  "currency": "btc"
-}
-```
-
-**Example: Aggregate Only**
-
-```json
-{
-  "uid": "ID123456789",
-  "currency": "btc",
-  "deposit_action": {
-    "action": "aggregate"
-  }
-}
-```
-
-**Example: Convert and Withdraw (Lightning)**
-
-```json
-{
-  "uid": "ID123456789",
-  "currency": "btc",
-  "deposit_action": {
-    "action": "convert_and_withdraw",
-    "target_currency": "btc",
-    "lightning_invoice": "lnbc100n1...",
-    "max_slippage": 1.0
-  },
-  "webhook_url": "https://merchant.com/webhooks/deposits",
-  "webhook_secret": "my_secret_key",
-  "webhook_protocol": "hmac"
 }
 ```
 

@@ -746,6 +746,11 @@ body {
   background-color: $code-bg;
 }
 
+// Remove gap between consecutive code blocks (e.g., javascript comment + json block)
+.content .highlight + .highlight pre {
+  padding-top: 0;
+}
+
 .copy-clipboard {
   float: right;
   fill: #9daab6;
