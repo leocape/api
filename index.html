@@ -827,7 +827,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="kd">const</span> <span class="nx">crypto</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">crypto</span><span class="dl">"</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">123456...</span><span class="dl">"</span><span class="p">;</span>
 <span class="kd">const</span> <span class="nx">secret</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ABCDEF...</span><span class="dl">"</span><span class="p">;</span>
-<span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span> <span class="c1">// Sub-account or customer UID</span>
+<span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span> <span class="c1">// Sub-account or customer UID</span>
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">timeStamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
@@ -3182,7 +3182,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">getSubAccount</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/sub_accounts/</span><span class="p">${</span><span class="nx">subAccountUid</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
@@ -3250,7 +3250,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">updateSubAccount</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">PUT</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/sub_accounts/</span><span class="p">${</span><span class="nx">subAccountUid</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
@@ -3335,7 +3335,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">deleteSubAccount</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">DELETE</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">subAccountUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/sub_accounts/</span><span class="p">${</span><span class="nx">subAccountUid</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
@@ -3479,7 +3479,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <h3 id='description-36'>Description</h3>
 <p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
-<p><strong>Individual customers</strong> are automatically verified with Email, Phone, Profile, and Document labels after creation. Document files must be uploaded separately using the document upload endpoint (see &quot;Upload Individual Customer Documents&quot; section below).</p>
+<p><strong>Individual customers</strong> are created in two steps. 1) Submitting the profile info will create the customer account, 2) KYC Documents must be uploaded separately using the document upload endpoint (see &quot;Upload Individual Customer Documents&quot; section below). Once all documents are received the customer account will be verified by Cape Crypto, and their parent cant then create payment requests, or have the customer deposit funds into their account.</p>
 
 <hr>
 <h3 id='parameters-32'>Parameters</h3>
@@ -4280,7 +4280,7 @@ Total: 150
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123456789ABC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CCT1234567"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-001"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"custom_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-001"</span><span class="p">,</span><span class="w">
@@ -4305,7 +4305,7 @@ Total: 150
 <span class="nx">getCustomer</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">customerUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">customerUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/customers/</span><span class="p">${</span><span class="nx">customerUid</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
@@ -4373,7 +4373,7 @@ Total: 150
 <span class="nx">updateCustomer</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">PUT</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">customerUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">customerUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/customers/</span><span class="p">${</span><span class="nx">customerUid</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
@@ -4534,25 +4534,10 @@ Total: 150
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Error uploading proof of address:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
   <span class="p">}</span>
-
-  <span class="c1">// Document 5: Liveness (upload last - triggers verification)</span>
-  <span class="kd">const</span> <span class="nx">formData5</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
-  <span class="nx">formData5</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./liveness.jpg</span><span class="dl">"</span><span class="p">));</span>
-  <span class="nx">formData5</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Liveness</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData5</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
-
-  <span class="k">try</span> <span class="p">{</span>
-    <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData5</span><span class="p">,</span> <span class="p">{</span>
-      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> <span class="p">...</span><span class="nx">headers</span><span class="p">,</span> <span class="p">...</span><span class="nx">formData5</span><span class="p">.</span><span class="nx">getHeaders</span><span class="p">()</span> <span class="p">},</span>
-    <span class="p">});</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Liveness uploaded successfully - verification triggered</span><span class="dl">"</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Error uploading liveness:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
-  <span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Upload documents after customer creation</span>
-<span class="nx">uploadDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID123456789ABC</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">uploadDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
 <h3 id='description-41'>Description</h3>
