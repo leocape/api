@@ -4557,7 +4557,6 @@ Total: 150
 <ul>
 <li><strong>ID document</strong> (front side, plus back side for identity_card/driver_license)</li>
 <li><strong>Selfie</strong> (holding ID document)</li>
-<li><strong>Liveness</strong> (live photo/video - triggers automatic verification)</li>
 <li><strong>Proof of Address</strong> (utility bill, bank statement, etc.)</li>
 </ul>
 
@@ -4565,7 +4564,7 @@ Total: 150
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
-<p><strong>Note:</strong> This endpoint should be called after creating an individual customer using the &quot;Create Individual Customer&quot; endpoint. Use the customer UID returned from the creation response. Upload the <strong>Liveness</strong> document last as it triggers the automated verification workflow.</p>
+<p><strong>Note:</strong> This endpoint should be called after creating an individual customer using the <a href="#post-create-individual-customer">Create Individual Customer</a> endpoint. Use the customer UID returned from the creation response. All documents must be uploaded seperately.</p>
 <h3 id='parameters-37'>Parameters</h3>
 <table><thead>
 <tr>
@@ -4645,17 +4644,6 @@ Total: 150
 </ul>
 
 <ol>
-<li><strong>Liveness</strong> - Live photo or video verification</li>
-</ol>
-
-<ul>
-<li><code>doc_type</code>: &#39;Liveness&#39;</li>
-<li>This document triggers the automated verification workflow</li>
-<li>Upload this document last, after all other documents are uploaded</li>
-<li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
-</ul>
-
-<ol>
 <li><strong>Proof of Address</strong> - Utility bill, bank statement, or lease agreement
 
 <ul>
@@ -4682,7 +4670,6 @@ Total: 150
 <li><code>Proof of Address</code></li>
 <li><code>Source of Funds</code></li>
 <li><code>Selfie</code></li>
-<li><code>Liveness</code></li>
 <li><code>Drivers license</code></li>
 <li><code>Drivers license back</code></li>
 <li><code>Green Identity Book</code></li>
@@ -4917,21 +4904,6 @@ Total: 150
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Error uploading UBO proof of address:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
   <span class="p">}</span>
-
-  <span class="c1">// Document 4: Liveness (upload last - triggers verification)</span>
-  <span class="kd">const</span> <span class="nx">formData4</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
-  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_liveness.jpg</span><span class="dl">"</span><span class="p">));</span>
-  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Liveness</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
-
-  <span class="k">try</span> <span class="p">{</span>
-    <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData4</span><span class="p">,</span> <span class="p">{</span>
-      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> <span class="p">...</span><span class="nx">headers</span><span class="p">,</span> <span class="p">...</span><span class="nx">formData4</span><span class="p">.</span><span class="nx">getHeaders</span><span class="p">()</span> <span class="p">},</span>
-    <span class="p">});</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">UBO Liveness uploaded successfully</span><span class="dl">"</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Error uploading UBO liveness:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
-  <span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Upload documents for each UBO</span>
@@ -4989,7 +4961,7 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (optional for selfie and liveness)</td>
+<td>ID document number (optional for selfie)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -5042,16 +5014,6 @@ Total: 150
 <li>Document must be less than 3 months old</li>
 <li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
 </ul>
-
-<ol>
-<li><strong>Liveness</strong> - Live photo or video verification
-
-<ul>
-<li><code>doc_type</code>: &#39;Liveness&#39;</li>
-<li>Upload this document last, after all other UBO documents</li>
-<li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
-</ul></li>
-</ol>
 <h3 id='available-document-types-for-ubos'>Available Document Types for UBOs</h3>
 <p>Valid <code>doc_type</code> values for UBO KYC documents (same as individual customers):</p>
 
@@ -5071,6 +5033,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Liveness</code></li>
 <li><code>Proof of Address</code></li>
+<li><code>Source of Funds</code></li>
 </ul>
 <h3 id='responses-43'>Responses</h3>
 <table><thead>
