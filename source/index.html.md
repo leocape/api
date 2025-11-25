@@ -2293,14 +2293,13 @@ Upload KYC verification documents for individual customers. Multiple documents a
 
 - **ID document** (front side, plus back side for identity_card/driver_license)
 - **Selfie** (holding ID document)
-- **Liveness** (live photo/video - triggers automatic verification)
 - **Proof of Address** (utility bill, bank statement, etc.)
 
 Each document must be uploaded as a separate request with FormData.
 
 **Maximum file size:** 4MB per document.
 
-**Note:** This endpoint should be called after creating an individual customer using the "Create Individual Customer" endpoint. Use the customer UID returned from the creation response. Upload the **Liveness** document last as it triggers the automated verification workflow.
+**Note:** This endpoint should be called after creating an individual customer using the [Create Individual Customer](#post-create-individual-customer) endpoint. Use the customer UID returned from the creation response. All documents must be uploaded seperately.
 
 ### Parameters
 
@@ -2333,14 +2332,7 @@ The following documents must be uploaded for individual customers:
    - `doc_type`: 'Selfie'
    - `doc_number` and `doc_expire` are optional
 
-4. **Liveness** - Live photo or video verification
-
-   - `doc_type`: 'Liveness'
-   - This document triggers the automated verification workflow
-   - Upload this document last, after all other documents are uploaded
-   - `doc_number` and `doc_expire` are optional
-
-5. **Proof of Address** - Utility bill, bank statement, or lease agreement
+4. **Proof of Address** - Utility bill, bank statement, or lease agreement
    - `doc_type`: 'Proof of Address'
    - Document must be less than 3 months old
    - `doc_number` and `doc_expire` are optional
@@ -2363,7 +2355,6 @@ Valid `doc_type` values for individual customer KYC documents:
 - `Proof of Address`
 - `Source of Funds`
 - `Selfie`
-- `Liveness`
 - `Drivers license`
 - `Drivers license back`
 - `Green Identity Book`
@@ -2540,21 +2531,6 @@ uploadUBODocuments = async (uboUid) => {
   } catch (err) {
     console.log("Error uploading UBO proof of address:", err);
   }
-
-  // Document 4: Liveness (upload last - triggers verification)
-  const formData4 = new FormData();
-  formData4.append("upload", fs.createReadStream("./ubo_liveness.jpg"));
-  formData4.append("doc_type", "Liveness");
-  formData4.append("customer_uid", uboUid);
-
-  try {
-    await axios.post(url, formData4, {
-      headers: { ...headers, ...formData4.getHeaders() },
-    });
-    console.log("UBO Liveness uploaded successfully");
-  } catch (err) {
-    console.log("Error uploading UBO liveness:", err);
-  }
 };
 
 // Upload documents for each UBO
@@ -2587,7 +2563,7 @@ Each document must be uploaded as a separate request with FormData.
 | upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
 | doc_type     | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
 | customer_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
-| doc_number   | formData   | ID document number (optional for selfie and liveness)    | No       | string |
+| doc_number   | formData   | ID document number (optional for selfie)                 | No       | string |
 | doc_expire   | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
 
 ### Required UBO Documents
@@ -2617,11 +2593,6 @@ Each UBO must upload the following documents:
    - Document must be less than 3 months old
    - `doc_number` and `doc_expire` are optional
 
-5. **Liveness** - Live photo or video verification
-   - `doc_type`: 'Liveness'
-   - Upload this document last, after all other UBO documents
-   - `doc_number` and `doc_expire` are optional
-
 ### Available Document Types for UBOs
 
 Valid `doc_type` values for UBO KYC documents (same as individual customers):
@@ -2641,6 +2612,7 @@ Valid `doc_type` values for UBO KYC documents (same as individual customers):
 - `Selfie`
 - `Liveness`
 - `Proof of Address`
+- `Source of Funds`
 
 ### Responses
 
