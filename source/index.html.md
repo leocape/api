@@ -200,7 +200,7 @@ Create a new order on your account by signing your request and submitting the re
 const crypto = require("crypto");
 const apiKey = "123456...";
 const secret = "ABCDEF...";
-const subAccountUid = "ID123456789ABC"; // Sub-account or customer UID
+const subAccountUid = "CCT1234567"; // Sub-account or customer UID
 
 module.exports = async () => {
   const timeStamp = new Date().getTime();
@@ -1467,7 +1467,7 @@ const generateHeaders = require("./generateHeaders");
 getSubAccount = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "GET";
-  const subAccountUid = "ID123456789ABC";
+  const subAccountUid = "CCT1234567";
   const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
@@ -1518,7 +1518,7 @@ const generateHeaders = require("./generateHeaders");
 updateSubAccount = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "PUT";
-  const subAccountUid = "ID123456789ABC";
+  const subAccountUid = "CCT1234567";
   const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
@@ -1576,7 +1576,7 @@ const generateHeaders = require("./generateHeaders");
 deleteSubAccount = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "DELETE";
-  const subAccountUid = "ID123456789ABC";
+  const subAccountUid = "CCT1234567";
   const path = `/api/v2/persona/resource/sub_accounts/${subAccountUid}`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
@@ -1707,7 +1707,12 @@ createIndividualCustomer();
 
 Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing `merchant_uid`.
 
-**Individual customers** are automatically verified with Email, Phone, Profile, and Document labels after creation. Document files must be uploaded separately using the document upload endpoint (see "Upload Individual Customer Documents" section below).
+**Individual customers** are created in two steps:
+
+- 1. Submitting the profile info will create the customer account,
+- 2. All KYC Documents must be uploaded, separately, using the document upload endpoint (see [Post Upload Individual Customer Documents](#post-upload-individual-customer-documents) section below).
+
+Once all documents are received the customer account will be verified by Cape Crypto, and their parent cant then create payment requests, or have the customer deposit funds into their account.
 
 ---
 
@@ -1744,7 +1749,7 @@ Create a new individual customer account. Merchants create customers under their
 
 **Deposit Action Options:**
 
-The `deposit_action` parameter accepts a JSON object with the following structure:
+The optional `deposit_action` parameter accepts a JSON object with the following structure:
 
 ```json
 {
@@ -1758,12 +1763,16 @@ The `deposit_action` parameter accepts a JSON object with the following structur
 
 **Available Actions:**
 
-| Action                           | Description                                                           | Required Fields                                            |
-| -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `none`                           | No automatic action (default)                                         | None                                                       |
-| `aggregate`                      | Automatically transfer deposits to parent merchant/aggregator account | None                                                       |
-| `convert_and_withdraw`           | Convert deposit to target currency and withdraw to beneficiary        | `target_currency`, `beneficiary_id` or `lightning_invoice` |
-| `aggregate_convert_and_withdraw` | Transfer to parent, then convert and withdraw                         | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+If no deposit action is provided, the default will be "none" which will see the deposit simply credited to the customer account, like a regular deposit.
+
+Note: Only the "none" action is currently available, the additional actions are coming soon!
+
+| Action                                         | Description                                                           | Required Fields                                            |
+| ---------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `none`                                         | No automatic action (default)                                         | None                                                       |
+| `aggregate` (coming soon)                      | Automatically transfer deposits to parent merchant/aggregator account | None                                                       |
+| `convert_and_withdraw` (coming soon)           | Convert deposit to target currency and withdraw to beneficiary        | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+| `aggregate_convert_and_withdraw` (coming soon) | Transfer to parent, then convert and withdraw                         | `target_currency`, `beneficiary_id` or `lightning_invoice` |
 
 **Example with Deposit Action:**
 
@@ -2061,7 +2070,7 @@ Total: 150
 ```json
 [
   {
-    "uid": "ID123456789ABC",
+    "uid": "CCT1234567",
     "account_name": "CUST-001",
     "state": "active",
     "custom_id": "CUST-001",
@@ -2069,7 +2078,7 @@ Total: 150
     "created_at": "2024-01-01T00:00:00.000Z"
   },
   {
-    "uid": "ID987654321XYZ",
+    "uid": "CCT1234567",
     "account_name": "CUST-002",
     "state": "active",
     "custom_id": "CUST-002",
@@ -2091,7 +2100,7 @@ const generateHeaders = require("./generateHeaders");
 getCustomer = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "GET";
-  const customerUid = "ID123456789ABC";
+  const customerUid = "CCT1234567";
   const path = `/api/v2/persona/resource/customers/${customerUid}`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
@@ -2142,7 +2151,7 @@ const generateHeaders = require("./generateHeaders");
 updateCustomer = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "PUT";
-  const customerUid = "ID123456789ABC";
+  const customerUid = "CCT1234567";
   const path = `/api/v2/persona/resource/customers/${customerUid}`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
@@ -2270,25 +2279,10 @@ uploadDocuments = async (customerUid) => {
   } catch (err) {
     console.log("Error uploading proof of address:", err);
   }
-
-  // Document 5: Liveness (upload last - triggers verification)
-  const formData5 = new FormData();
-  formData5.append("upload", fs.createReadStream("./liveness.jpg"));
-  formData5.append("doc_type", "Liveness");
-  formData5.append("customer_uid", customerUid);
-
-  try {
-    await axios.post(url, formData5, {
-      headers: { ...headers, ...formData5.getHeaders() },
-    });
-    console.log("Liveness uploaded successfully - verification triggered");
-  } catch (err) {
-    console.log("Error uploading liveness:", err);
-  }
 };
 
 // Upload documents after customer creation
-uploadDocuments("ID123456789ABC");
+uploadDocuments("CCT1234567");
 ```
 
 `/api/v2/verification/customers/documents`
@@ -2304,7 +2298,7 @@ Upload KYC verification documents for individual customers. Multiple documents a
 
 Each document must be uploaded as a separate request with FormData.
 
-**Maximum file size:** 10MB per document.
+**Maximum file size:** 4MB per document.
 
 **Note:** This endpoint should be called after creating an individual customer using the "Create Individual Customer" endpoint. Use the customer UID returned from the creation response. Upload the **Liveness** document last as it triggers the automated verification workflow.
 
@@ -2438,7 +2432,7 @@ const uploadAllBusinessDocuments = async (customerUid) => {
 };
 
 // Upload documents after business customer creation
-uploadAllBusinessDocuments("ID987654321XYZ");
+uploadAllBusinessDocuments("CCT1234567");
 ```
 
 `/api/v2/verification/customers/documents`
@@ -2447,7 +2441,7 @@ uploadAllBusinessDocuments("ID987654321XYZ");
 
 Upload KYB verification documents for business customers. Nine business documents are required for complete verification. Additionally, all UBOs (Ultimate Beneficial Owners) must upload their individual KYC documents (see "Upload UBO Documents" section below). Each document must be uploaded as a separate request with FormData.
 
-**Maximum file size:** 10MB per document.
+**Maximum file size:** 4MB per document.
 
 **Note:** This endpoint should be called after creating a business customer using the "Create Business Customer" endpoint. Use the customer UID returned from the creation response. When all 9 business documents and all UBO documents are uploaded, the system will notify administrators for manual review.
 
@@ -2584,7 +2578,7 @@ Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of busin
 
 Each document must be uploaded as a separate request with FormData.
 
-**Maximum file size:** 10MB per document.
+**Maximum file size:** 4MB per document.
 
 ### Parameters
 
@@ -3282,7 +3276,7 @@ const generateHeaders = require("./generateHeaders");
 listMerchantCustomers = async () => {
   const baseUrl = "https://trade.capecrypto.com";
   const method = "GET";
-  const merchantUid = "ID987654321XYZ";
+  const merchantUid = "CCT1234567";
   const path = `/api/v2/persona/resource/merchants/${merchantUid}/customers?page=1&limit=100`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
