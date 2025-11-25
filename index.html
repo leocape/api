@@ -3479,7 +3479,14 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <h3 id='description-36'>Description</h3>
 <p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
-<p><strong>Individual customers</strong> are created in two steps. 1) Submitting the profile info will create the customer account, 2) KYC Documents must be uploaded separately using the document upload endpoint (see &quot;Upload Individual Customer Documents&quot; section below). Once all documents are received the customer account will be verified by Cape Crypto, and their parent cant then create payment requests, or have the customer deposit funds into their account.</p>
+<p><strong>Individual customers</strong> are created in two steps:</p>
+
+<ul>
+<li>1. Submitting the profile info will create the customer account,</li>
+<li>2. All KYC Documents must be uploaded, separately, using the document upload endpoint (see <a href="#post-upload-individual-customer-documents">Post Upload Individual Customer Documents</a> section below).</li>
+</ul>
+
+<p>Once all documents are received the customer account will be verified by Cape Crypto, and their parent cant then create payment requests, or have the customer deposit funds into their account.</p>
 
 <hr>
 <h3 id='parameters-32'>Parameters</h3>
@@ -3666,7 +3673,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 
 <p><strong>Deposit Action Options:</strong></p>
 
-<p>The <code>deposit_action</code> parameter accepts a JSON object with the following structure:</p>
+<p>The optional <code>deposit_action</code> parameter accepts a JSON object with the following structure:</p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"currency_code"</span><span class="p">,</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">Required</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">convert</span><span class="w"> </span><span class="err">actions</span><span class="w"> </span><span class="err">(e.g.</span><span class="p">,</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w"> </span><span class="s2">"usd"</span><span class="err">)</span><span class="w">
@@ -3676,6 +3683,10 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p><strong>Available Actions:</strong></p>
+
+<p>If no deposit action is provided, the default will be &quot;none&quot; which will see the deposit simply credited to the customer account, like a regular deposit.</p>
+
+<p>Note: Only the &quot;none&quot; action is currently available, the additional actions are coming soon!</p>
 
 <table><thead>
 <tr>
@@ -3690,17 +3701,17 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>None</td>
 </tr>
 <tr>
-<td><code>aggregate</code></td>
+<td><code>aggregate</code> (coming soon)</td>
 <td>Automatically transfer deposits to parent merchant/aggregator account</td>
 <td>None</td>
 </tr>
 <tr>
-<td><code>convert_and_withdraw</code></td>
+<td><code>convert_and_withdraw</code> (coming soon)</td>
 <td>Convert deposit to target currency and withdraw to beneficiary</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
 <tr>
-<td><code>aggregate_convert_and_withdraw</code></td>
+<td><code>aggregate_convert_and_withdraw</code> (coming soon)</td>
 <td>Transfer to parent, then convert and withdraw</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
@@ -4288,7 +4299,7 @@ Total: 150
     </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-01T00:00:00.000Z"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID987654321XYZ"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CCT1234567"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-002"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"custom_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUST-002"</span><span class="p">,</span><span class="w">
@@ -4552,7 +4563,7 @@ Total: 150
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
-<p><strong>Maximum file size:</strong> 10MB per document.</p>
+<p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> This endpoint should be called after creating an individual customer using the &quot;Create Individual Customer&quot; endpoint. Use the customer UID returned from the creation response. Upload the <strong>Liveness</strong> document last as it triggers the automated verification workflow.</p>
 <h3 id='parameters-37'>Parameters</h3>
@@ -4753,13 +4764,13 @@ Total: 150
 <span class="p">};</span>
 
 <span class="c1">// Upload documents after business customer creation</span>
-<span class="nx">uploadAllBusinessDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID987654321XYZ</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">uploadAllBusinessDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
 <h3 id='description-42'>Description</h3>
 <p>Upload KYB verification documents for business customers. Nine business documents are required for complete verification. Additionally, all UBOs (Ultimate Beneficial Owners) must upload their individual KYC documents (see &quot;Upload UBO Documents&quot; section below). Each document must be uploaded as a separate request with FormData.</p>
 
-<p><strong>Maximum file size:</strong> 10MB per document.</p>
+<p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> This endpoint should be called after creating a business customer using the &quot;Create Business Customer&quot; endpoint. Use the customer UID returned from the creation response. When all 9 business documents and all UBO documents are uploaded, the system will notify administrators for manual review.</p>
 <h3 id='parameters-38'>Parameters</h3>
@@ -4943,7 +4954,7 @@ Total: 150
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
-<p><strong>Maximum file size:</strong> 10MB per document.</p>
+<p><strong>Maximum file size:</strong> 4MB per document.</p>
 <h3 id='parameters-39'>Parameters</h3>
 <table><thead>
 <tr>
@@ -5887,7 +5898,7 @@ Total: 150
 <span class="nx">listMerchantCustomers</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">merchantUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">ID987654321XYZ</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">merchantUid</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/merchants/</span><span class="p">${</span><span class="nx">merchantUid</span><span class="p">}</span><span class="s2">/customers?page=1&amp;limit=100`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
