@@ -2143,7 +2143,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <h3 id='description-18'>Description</h3>
 <p>Creates new withdrawal to active beneficiary.</p>
 
-<p><strong>Note:</strong> OTP is <strong>not required</strong> when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web interface.</p>
+<p><strong>Note:</strong> OTP is <strong>not required</strong> when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web app, however 2FA must still be enabled on the account to enable withdraws.</p>
 <h3 id='parameters-16'>Parameters</h3>
 <table><thead>
 <tr>
@@ -2154,13 +2154,6 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <th>Schema</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>otp</td>
-<td>formData</td>
-<td>OTP to perform action (not required for API requests)</td>
-<td>No</td>
-<td>integer</td>
-</tr>
 <tr>
 <td>beneficiary_id</td>
 <td>formData</td>
@@ -2715,6 +2708,8 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <p>Submits a payment request to pay a BTC Lightning BOLT11 invoice (withdraws this balance from your BTC account).</p>
 
 <p>As the payment is requested and validated on the lightning network, please query your withdrawal history to confirm that the payment succeeded.</p>
+
+<p><strong>Note:</strong> OTP is <strong>not required</strong> when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web app, however 2FA must still be enabled on the account to enable withdraws.</p>
 <h3 id='parameters-25'>Parameters</h3>
 <table><thead>
 <tr>
@@ -2729,13 +2724,6 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>bolt</td>
 <td>query</td>
 <td>The bolt11 invoice to pay (either bolt or address required)</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>address</td>
-<td>query</td>
-<td>Lightning address (alternative to bolt)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -2764,13 +2752,6 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>description</td>
 <td>query</td>
 <td>Payment description (visible to recipient if applicable)</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>otp</td>
-<td>query</td>
-<td>6-digit OTP code (required for web session, not required for API sessions)</td>
 <td>No</td>
 <td>string</td>
 </tr>
