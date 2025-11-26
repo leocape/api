@@ -3314,7 +3314,7 @@ For limit orders, you can specify post_only to ensure that orders wont complete 
 | market          | The market name eg 'btczar'       | Yes      | string  |
 | side            | The direction of the order eg buy | Yes      | string  |
 | volume          | The order size in base currency   | Yes      | double  |
-| ord_type        | Limit / Market                    | No       | string  |
+| ord_type        | Limit / Market                    | Yes      | string  |
 | price           | The limit order price             | No       | double  |
 | post_only       | Fail limit order if matched       | No       | boolean |
 | custom_order_id | Your custom order id              | No       | string  |
