@@ -950,13 +950,12 @@ Get the expected fee to withdraw the specified currency. Submit the quote_id wit
 
 Creates new withdrawal to active beneficiary.
 
-**Note:** OTP is **not required** when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web interface.
+**Note:** OTP is **not required** when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web app, however 2FA must still be enabled on the account to enable withdraws.
 
 ### Parameters
 
 | Name           | Located in | Description                                                                                                                                                   | Required | Schema  |
 | -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| otp            | formData   | OTP to perform action (not required for API requests)                                                                                                         | No       | integer |
 | beneficiary_id | formData   | ID of active Beneficiary.                                                                                                                                     | Yes      | integer |
 | currency       | formData   | The currency code matching the beneficiary.                                                                                                                   | Yes      | string  |
 | amount         | formData   | The amount to withdraw.                                                                                                                                       | Yes      | double  |
@@ -1205,17 +1204,17 @@ Submits a payment request to pay a BTC Lightning BOLT11 invoice (withdraws this 
 
 As the payment is requested and validated on the lightning network, please query your withdrawal history to confirm that the payment succeeded.
 
+**Note:** OTP is **not required** when creating withdrawals via the API. The OTP requirement only applies to withdrawals created through the web app, however 2FA must still be enabled on the account to enable withdraws.
+
 ### Parameters
 
 | Name               | Located in | Description                                                                                 | Required | Schema |
 | ------------------ | ---------- | ------------------------------------------------------------------------------------------- | -------- | ------ |
 | bolt               | query      | The bolt11 invoice to pay (either bolt or address required)                                 | No       | string |
-| address            | query      | Lightning address (alternative to bolt)                                                     | No       | string |
 | amount             | query      | The amount to of the invoice in SATs. Sanity check is performed against the supplied bolt11 | Yes      | double |
 | quote_id           | query      | The quote_id of the withdrawal quote, see [Withdraw quote](#get-withdraw-quote)             | No       | string |
 | member_description | query      | Personal description of this payment for your records                                       | No       | string |
 | description        | query      | Payment description (visible to recipient if applicable)                                    | No       | string |
-| otp                | query      | 6-digit OTP code (required for web session, not required for API sessions)                  | No       | string |
 | data               | formData   | Travel rule information in JSON format (see travel rule fields below)                       | No       | json   |
 
 **Travel Rule Data (Optional):**
