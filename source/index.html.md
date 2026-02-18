@@ -2489,7 +2489,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData1 = new FormData();
   formData1.append("upload", fs.createReadStream("./ubo_passport.jpg"));
   formData1.append("doc_type", "Passport");
-  formData1.append("customer_uid", uboUid);
+  formData1.append("customer_ubo_uid", uboUid);
   formData1.append("doc_number", "M98765432");
   formData1.append("doc_expire", "2029-06-30");
 
@@ -2506,7 +2506,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData2 = new FormData();
   formData2.append("upload", fs.createReadStream("./ubo_selfie.jpg"));
   formData2.append("doc_type", "Selfie");
-  formData2.append("customer_uid", uboUid);
+  formData2.append("customer_ubo_uid", uboUid);
 
   try {
     await axios.post(url, formData2, {
@@ -2521,7 +2521,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData3 = new FormData();
   formData3.append("upload", fs.createReadStream("./ubo_proof_of_address.pdf"));
   formData3.append("doc_type", "Proof of Address");
-  formData3.append("customer_uid", uboUid);
+  formData3.append("customer_ubo_uid", uboUid);
 
   try {
     await axios.post(url, formData3, {
@@ -2545,7 +2545,7 @@ uploadUBODocuments("ID_UBO_002_XYZ");
 
 Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.
 
-**When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_uid` when uploading UBO documents.
+**When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_ubo_uid` when uploading UBO documents.
 
 **Business KYB completion requires**:
 
@@ -2558,13 +2558,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name         | Located in | Description                                              | Required | Schema |
-| ------------ | ---------- | -------------------------------------------------------- | -------- | ------ |
-| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
-| doc_type     | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
-| customer_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
-| doc_number   | formData   | ID document number (optional for selfie)                 | No       | string |
-| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+| Name             | Located in | Description                                              | Required | Schema |
+| ---------------- | ---------- | -------------------------------------------------------- | -------- | ------ |
+| upload           | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
+| doc_type         | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
+| customer_ubo_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
+| doc_number       | formData   | ID document number (optional for selfie)                 | No       | string |
+| doc_expire       | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
 
 ### Required UBO Documents
 
