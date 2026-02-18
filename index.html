@@ -4855,7 +4855,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_passport.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Passport</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">M98765432</span><span class="dl">"</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">2029-06-30</span><span class="dl">"</span><span class="p">);</span>
 
@@ -4872,7 +4872,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_selfie.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Selfie</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData2</span><span class="p">,</span> <span class="p">{</span>
@@ -4887,7 +4887,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_proof_of_address.pdf</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Proof of Address</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData3</span><span class="p">,</span> <span class="p">{</span>
@@ -4908,7 +4908,7 @@ Total: 150
 <h3 id='description-43'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.</p>
 
-<p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>customer_uid</code> when uploading UBO documents.</p>
+<p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>customer_ubo_uid</code> when uploading UBO documents.</p>
 
 <p><strong>Business KYB completion requires</strong>:</p>
 
@@ -4945,7 +4945,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_uid</td>
+<td>customer_ubo_uid</td>
 <td>formData</td>
 <td>UBO&#39;s UID from the business customer creation response</td>
 <td>Yes</td>
