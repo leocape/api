@@ -2341,7 +2341,7 @@ The following documents must be uploaded for individual customers:
 
 Valid `doc_type` values for individual customer KYC documents:
 
-**Note:** Use Title Case format exactly as shown below (e.g., "Passport", "Proof of Address", "Board Resolution"). The system automatically converts these to internal format.
+**Note:** Use Title Case format exactly as shown below (e.g., "Passport", "Proof of Address", "Board Resolution").
 
 - `Passport`
 - `Passport other`
@@ -2449,7 +2449,7 @@ Upload KYB verification documents for business customers. Nine business document
 
 Valid `doc_type` values for business customer KYB documents:
 
-**Note:** Use Title Case format exactly as shown below (e.g., "Board Resolution", "Company Registration"). The system automatically converts these to internal format.
+**Note:** Use Title Case format exactly as shown below (e.g., "Board Resolution", "Company Registration").
 
 - `Board Resolution` - Board resolution authorizing account opening, signed by authorized directors
 - `Company Registration` - Official company registration certificate proving legal existence
@@ -2609,9 +2609,7 @@ Valid `doc_type` values for UBO KYC documents (same as individual customers):
 - `Drivers license back`
 - `Driver license back`
 - `Selfie`
-- `Liveness`
 - `Proof of Address`
-- `Source of Funds`
 
 ### Responses
 
