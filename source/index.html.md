@@ -2412,7 +2412,6 @@ const uploadAllBusinessDocuments = async (customerUid) => {
     { type: "Shareholder Certificate", file: "./shareholder_certificate.pdf" },
     { type: "Incorporation Certificate", file: "./incorporation_cert.pdf" },
     { type: "Bank Statement", file: "./bank_statement.pdf" },
-    { type: "Tax Statement", file: "./tax_statement.pdf" },
   ];
 
   for (const doc of documents) {

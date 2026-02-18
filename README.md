@@ -38,6 +38,14 @@ Developing locally:
 rvm use 2.7.2
 bundle exec middleman server
 
+Pushing to github pages:
+
+git add .
+git commit -m "feat: "
+git push
+./deploy.sh
+Finally go to github pages and change the domain
+
 To get started with Slate, please check out the [Getting Started](https://github.com/slatedocs/slate/wiki#getting-started)
 section in our [wiki](https://github.com/slatedocs/slate/wiki).
 
