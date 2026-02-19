@@ -3290,6 +3290,789 @@ Get a paginated list of customers belonging to a specific merchant. This provide
 
 **Note:** Pagination information is returned in HTTP headers (`Page`, `Per-Page`, `Total`), not in the response body.
 
+## <span class="request-type__post">POST</span> Create Merchant
+
+```javascript
+// createMerchant.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+createMerchant = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/persona/resource/merchants`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const merchantData = {
+    entity_type: "business",
+    email: "admin@acmemerchant.com",
+    phone_number: "+27821234567",
+    account_name: "ACME Merchant Corp",
+
+    business_profile: {
+      // Core Business Information
+      company_name: "ACME Merchant (Pty) Ltd",
+      registration_number: "2020/123456/07",
+      registration_country: "ZA",
+      industry: "Financial Services",
+      purpose_of_account: "Cryptocurrency trading and payment processing",
+      expected_monthly_volume_usd: 500000,
+
+      // Additional Business Information
+      jurisdictions_of_operation: ["ZA", "US", "GB"],
+      website: "https://www.acmemerchant.com",
+      employee_count: 25,
+
+      // Business Address
+      address: "123 Business Street, Suite 100",
+      city: "Cape Town",
+      postcode: "8001",
+      country: "ZA",
+
+      // License Information
+      license_status: "Licensed",
+      license_number: "FSP12345",
+      license_jurisdictions: ["ZA"],
+    },
+
+    // Ultimate Beneficial Owners (at least 1 required)
+    ubos: [
+      {
+        // Personal Information
+        email: "jane.smith@acmemerchant.com",
+        first_name: "Jane",
+        last_name: "Smith",
+        phone_number: "+27821111111",
+        dob: "1985-05-15",
+
+        // Residence Information
+        address: "456 Residential Ave",
+        postcode: "7700",
+        city: "Cape Town",
+        country: "ZA",
+        nationality: "ZA",
+        id_number: "8505155800088",
+
+        // Professional Information (must use values from the approved lists below)
+        occupation: "Chief Executive Officer",
+        source_of_funds: "Business Income",
+
+        // Ownership & Roles
+        ownership_percentage: 60,
+        is_director: true,
+        is_authorized_signatory: true,
+
+        // PEP Declaration
+        is_pep_occupation: false,
+        is_pep_related: false,
+        is_pip: false,
+      },
+    ],
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: merchantData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createMerchant();
+```
+
+`/persona/resource/merchants`
+
+### Description
+
+Create a new merchant account under the aggregator. The request body follows the same structure as [Create Business Customer](#post-create-business-customer), including company details and Ultimate Beneficial Owner (UBO) information.
+
+**Merchants** start with 'pending' status and require KYB verification. Business documents must be uploaded separately using the merchant document upload endpoint (see "Upload Merchant Documents" section below).
+
+---
+
+### Parameters
+
+**Account Information:**
+
+| Name         | Located in | Description                                            | Required | Schema |
+| ------------ | ---------- | ------------------------------------------------------ | -------- | ------ |
+| entity_type  | formData   | Must be 'business'                                     | Yes      | string |
+| email        | formData   | Business email address (unique)                        | Yes      | string |
+| phone_number | formData   | Business phone number in international format          | Yes      | string |
+| account_name | formData   | Business account display name (typically company name) | Yes      | string |
+
+**Business Profile (JSON Object):**
+
+Same fields as [Create Business Customer](#post-create-business-customer) — see that section for the full `business_profile` and `ubos` parameter tables.
+
+### Responses
+
+| Code | Description                   | Schema                                                          |
+| ---- | ----------------------------- | --------------------------------------------------------------- |
+| 201  | Merchant created successfully | Merchant object (see [Customer (Business)](#customer-business)) |
+| 422  | Validation error              | Error array                                                     |
+
+**Note:** The response includes the merchant `uid` and `ubos[].uid` values. Save these — they are required for uploading merchant and UBO documents.
+
+## <span class="request-type__get">GET</span> Get Merchant
+
+```javascript
+// getMerchant.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getMerchant = async (merchantUid) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/persona/resource/merchants/${merchantUid}`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getMerchant("CCT1234567");
+```
+
+`/persona/resource/merchants/{uid}`
+
+### Description
+
+Get details for a specific merchant account, including KYC/KYB status and UBO KYC status.
+
+### Parameters
+
+| Name | Located in | Description         | Required | Schema |
+| ---- | ---------- | ------------------- | -------- | ------ |
+| uid  | path       | Merchant identifier | Yes      | string |
+
+### Responses
+
+| Code | Description        | Schema                                                          |
+| ---- | ------------------ | --------------------------------------------------------------- |
+| 200  | Merchant details   | Merchant object (see [Customer (Business)](#customer-business)) |
+| 404  | Merchant not found | Error array                                                     |
+
+## <span class="request-type__post">POST</span> Upload Merchant Documents
+
+```javascript
+// uploadMerchantDocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadMerchantDocument = async (merchantUid, documentType, filePath) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/merchants/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const formData = new FormData();
+  formData.append("upload", fs.createReadStream(filePath));
+  formData.append("doc_type", documentType);
+  formData.append("merchant_uid", merchantUid);
+  formData.append("doc_number", "N/A");
+  formData.append("doc_expire", "N/A");
+
+  try {
+    const result = await axios.post(url, formData, {
+      headers: { ...headers, ...formData.getHeaders() },
+    });
+    console.log(`${documentType} uploaded successfully`);
+    return result.data;
+  } catch (err) {
+    console.log(`Error uploading ${documentType}:`, err);
+    throw err;
+  }
+};
+
+// Upload all required merchant business documents
+const uploadAllMerchantDocuments = async (merchantUid) => {
+  const documents = [
+    { type: "Board Resolution", file: "./board_resolution.pdf" },
+    { type: "Company Registration", file: "./company_registration.pdf" },
+    { type: "AML Policy", file: "./aml_policy.pdf" },
+    { type: "Business License", file: "./business_license.pdf" },
+    { type: "Business Proof of Address", file: "./proof_of_address.pdf" },
+    { type: "Shareholder Certificate", file: "./shareholder_certificate.pdf" },
+    { type: "Incorporation Certificate", file: "./incorporation_cert.pdf" },
+    { type: "Bank Statement", file: "./bank_statement.pdf" },
+    { type: "Tax Statement", file: "./tax_statement.pdf" },
+  ];
+
+  for (const doc of documents) {
+    await uploadMerchantDocument(merchantUid, doc.type, doc.file);
+  }
+
+  console.log("All merchant business documents uploaded successfully");
+};
+
+// Upload documents after merchant creation
+uploadAllMerchantDocuments("CCT1234567");
+```
+
+`/api/v2/verification/merchants/documents`
+
+### Description
+
+Upload KYB verification documents for a merchant entity. Nine business documents are required for complete verification. Additionally, all merchant UBOs must upload their individual KYC documents (see "Upload Merchant UBO Documents" section below). Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 4MB per document.
+
+**Note:** This endpoint should be called after creating a merchant using the [Create Merchant](#post-create-merchant) endpoint. Use the merchant UID returned from the creation response.
+
+### Parameters
+
+| Name         | Located in | Description                                      | Required | Schema |
+| ------------ | ---------- | ------------------------------------------------ | -------- | ------ |
+| upload       | formData   | The document file (PDF, JPG, PNG) - Max 10MB     | Yes      | File   |
+| doc_type     | formData   | Business document type (see list below)          | Yes      | string |
+| merchant_uid | formData   | Merchant UID from the merchant creation response | Yes      | string |
+| doc_number   | formData   | Use 'N/A' for business documents                 | No       | string |
+| doc_expire   | formData   | Use 'N/A' for business documents                 | No       | string |
+
+### Available Business Document Types
+
+Valid `doc_type` values for merchant KYB documents (same as business customer KYB):
+
+**Note:** Use Title Case format exactly as shown below (e.g., "Board Resolution", "Company Registration").
+
+- `Board Resolution` - Board resolution authorizing account opening, signed by authorized directors
+- `Company Registration` - Official company registration certificate proving legal existence
+- `AML Policy` - Anti-Money Laundering policy document
+- `Business License` - Industry-specific operating license (if applicable)
+- `Business Proof of Address` - Utility bill or lease agreement (must be less than 3 months old)
+- `Shareholder Certificate` - Official list of company shareholders showing ownership structure
+- `Incorporation Certificate` - Certificate of incorporation / Articles of Association
+- `Bank Statement` - Recent company bank statement (must be less than 3 months old)
+- `Tax Statement` - Valid tax compliance certificate proving good standing with tax authorities
+
+### Responses
+
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
+
+## <span class="request-type__post">POST</span> Upload Merchant UBO Documents
+
+```javascript
+// uploadMerchantUBODocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadMerchantUBODocuments = async (uboUid) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/merchants/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  // Document 1: ID Front
+  const formData1 = new FormData();
+  formData1.append("upload", fs.createReadStream("./ubo_id_front.jpg"));
+  formData1.append("doc_type", "Identity card");
+  formData1.append("ubo_uid", uboUid);
+  formData1.append("doc_number", "8505155800088");
+  formData1.append("doc_expire", "2030-12-31");
+
+  try {
+    await axios.post(url, formData1, {
+      headers: { ...headers, ...formData1.getHeaders() },
+    });
+    console.log("UBO ID front uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO ID front:", err);
+  }
+
+  // Document 2: ID Back
+  const formData2 = new FormData();
+  formData2.append("upload", fs.createReadStream("./ubo_id_back.jpg"));
+  formData2.append("doc_type", "Identity card back");
+  formData2.append("ubo_uid", uboUid);
+  formData2.append("doc_number", "8505155800088");
+
+  try {
+    await axios.post(url, formData2, {
+      headers: { ...headers, ...formData2.getHeaders() },
+    });
+    console.log("UBO ID back uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO ID back:", err);
+  }
+
+  // Document 3: Selfie
+  const formData3 = new FormData();
+  formData3.append("upload", fs.createReadStream("./ubo_selfie.jpg"));
+  formData3.append("doc_type", "Selfie");
+  formData3.append("ubo_uid", uboUid);
+
+  try {
+    await axios.post(url, formData3, {
+      headers: { ...headers, ...formData3.getHeaders() },
+    });
+    console.log("UBO Selfie uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO selfie:", err);
+  }
+
+  // Document 4: Proof of Address
+  const formData4 = new FormData();
+  formData4.append("upload", fs.createReadStream("./ubo_proof_of_address.pdf"));
+  formData4.append("doc_type", "Proof of Address");
+  formData4.append("ubo_uid", uboUid);
+
+  try {
+    await axios.post(url, formData4, {
+      headers: { ...headers, ...formData4.getHeaders() },
+    });
+    console.log("UBO Proof of Address uploaded successfully");
+  } catch (err) {
+    console.log("Error uploading UBO proof of address:", err);
+  }
+};
+
+// Upload documents for each merchant UBO
+// UBO UIDs are returned when creating the merchant
+uploadMerchantUBODocuments("ID_UBO_001_ABC");
+```
+
+`/api/v2/verification/merchants/documents`
+
+### Description
+
+Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of a merchant. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the merchant's business entity documents.
+
+**When creating a merchant**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `ubo_uid` when uploading UBO documents.
+
+**Merchant KYB completion requires**:
+
+1. All 9 merchant business entity documents uploaded
+2. **All UBOs must have complete KYC documents**
+
+Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 4MB per document.
+
+### Parameters
+
+| Name       | Located in | Description                                              | Required | Schema |
+| ---------- | ---------- | -------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
+| doc_type   | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
+| ubo_uid    | formData   | UBO's UID from the merchant creation response            | Yes      | string |
+| doc_number | formData   | ID document number (optional for selfie)                 | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+
+### Required UBO Documents
+
+Each UBO must upload the following documents:
+
+1. **ID Document (Front)** - Front image of the identification document
+
+   - `doc_type`: 'Passport', 'Identity card', or 'Driver license'
+   - Include `doc_number` and `doc_expire`
+   - Note: Passport is single-sided; Identity card and Driver license require back side as well
+
+2. **ID Document (Back)** - Back image (Identity card and Driver license only)
+
+   - `doc_type`: 'Identity card back' or 'Drivers license back'
+   - Include `doc_number` and `doc_expire`
+   - Not required for Passport
+
+3. **Selfie** - Photograph of UBO holding their ID document
+
+   - `doc_type`: 'Selfie'
+   - `doc_number` and `doc_expire` are optional
+
+4. **Proof of Address** - Utility bill, bank statement, or lease agreement
+
+   - `doc_type`: 'Proof of Address'
+   - Document must be less than 3 months old
+   - `doc_number` and `doc_expire` are optional
+
+### Available Document Types for Merchant UBOs
+
+Valid `doc_type` values for merchant UBO KYC documents (same as individual customers):
+
+- `Passport`
+- `Passport other`
+- `Identity card`
+- `Identity card front`
+- `Identity card back`
+- `Identity book`
+- `Green Identity Book`
+- `Driver license`
+- `Driver license front`
+- `Drivers license`
+- `Drivers license back`
+- `Driver license back`
+- `Selfie`
+- `Proof of Address`
+
+### Responses
+
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
+
+## <span class="request-type__post">POST</span> Upload Merchant's Customer Documents
+
+```javascript
+// uploadMerchantCustomerDocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+// Upload individual KYC document for a merchant's customer
+uploadMerchantCustomerDocument = async (
+  customerUid,
+  documentType,
+  filePath,
+  docNumber,
+  docExpire
+) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/merchants/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const formData = new FormData();
+  formData.append("upload", fs.createReadStream(filePath));
+  formData.append("doc_type", documentType);
+  formData.append("customer_uid", customerUid);
+  if (docNumber) formData.append("doc_number", docNumber);
+  if (docExpire) formData.append("doc_expire", docExpire);
+
+  try {
+    const result = await axios.post(url, formData, {
+      headers: { ...headers, ...formData.getHeaders() },
+    });
+    console.log(`${documentType} uploaded successfully`);
+    return result.data;
+  } catch (err) {
+    console.log(`Error uploading ${documentType}:`, err);
+    throw err;
+  }
+};
+
+// Example: Upload individual customer KYC documents
+const uploadIndividualCustomerDocs = async (customerUid) => {
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Identity card",
+    "./id_front.jpg",
+    "9003205800085",
+    "2030-12-31"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Identity card back",
+    "./id_back.jpg",
+    "9003205800085"
+  );
+  await uploadMerchantCustomerDocument(customerUid, "Selfie", "./selfie.jpg");
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Proof of Address",
+    "./proof_of_address.pdf"
+  );
+  console.log("All individual customer documents uploaded");
+};
+
+// Example: Upload business customer KYB documents
+const uploadBusinessCustomerDocs = async (customerUid) => {
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Board Resolution",
+    "./board_resolution.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Company Registration",
+    "./company_registration.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "AML Policy",
+    "./aml_policy.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Business License",
+    "./business_license.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Business Proof of Address",
+    "./proof_of_address.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Shareholder Certificate",
+    "./shareholder_certificate.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Incorporation Certificate",
+    "./incorporation_cert.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Bank Statement",
+    "./bank_statement.pdf",
+    "N/A",
+    "N/A"
+  );
+  await uploadMerchantCustomerDocument(
+    customerUid,
+    "Tax Statement",
+    "./tax_statement.pdf",
+    "N/A",
+    "N/A"
+  );
+  console.log("All business customer documents uploaded");
+};
+
+// Upload documents for an individual or business customer under the merchant
+uploadIndividualCustomerDocs("CCT1234567");
+// uploadBusinessCustomerDocs("CCT1234567");
+```
+
+`/api/v2/verification/merchants/documents`
+
+### Description
+
+Upload verification documents for customers that belong to a merchant. This endpoint handles both **individual customer KYC** documents and **business customer KYB** documents. The key difference from the standard customer document upload is the route — merchant customer documents use `/verification/merchants/documents` instead of `/verification/customers/documents`.
+
+Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 4MB per document.
+
+**Note:** Use the customer UID returned from the customer creation response. This is the same `customer_uid` form field used in standard customer uploads, but sent to the merchant documents route.
+
+### Parameters
+
+| Name         | Located in | Description                                                             | Required | Schema |
+| ------------ | ---------- | ----------------------------------------------------------------------- | -------- | ------ |
+| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                | Yes      | File   |
+| doc_type     | formData   | Document type (see below)                                               | Yes      | string |
+| customer_uid | formData   | Customer UID from the customer creation response                        | Yes      | string |
+| doc_number   | formData   | ID document number (use 'N/A' for business docs)                        | No       | string |
+| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (use 'N/A' for business docs) | No       | string |
+
+### Document Types
+
+**For individual customers:** Use the same document types as [Upload Individual Customer Documents](#post-upload-individual-customer-documents) (ID document, selfie, proof of address).
+
+**For business customers:** Use the same document types as [Upload Business Customer Documents](#post-upload-business-customer-documents) (9 business KYB documents).
+
+### Responses
+
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
+
+## <span class="request-type__post">POST</span> Upload Merchant's Customer UBO Documents
+
+```javascript
+// uploadMerchantCustomerUBODocuments.js
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const generateHeaders = require("./generateHeaders");
+
+uploadMerchantCustomerUBODocument = async (
+  uboUid,
+  documentType,
+  filePath,
+  docNumber,
+  docExpire
+) => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const path = `/api/v2/verification/merchants/documents`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const formData = new FormData();
+  formData.append("upload", fs.createReadStream(filePath));
+  formData.append("doc_type", documentType);
+  formData.append("customer_ubo_uid", uboUid);
+  if (docNumber) formData.append("doc_number", docNumber);
+  if (docExpire) formData.append("doc_expire", docExpire);
+
+  try {
+    const result = await axios.post(url, formData, {
+      headers: { ...headers, ...formData.getHeaders() },
+    });
+    console.log(`${documentType} uploaded successfully`);
+    return result.data;
+  } catch (err) {
+    console.log(`Error uploading ${documentType}:`, err);
+    throw err;
+  }
+};
+
+// Upload KYC documents for a merchant's business customer's UBO
+const uploadUBODocs = async (uboUid) => {
+  await uploadMerchantCustomerUBODocument(
+    uboUid,
+    "Identity card",
+    "./ubo_id_front.jpg",
+    "8505155800088",
+    "2030-12-31"
+  );
+  await uploadMerchantCustomerUBODocument(
+    uboUid,
+    "Identity card back",
+    "./ubo_id_back.jpg",
+    "8505155800088"
+  );
+  await uploadMerchantCustomerUBODocument(uboUid, "Selfie", "./ubo_selfie.jpg");
+  await uploadMerchantCustomerUBODocument(
+    uboUid,
+    "Proof of Address",
+    "./ubo_proof_of_address.pdf"
+  );
+  console.log("All merchant customer UBO documents uploaded");
+};
+
+// UBO UIDs are returned when creating the business customer
+uploadUBODocs("ID_UBO_001_ABC");
+```
+
+`/api/v2/verification/merchants/documents`
+
+### Description
+
+Upload KYC verification documents for UBOs of a merchant's business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_ubo_uid` when uploading documents.
+
+**Business customer KYB completion under a merchant requires**:
+
+1. All 9 business documents uploaded via [Upload Merchant's Customer Documents](#post-upload-merchants-customer-documents) with `customer_uid`
+2. **All UBOs must have complete KYC documents** uploaded via this endpoint with `customer_ubo_uid`
+
+Each document must be uploaded as a separate request with FormData.
+
+**Maximum file size:** 4MB per document.
+
+### Parameters
+
+| Name             | Located in | Description                                              | Required | Schema |
+| ---------------- | ---------- | -------------------------------------------------------- | -------- | ------ |
+| upload           | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
+| doc_type         | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
+| customer_ubo_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
+| doc_number       | formData   | ID document number (optional for selfie)                 | No       | string |
+| doc_expire       | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+
+### Required UBO Documents
+
+Each UBO must upload the following documents:
+
+1. **ID Document (Front)** - Front image of the identification document
+
+   - `doc_type`: 'Passport', 'Identity card', or 'Driver license'
+   - Include `doc_number` and `doc_expire`
+   - Note: Passport is single-sided; Identity card and Driver license require back side as well
+
+2. **ID Document (Back)** - Back image (Identity card and Driver license only)
+
+   - `doc_type`: 'Identity card back' or 'Drivers license back'
+   - Include `doc_number` and `doc_expire`
+   - Not required for Passport
+
+3. **Selfie** - Photograph of UBO holding their ID document
+
+   - `doc_type`: 'Selfie'
+   - `doc_number` and `doc_expire` are optional
+
+4. **Proof of Address** - Utility bill, bank statement, or lease agreement
+
+   - `doc_type`: 'Proof of Address'
+   - Document must be less than 3 months old
+   - `doc_number` and `doc_expire` are optional
+
+### Available Document Types
+
+Valid `doc_type` values (same as individual customers):
+
+- `Passport`
+- `Passport other`
+- `Identity card`
+- `Identity card front`
+- `Identity card back`
+- `Identity book`
+- `Green Identity Book`
+- `Driver license`
+- `Driver license front`
+- `Drivers license`
+- `Drivers license back`
+- `Driver license back`
+- `Selfie`
+- `Proof of Address`
+
+### Responses
+
+| Code | Description                    | Schema         |
+| ---- | ------------------------------ | -------------- |
+| 200  | Document uploaded successfully | Success object |
+| 400  | Invalid doc_type               | Error array    |
+| 422  | Validation error               | Error array    |
+
+### Merchant Document Upload Summary
+
+All merchant-related document uploads use the same route (`/verification/merchants/documents`) but with different form field keys to identify the target:
+
+| Target                         | Form Field Key     | Description                                   |
+| ------------------------------ | ------------------ | --------------------------------------------- |
+| Merchant's own KYB docs        | `merchant_uid`     | The merchant entity's business documents      |
+| Merchant's own UBO docs        | `ubo_uid`          | UBO of the merchant itself                    |
+| Merchant's customer docs       | `customer_uid`     | Customer created under the merchant           |
+| Merchant's customer's UBO docs | `customer_ubo_uid` | UBO of a business customer under the merchant |
+
 # Trading
 
 ## <span class="request-type__post">POST</span> Create Order
