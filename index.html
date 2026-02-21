@@ -4497,7 +4497,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./id_front.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Passport</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
+  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">M12345678</span><span class="dl">"</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">2028-12-31</span><span class="dl">"</span><span class="p">);</span>
 
@@ -4514,9 +4514,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./id_back.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Drivers license back</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">DL987654</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">2028-12-31</span><span class="dl">"</span><span class="p">);</span>
+  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData2</span><span class="p">,</span> <span class="p">{</span>
@@ -4531,7 +4529,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./selfie.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Selfie</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
+  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData3</span><span class="p">,</span> <span class="p">{</span>
@@ -4546,7 +4544,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData4</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./proof_of_address.pdf</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Proof of Address</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
+  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData4</span><span class="p">,</span> <span class="p">{</span>
@@ -4601,7 +4599,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>Customer UID from the customer creation response</td>
 <td>Yes</td>
@@ -4610,14 +4608,14 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (optional for selfie)</td>
+<td>ID document number (required only for passports)</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>doc_expire</td>
 <td>formData</td>
-<td>Document expiry date in YYYY-MM-DD format (optional for selfie)</td>
+<td>Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -4724,9 +4722,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="nx">filePath</span><span class="p">));</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="nx">documentType</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">);</span>
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData</span><span class="p">,</span> <span class="p">{</span>
@@ -4795,24 +4791,10 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>Customer UID from the business customer creation response</td>
 <td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>doc_number</td>
-<td>formData</td>
-<td>Use &#39;N/A&#39; for business documents</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>doc_expire</td>
-<td>formData</td>
-<td>Use &#39;N/A&#39; for business documents</td>
-<td>No</td>
 <td>string</td>
 </tr>
 </tbody></table>
@@ -4864,7 +4846,7 @@ Total: 150
 
 <span class="nx">uploadUBODocuments</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="nx">uboUid</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/customers/documents`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/ubos/documents`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
@@ -4872,7 +4854,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_passport.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Passport</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">M98765432</span><span class="dl">"</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">2029-06-30</span><span class="dl">"</span><span class="p">);</span>
 
@@ -4889,7 +4871,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_selfie.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Selfie</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData2</span><span class="p">,</span> <span class="p">{</span>
@@ -4904,7 +4886,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_proof_of_address.pdf</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Proof of Address</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData3</span><span class="p">,</span> <span class="p">{</span>
@@ -4921,11 +4903,11 @@ Total: 150
 <span class="nx">uploadUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 <span class="nx">uploadUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_002_XYZ</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
-<p><code>/api/v2/verification/customers/documents</code></p>
+<p><code>/api/v2/verification/ubos/documents</code></p>
 <h3 id='description-43'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.</p>
 
-<p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>customer_ubo_uid</code> when uploading UBO documents.</p>
+<p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
 
 <p><strong>Business KYB completion requires</strong>:</p>
 
@@ -4962,7 +4944,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_ubo_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>UBO&#39;s UID from the business customer creation response</td>
 <td>Yes</td>
@@ -4971,14 +4953,14 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (optional for selfie)</td>
+<td>ID document number (required only for passports)</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>doc_expire</td>
 <td>formData</td>
-<td>Document expiry date in YYYY-MM-DD format</td>
+<td>Document expiry date in YYYY-MM-DD format (required only for passports and drivers licences)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -4991,9 +4973,9 @@ Total: 150
 </ol>
 
 <ul>
-<li><code>doc_type</code>: &#39;Passport&#39;, &#39;Identity card&#39;, or &#39;Driver license&#39;</li>
-<li>Include <code>doc_number</code> and <code>doc_expire</code></li>
-<li>Note: Passport is single-sided; Identity card and Driver license require back side as well</li>
+<li><code>doc_type</code>: &#39;Green ID book&#39;, &#39;Passport&#39;, &#39;Identity card&#39;, or &#39;Driver license&#39;</li>
+<li>Include <code>doc_number</code> and <code>doc_expire</code> for the Passports and drivers license</li>
+<li>Note: Passport and SA Green ID book are single-sided; Identity card and Driver license require back side as well</li>
 </ul>
 
 <ol>
@@ -5002,8 +4984,7 @@ Total: 150
 
 <ul>
 <li><code>doc_type</code>: &#39;Identity card back&#39; or &#39;Drivers license back&#39;</li>
-<li>Include <code>doc_number</code> and <code>doc_expire</code></li>
-<li>Not required for Passport</li>
+<li>Not required for Passports or SA Green ID Book</li>
 </ul>
 
 <ol>
@@ -5022,7 +5003,6 @@ Total: 150
 <ul>
 <li><code>doc_type</code>: &#39;Proof of Address&#39;</li>
 <li>Document must be less than 3 months old</li>
-<li><code>doc_number</code> and <code>doc_expire</code> are optional</li>
 </ul>
 <h3 id='available-document-types-for-ubos'>Available Document Types for UBOs</h3>
 <p>Valid <code>doc_type</code> values for UBO KYC documents (same as individual customers):</p>
@@ -6196,9 +6176,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="nx">filePath</span><span class="p">));</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="nx">documentType</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">merchant_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">merchantUid</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">);</span>
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">merchantUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData</span><span class="p">,</span> <span class="p">{</span>
@@ -6268,24 +6246,10 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>merchant_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>Merchant UID from the merchant creation response</td>
 <td>Yes</td>
-<td>string</td>
-</tr>
-<tr>
-<td>doc_number</td>
-<td>formData</td>
-<td>Use &#39;N/A&#39; for business documents</td>
-<td>No</td>
-<td>string</td>
-</tr>
-<tr>
-<td>doc_expire</td>
-<td>formData</td>
-<td>Use &#39;N/A&#39; for business documents</td>
-<td>No</td>
 <td>string</td>
 </tr>
 </tbody></table>
@@ -6337,7 +6301,7 @@ Total: 150
 
 <span class="nx">uploadMerchantUBODocuments</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="nx">uboUid</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/merchants/documents`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/ubos/documents`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
@@ -6345,7 +6309,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_id_front.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Identity card</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">8505155800088</span><span class="dl">"</span><span class="p">);</span>
   <span class="nx">formData1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">2030-12-31</span><span class="dl">"</span><span class="p">);</span>
 
@@ -6362,7 +6326,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_id_back.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Identity card back</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
   <span class="nx">formData2</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">8505155800088</span><span class="dl">"</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
@@ -6378,7 +6342,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_selfie.jpg</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Selfie</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData3</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData3</span><span class="p">,</span> <span class="p">{</span>
@@ -6393,7 +6357,7 @@ Total: 150
   <span class="kd">const</span> <span class="nx">formData4</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="dl">"</span><span class="s2">./ubo_proof_of_address.pdf</span><span class="dl">"</span><span class="p">));</span>
   <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Proof of Address</span><span class="dl">"</span><span class="p">);</span>
-  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData4</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
 
   <span class="k">try</span> <span class="p">{</span>
     <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">formData4</span><span class="p">,</span> <span class="p">{</span>
@@ -6409,11 +6373,11 @@ Total: 150
 <span class="c1">// UBO UIDs are returned when creating the merchant</span>
 <span class="nx">uploadMerchantUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
-<p><code>/api/v2/verification/merchants/documents</code></p>
+<p><code>/api/v2/verification/ubos/documents</code></p>
 <h3 id='description-52'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of a merchant. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the merchant&#39;s business entity documents.</p>
 
-<p><strong>When creating a merchant</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>ubo_uid</code> when uploading UBO documents.</p>
+<p><strong>When creating a merchant</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
 
 <p><strong>Merchant KYB completion requires</strong>:</p>
 
@@ -6450,7 +6414,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>ubo_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>UBO&#39;s UID from the merchant creation response</td>
 <td>Yes</td>
@@ -6459,14 +6423,14 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (optional for selfie)</td>
+<td>ID document number (required only for passports)</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>doc_expire</td>
 <td>formData</td>
-<td>Document expiry date in YYYY-MM-DD format</td>
+<td>Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -6570,14 +6534,14 @@ Total: 150
   <span class="nx">docExpire</span>
 <span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/merchants/documents`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/customers/documents`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
   <span class="kd">const</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="nx">filePath</span><span class="p">));</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="nx">documentType</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">customerUid</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">docNumber</span><span class="p">)</span> <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="nx">docNumber</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">docExpire</span><span class="p">)</span> <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="nx">docExpire</span><span class="p">);</span>
 
@@ -6622,65 +6586,47 @@ Total: 150
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Board Resolution</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./board_resolution.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./board_resolution.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Company Registration</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./company_registration.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./company_registration.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">AML Policy</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./aml_policy.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./aml_policy.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Business License</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./business_license.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./business_license.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Business Proof of Address</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./proof_of_address.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./proof_of_address.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Shareholder Certificate</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./shareholder_certificate.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./shareholder_certificate.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Incorporation Certificate</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./incorporation_cert.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./incorporation_cert.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Bank Statement</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./bank_statement.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./bank_statement.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="k">await</span> <span class="nx">uploadMerchantCustomerDocument</span><span class="p">(</span>
     <span class="nx">customerUid</span><span class="p">,</span>
     <span class="dl">"</span><span class="s2">Tax Statement</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">./tax_statement.pdf</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span><span class="p">,</span>
-    <span class="dl">"</span><span class="s2">N/A</span><span class="dl">"</span>
+    <span class="dl">"</span><span class="s2">./tax_statement.pdf</span><span class="dl">"</span>
   <span class="p">);</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">All business customer documents uploaded</span><span class="dl">"</span><span class="p">);</span>
 <span class="p">};</span>
@@ -6689,15 +6635,15 @@ Total: 150
 <span class="nx">uploadIndividualCustomerDocs</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 <span class="c1">// uploadBusinessCustomerDocs("CCT1234567");</span>
 </code></pre></div>
-<p><code>/api/v2/verification/merchants/documents</code></p>
+<p><code>/api/v2/verification/customers/documents</code></p>
 <h3 id='description-53'>Description</h3>
-<p>Upload verification documents for customers that belong to a merchant. This endpoint handles both <strong>individual customer KYC</strong> documents and <strong>business customer KYB</strong> documents. The key difference from the standard customer document upload is the route — merchant customer documents use <code>/verification/merchants/documents</code> instead of <code>/verification/customers/documents</code>.</p>
+<p>Upload verification documents for customers that belong to a merchant. This endpoint handles both <strong>individual customer KYC</strong> documents and <strong>business customer KYB</strong> documents.</p>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
-<p><strong>Note:</strong> Use the customer UID returned from the customer creation response. This is the same <code>customer_uid</code> form field used in standard customer uploads, but sent to the merchant documents route.</p>
+<p><strong>Note:</strong> Use the customer UID returned from the customer creation response. This is the same <code>uid</code> form field used in standard customer uploads.</p>
 <h3 id='parameters-49'>Parameters</h3>
 <table><thead>
 <tr>
@@ -6723,7 +6669,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>Customer UID from the customer creation response</td>
 <td>Yes</td>
@@ -6732,14 +6678,14 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (use &#39;N/A&#39; for business docs)</td>
+<td>ID document number (leave out for business docs)</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>doc_expire</td>
 <td>formData</td>
-<td>Document expiry date in YYYY-MM-DD format (use &#39;N/A&#39; for business docs)</td>
+<td>Document expiry date in YYYY-MM-DD format (leave out for business docs)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -6786,14 +6732,14 @@ Total: 150
   <span class="nx">docExpire</span>
 <span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/merchants/documents`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/verification/ubos/documents`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
   <span class="kd">const</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">upload</span><span class="dl">"</span><span class="p">,</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="nx">filePath</span><span class="p">));</span>
   <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_type</span><span class="dl">"</span><span class="p">,</span> <span class="nx">documentType</span><span class="p">);</span>
-  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">customer_ubo_uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">uid</span><span class="dl">"</span><span class="p">,</span> <span class="nx">uboUid</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">docNumber</span><span class="p">)</span> <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_number</span><span class="dl">"</span><span class="p">,</span> <span class="nx">docNumber</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">docExpire</span><span class="p">)</span> <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">"</span><span class="s2">doc_expire</span><span class="dl">"</span><span class="p">,</span> <span class="nx">docExpire</span><span class="p">);</span>
 
@@ -6836,15 +6782,15 @@ Total: 150
 <span class="c1">// UBO UIDs are returned when creating the business customer</span>
 <span class="nx">uploadUBODocs</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
-<p><code>/api/v2/verification/merchants/documents</code></p>
+<p><code>/api/v2/verification/ubos/documents</code></p>
 <h3 id='description-54'>Description</h3>
-<p>Upload KYC verification documents for UBOs of a merchant&#39;s business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>customer_ubo_uid</code> when uploading documents.</p>
+<p>Upload KYC verification documents for UBOs of a merchant&#39;s business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading documents.</p>
 
 <p><strong>Business customer KYB completion under a merchant requires</strong>:</p>
 
 <ol>
-<li>All 9 business documents uploaded via <a href="#post-upload-merchants-customer-documents">Upload Merchant&#39;s Customer Documents</a> with <code>customer_uid</code></li>
-<li><strong>All UBOs must have complete KYC documents</strong> uploaded via this endpoint with <code>customer_ubo_uid</code></li>
+<li>All 9 business documents uploaded via <a href="#post-upload-merchants-customer-documents">Upload Merchant&#39;s Customer Documents</a> with <code>uid</code></li>
+<li><strong>All UBOs must have complete KYC documents</strong> uploaded via this endpoint with <code>uid</code></li>
 </ol>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
@@ -6875,7 +6821,7 @@ Total: 150
 <td>string</td>
 </tr>
 <tr>
-<td>customer_ubo_uid</td>
+<td>uid</td>
 <td>formData</td>
 <td>UBO&#39;s UID from the business customer creation response</td>
 <td>Yes</td>
@@ -6884,14 +6830,14 @@ Total: 150
 <tr>
 <td>doc_number</td>
 <td>formData</td>
-<td>ID document number (optional for selfie)</td>
+<td>ID document number (required only for Passports)</td>
 <td>No</td>
 <td>string</td>
 </tr>
 <tr>
 <td>doc_expire</td>
 <td>formData</td>
-<td>Document expiry date in YYYY-MM-DD format</td>
+<td>Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses)</td>
 <td>No</td>
 <td>string</td>
 </tr>
@@ -6978,37 +6924,6 @@ Total: 150
 <td>422</td>
 <td>Validation error</td>
 <td>Error array</td>
-</tr>
-</tbody></table>
-<h3 id='merchant-document-upload-summary'>Merchant Document Upload Summary</h3>
-<p>All merchant-related document uploads use the same route (<code>/verification/merchants/documents</code>) but with different form field keys to identify the target:</p>
-
-<table><thead>
-<tr>
-<th>Target</th>
-<th>Form Field Key</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>Merchant&#39;s own KYB docs</td>
-<td><code>merchant_uid</code></td>
-<td>The merchant entity&#39;s business documents</td>
-</tr>
-<tr>
-<td>Merchant&#39;s own UBO docs</td>
-<td><code>ubo_uid</code></td>
-<td>UBO of the merchant itself</td>
-</tr>
-<tr>
-<td>Merchant&#39;s customer docs</td>
-<td><code>customer_uid</code></td>
-<td>Customer created under the merchant</td>
-</tr>
-<tr>
-<td>Merchant&#39;s customer&#39;s UBO docs</td>
-<td><code>customer_ubo_uid</code></td>
-<td>UBO of a business customer under the merchant</td>
 </tr>
 </tbody></table>
 <h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
