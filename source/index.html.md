@@ -2220,7 +2220,7 @@ uploadDocuments = async (customerUid) => {
   const formData1 = new FormData();
   formData1.append("upload", fs.createReadStream("./id_front.jpg"));
   formData1.append("doc_type", "Passport");
-  formData1.append("customer_uid", customerUid);
+  formData1.append("uid", customerUid);
   formData1.append("doc_number", "M12345678");
   formData1.append("doc_expire", "2028-12-31");
 
@@ -2237,9 +2237,7 @@ uploadDocuments = async (customerUid) => {
   const formData2 = new FormData();
   formData2.append("upload", fs.createReadStream("./id_back.jpg"));
   formData2.append("doc_type", "Drivers license back");
-  formData2.append("customer_uid", customerUid);
-  formData2.append("doc_number", "DL987654");
-  formData2.append("doc_expire", "2028-12-31");
+  formData2.append("uid", customerUid);
 
   try {
     await axios.post(url, formData2, {
@@ -2254,7 +2252,7 @@ uploadDocuments = async (customerUid) => {
   const formData3 = new FormData();
   formData3.append("upload", fs.createReadStream("./selfie.jpg"));
   formData3.append("doc_type", "Selfie");
-  formData3.append("customer_uid", customerUid);
+  formData3.append("uid", customerUid);
 
   try {
     await axios.post(url, formData3, {
@@ -2269,7 +2267,7 @@ uploadDocuments = async (customerUid) => {
   const formData4 = new FormData();
   formData4.append("upload", fs.createReadStream("./proof_of_address.pdf"));
   formData4.append("doc_type", "Proof of Address");
-  formData4.append("customer_uid", customerUid);
+  formData4.append("uid", customerUid);
 
   try {
     await axios.post(url, formData4, {
@@ -2303,13 +2301,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name         | Located in | Description                                                     | Required | Schema |
-| ------------ | ---------- | --------------------------------------------------------------- | -------- | ------ |
-| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 4MB         | Yes      | File   |
-| doc_type     | formData   | Document type (see Available Document Types below)              | Yes      | string |
-| customer_uid | formData   | Customer UID from the customer creation response                | Yes      | string |
-| doc_number   | formData   | ID document number (optional for selfie)                        | No       | string |
-| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (optional for selfie) | No       | string |
+| Name       | Located in | Description                                                                                  | Required | Schema |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 4MB                                      | Yes      | File   |
+| doc_type   | formData   | Document type (see Available Document Types below)                                           | Yes      | string |
+| uid        | formData   | Customer UID from the customer creation response                                             | Yes      | string |
+| doc_number | formData   | ID document number (required only for passports)                                             | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses) | No       | string |
 
 ### Required Documents
 
@@ -2385,9 +2383,7 @@ uploadBusinessDocument = async (customerUid, documentType, filePath) => {
   const formData = new FormData();
   formData.append("upload", fs.createReadStream(filePath));
   formData.append("doc_type", documentType);
-  formData.append("customer_uid", customerUid);
-  formData.append("doc_number", "N/A");
-  formData.append("doc_expire", "N/A");
+  formData.append("uid", customerUid);
 
   try {
     const result = await axios.post(url, formData, {
@@ -2437,13 +2433,11 @@ Upload KYB verification documents for business customers. Nine business document
 
 ### Parameters
 
-| Name         | Located in | Description                                               | Required | Schema |
-| ------------ | ---------- | --------------------------------------------------------- | -------- | ------ |
-| upload       | formData   | The document file (PDF, JPG, PNG) - Max 10MB              | Yes      | File   |
-| doc_type     | formData   | Business document type (see list below)                   | Yes      | string |
-| customer_uid | formData   | Customer UID from the business customer creation response | Yes      | string |
-| doc_number   | formData   | Use 'N/A' for business documents                          | No       | string |
-| doc_expire   | formData   | Use 'N/A' for business documents                          | No       | string |
+| Name     | Located in | Description                                               | Required | Schema |
+| -------- | ---------- | --------------------------------------------------------- | -------- | ------ |
+| upload   | formData   | The document file (PDF, JPG, PNG) - Max 10MB              | Yes      | File   |
+| doc_type | formData   | Business document type (see list below)                   | Yes      | string |
+| uid      | formData   | Customer UID from the business customer creation response | Yes      | string |
 
 ### Available Business Document Types
 
@@ -2480,7 +2474,7 @@ const generateHeaders = require("./generateHeaders");
 
 uploadUBODocuments = async (uboUid) => {
   const baseUrl = "https://trade.capecrypto.com";
-  const path = `/api/v2/verification/customers/documents`;
+  const path = `/api/v2/verification/ubos/documents`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
 
@@ -2488,7 +2482,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData1 = new FormData();
   formData1.append("upload", fs.createReadStream("./ubo_passport.jpg"));
   formData1.append("doc_type", "Passport");
-  formData1.append("customer_ubo_uid", uboUid);
+  formData1.append("uid", uboUid);
   formData1.append("doc_number", "M98765432");
   formData1.append("doc_expire", "2029-06-30");
 
@@ -2505,7 +2499,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData2 = new FormData();
   formData2.append("upload", fs.createReadStream("./ubo_selfie.jpg"));
   formData2.append("doc_type", "Selfie");
-  formData2.append("customer_ubo_uid", uboUid);
+  formData2.append("uid", uboUid);
 
   try {
     await axios.post(url, formData2, {
@@ -2520,7 +2514,7 @@ uploadUBODocuments = async (uboUid) => {
   const formData3 = new FormData();
   formData3.append("upload", fs.createReadStream("./ubo_proof_of_address.pdf"));
   formData3.append("doc_type", "Proof of Address");
-  formData3.append("customer_ubo_uid", uboUid);
+  formData3.append("uid", uboUid);
 
   try {
     await axios.post(url, formData3, {
@@ -2538,13 +2532,13 @@ uploadUBODocuments("ID_UBO_001_ABC");
 uploadUBODocuments("ID_UBO_002_XYZ");
 ```
 
-`/api/v2/verification/customers/documents`
+`/api/v2/verification/ubos/documents`
 
 ### Description
 
 Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.
 
-**When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_ubo_uid` when uploading UBO documents.
+**When creating a business customer**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `uid` when uploading UBO documents.
 
 **Business KYB completion requires**:
 
@@ -2557,13 +2551,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name             | Located in | Description                                              | Required | Schema |
-| ---------------- | ---------- | -------------------------------------------------------- | -------- | ------ |
-| upload           | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
-| doc_type         | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
-| customer_ubo_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
-| doc_number       | formData   | ID document number (optional for selfie)                 | No       | string |
-| doc_expire       | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+| Name       | Located in | Description                                                                                  | Required | Schema |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                                     | Yes      | File   |
+| doc_type   | formData   | Document type (see Required UBO Documents below)                                             | Yes      | string |
+| uid        | formData   | UBO's UID from the business customer creation response                                       | Yes      | string |
+| doc_number | formData   | ID document number (required only for passports)                                             | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format (required only for passports and drivers licences) | No       | string |
 
 ### Required UBO Documents
 
@@ -2571,15 +2565,14 @@ Each UBO must upload the following documents:
 
 1. **ID Document (Front)** - Front image of the identification document
 
-   - `doc_type`: 'Passport', 'Identity card', or 'Driver license'
-   - Include `doc_number` and `doc_expire`
-   - Note: Passport is single-sided; Identity card and Driver license require back side as well
+   - `doc_type`: 'Green ID book', 'Passport', 'Identity card', or 'Driver license'
+   - Include `doc_number` and `doc_expire` for the Passports and drivers license
+   - Note: Passport and SA Green ID book are single-sided; Identity card and Driver license require back side as well
 
 2. **ID Document (Back)** - Back image (Identity card and Driver license only)
 
    - `doc_type`: 'Identity card back' or 'Drivers license back'
-   - Include `doc_number` and `doc_expire`
-   - Not required for Passport
+   - Not required for Passports or SA Green ID Book
 
 3. **Selfie** - Photograph of UBO holding their ID document
 
@@ -2590,7 +2583,6 @@ Each UBO must upload the following documents:
 
    - `doc_type`: 'Proof of Address'
    - Document must be less than 3 months old
-   - `doc_number` and `doc_expire` are optional
 
 ### Available Document Types for UBOs
 
@@ -3491,9 +3483,7 @@ uploadMerchantDocument = async (merchantUid, documentType, filePath) => {
   const formData = new FormData();
   formData.append("upload", fs.createReadStream(filePath));
   formData.append("doc_type", documentType);
-  formData.append("merchant_uid", merchantUid);
-  formData.append("doc_number", "N/A");
-  formData.append("doc_expire", "N/A");
+  formData.append("uid", merchantUid);
 
   try {
     const result = await axios.post(url, formData, {
@@ -3544,13 +3534,11 @@ Upload KYB verification documents for a merchant entity. Nine business documents
 
 ### Parameters
 
-| Name         | Located in | Description                                      | Required | Schema |
-| ------------ | ---------- | ------------------------------------------------ | -------- | ------ |
-| upload       | formData   | The document file (PDF, JPG, PNG) - Max 10MB     | Yes      | File   |
-| doc_type     | formData   | Business document type (see list below)          | Yes      | string |
-| merchant_uid | formData   | Merchant UID from the merchant creation response | Yes      | string |
-| doc_number   | formData   | Use 'N/A' for business documents                 | No       | string |
-| doc_expire   | formData   | Use 'N/A' for business documents                 | No       | string |
+| Name     | Located in | Description                                      | Required | Schema |
+| -------- | ---------- | ------------------------------------------------ | -------- | ------ |
+| upload   | formData   | The document file (PDF, JPG, PNG) - Max 10MB     | Yes      | File   |
+| doc_type | formData   | Business document type (see list below)          | Yes      | string |
+| uid      | formData   | Merchant UID from the merchant creation response | Yes      | string |
 
 ### Available Business Document Types
 
@@ -3587,7 +3575,7 @@ const generateHeaders = require("./generateHeaders");
 
 uploadMerchantUBODocuments = async (uboUid) => {
   const baseUrl = "https://trade.capecrypto.com";
-  const path = `/api/v2/verification/merchants/documents`;
+  const path = `/api/v2/verification/ubos/documents`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
 
@@ -3595,7 +3583,7 @@ uploadMerchantUBODocuments = async (uboUid) => {
   const formData1 = new FormData();
   formData1.append("upload", fs.createReadStream("./ubo_id_front.jpg"));
   formData1.append("doc_type", "Identity card");
-  formData1.append("ubo_uid", uboUid);
+  formData1.append("uid", uboUid);
   formData1.append("doc_number", "8505155800088");
   formData1.append("doc_expire", "2030-12-31");
 
@@ -3612,7 +3600,7 @@ uploadMerchantUBODocuments = async (uboUid) => {
   const formData2 = new FormData();
   formData2.append("upload", fs.createReadStream("./ubo_id_back.jpg"));
   formData2.append("doc_type", "Identity card back");
-  formData2.append("ubo_uid", uboUid);
+  formData2.append("uid", uboUid);
   formData2.append("doc_number", "8505155800088");
 
   try {
@@ -3628,7 +3616,7 @@ uploadMerchantUBODocuments = async (uboUid) => {
   const formData3 = new FormData();
   formData3.append("upload", fs.createReadStream("./ubo_selfie.jpg"));
   formData3.append("doc_type", "Selfie");
-  formData3.append("ubo_uid", uboUid);
+  formData3.append("uid", uboUid);
 
   try {
     await axios.post(url, formData3, {
@@ -3643,7 +3631,7 @@ uploadMerchantUBODocuments = async (uboUid) => {
   const formData4 = new FormData();
   formData4.append("upload", fs.createReadStream("./ubo_proof_of_address.pdf"));
   formData4.append("doc_type", "Proof of Address");
-  formData4.append("ubo_uid", uboUid);
+  formData4.append("uid", uboUid);
 
   try {
     await axios.post(url, formData4, {
@@ -3660,13 +3648,13 @@ uploadMerchantUBODocuments = async (uboUid) => {
 uploadMerchantUBODocuments("ID_UBO_001_ABC");
 ```
 
-`/api/v2/verification/merchants/documents`
+`/api/v2/verification/ubos/documents`
 
 ### Description
 
 Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of a merchant. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the merchant's business entity documents.
 
-**When creating a merchant**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `ubo_uid` when uploading UBO documents.
+**When creating a merchant**, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `uid` when uploading UBO documents.
 
 **Merchant KYB completion requires**:
 
@@ -3679,13 +3667,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name       | Located in | Description                                              | Required | Schema |
-| ---------- | ---------- | -------------------------------------------------------- | -------- | ------ |
-| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
-| doc_type   | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
-| ubo_uid    | formData   | UBO's UID from the merchant creation response            | Yes      | string |
-| doc_number | formData   | ID document number (optional for selfie)                 | No       | string |
-| doc_expire | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+| Name       | Located in | Description                                                                                  | Required | Schema |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                                     | Yes      | File   |
+| doc_type   | formData   | Document type (see Required UBO Documents below)                                             | Yes      | string |
+| uid        | formData   | UBO's UID from the merchant creation response                                                | Yes      | string |
+| doc_number | formData   | ID document number (required only for passports)                                             | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses) | No       | string |
 
 ### Required UBO Documents
 
@@ -3759,14 +3747,14 @@ uploadMerchantCustomerDocument = async (
   docExpire
 ) => {
   const baseUrl = "https://trade.capecrypto.com";
-  const path = `/api/v2/verification/merchants/documents`;
+  const path = `/api/v2/verification/customers/documents`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
 
   const formData = new FormData();
   formData.append("upload", fs.createReadStream(filePath));
   formData.append("doc_type", documentType);
-  formData.append("customer_uid", customerUid);
+  formData.append("uid", customerUid);
   if (docNumber) formData.append("doc_number", docNumber);
   if (docExpire) formData.append("doc_expire", docExpire);
 
@@ -3811,65 +3799,47 @@ const uploadBusinessCustomerDocs = async (customerUid) => {
   await uploadMerchantCustomerDocument(
     customerUid,
     "Board Resolution",
-    "./board_resolution.pdf",
-    "N/A",
-    "N/A"
+    "./board_resolution.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Company Registration",
-    "./company_registration.pdf",
-    "N/A",
-    "N/A"
+    "./company_registration.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "AML Policy",
-    "./aml_policy.pdf",
-    "N/A",
-    "N/A"
+    "./aml_policy.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Business License",
-    "./business_license.pdf",
-    "N/A",
-    "N/A"
+    "./business_license.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Business Proof of Address",
-    "./proof_of_address.pdf",
-    "N/A",
-    "N/A"
+    "./proof_of_address.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Shareholder Certificate",
-    "./shareholder_certificate.pdf",
-    "N/A",
-    "N/A"
+    "./shareholder_certificate.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Incorporation Certificate",
-    "./incorporation_cert.pdf",
-    "N/A",
-    "N/A"
+    "./incorporation_cert.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Bank Statement",
-    "./bank_statement.pdf",
-    "N/A",
-    "N/A"
+    "./bank_statement.pdf"
   );
   await uploadMerchantCustomerDocument(
     customerUid,
     "Tax Statement",
-    "./tax_statement.pdf",
-    "N/A",
-    "N/A"
+    "./tax_statement.pdf"
   );
   console.log("All business customer documents uploaded");
 };
@@ -3879,27 +3849,27 @@ uploadIndividualCustomerDocs("CCT1234567");
 // uploadBusinessCustomerDocs("CCT1234567");
 ```
 
-`/api/v2/verification/merchants/documents`
+`/api/v2/verification/customers/documents`
 
 ### Description
 
-Upload verification documents for customers that belong to a merchant. This endpoint handles both **individual customer KYC** documents and **business customer KYB** documents. The key difference from the standard customer document upload is the route — merchant customer documents use `/verification/merchants/documents` instead of `/verification/customers/documents`.
+Upload verification documents for customers that belong to a merchant. This endpoint handles both **individual customer KYC** documents and **business customer KYB** documents.
 
 Each document must be uploaded as a separate request with FormData.
 
 **Maximum file size:** 4MB per document.
 
-**Note:** Use the customer UID returned from the customer creation response. This is the same `customer_uid` form field used in standard customer uploads, but sent to the merchant documents route.
+**Note:** Use the customer UID returned from the customer creation response. This is the same `uid` form field used in standard customer uploads.
 
 ### Parameters
 
-| Name         | Located in | Description                                                             | Required | Schema |
-| ------------ | ---------- | ----------------------------------------------------------------------- | -------- | ------ |
-| upload       | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                | Yes      | File   |
-| doc_type     | formData   | Document type (see below)                                               | Yes      | string |
-| customer_uid | formData   | Customer UID from the customer creation response                        | Yes      | string |
-| doc_number   | formData   | ID document number (use 'N/A' for business docs)                        | No       | string |
-| doc_expire   | formData   | Document expiry date in YYYY-MM-DD format (use 'N/A' for business docs) | No       | string |
+| Name       | Located in | Description                                                             | Required | Schema |
+| ---------- | ---------- | ----------------------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                | Yes      | File   |
+| doc_type   | formData   | Document type (see below)                                               | Yes      | string |
+| uid        | formData   | Customer UID from the customer creation response                        | Yes      | string |
+| doc_number | formData   | ID document number (leave out for business docs)                        | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format (leave out for business docs) | No       | string |
 
 ### Document Types
 
@@ -3932,14 +3902,14 @@ uploadMerchantCustomerUBODocument = async (
   docExpire
 ) => {
   const baseUrl = "https://trade.capecrypto.com";
-  const path = `/api/v2/verification/merchants/documents`;
+  const path = `/api/v2/verification/ubos/documents`;
   const url = `${baseUrl}${path}`;
   const headers = await generateHeaders();
 
   const formData = new FormData();
   formData.append("upload", fs.createReadStream(filePath));
   formData.append("doc_type", documentType);
-  formData.append("customer_ubo_uid", uboUid);
+  formData.append("uid", uboUid);
   if (docNumber) formData.append("doc_number", docNumber);
   if (docExpire) formData.append("doc_expire", docExpire);
 
@@ -3983,16 +3953,16 @@ const uploadUBODocs = async (uboUid) => {
 uploadUBODocs("ID_UBO_001_ABC");
 ```
 
-`/api/v2/verification/merchants/documents`
+`/api/v2/verification/ubos/documents`
 
 ### Description
 
-Upload KYC verification documents for UBOs of a merchant's business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `customer_ubo_uid` when uploading documents.
+Upload KYC verification documents for UBOs of a merchant's business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the `uid` when uploading documents.
 
 **Business customer KYB completion under a merchant requires**:
 
-1. All 9 business documents uploaded via [Upload Merchant's Customer Documents](#post-upload-merchants-customer-documents) with `customer_uid`
-2. **All UBOs must have complete KYC documents** uploaded via this endpoint with `customer_ubo_uid`
+1. All 9 business documents uploaded via [Upload Merchant's Customer Documents](#post-upload-merchants-customer-documents) with `uid`
+2. **All UBOs must have complete KYC documents** uploaded via this endpoint with `uid`
 
 Each document must be uploaded as a separate request with FormData.
 
@@ -4000,13 +3970,13 @@ Each document must be uploaded as a separate request with FormData.
 
 ### Parameters
 
-| Name             | Located in | Description                                              | Required | Schema |
-| ---------------- | ---------- | -------------------------------------------------------- | -------- | ------ |
-| upload           | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB | Yes      | File   |
-| doc_type         | formData   | Document type (see Required UBO Documents below)         | Yes      | string |
-| customer_ubo_uid | formData   | UBO's UID from the business customer creation response   | Yes      | string |
-| doc_number       | formData   | ID document number (optional for selfie)                 | No       | string |
-| doc_expire       | formData   | Document expiry date in YYYY-MM-DD format                | No       | string |
+| Name       | Located in | Description                                                                                  | Required | Schema |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------- | -------- | ------ |
+| upload     | formData   | The document file (image file: JPG, PNG, PDF) - Max 10MB                                     | Yes      | File   |
+| doc_type   | formData   | Document type (see Required UBO Documents below)                                             | Yes      | string |
+| uid        | formData   | UBO's UID from the business customer creation response                                       | Yes      | string |
+| doc_number | formData   | ID document number (required only for Passports)                                             | No       | string |
+| doc_expire | formData   | Document expiry date in YYYY-MM-DD format (required only for passports and drivers licenses) | No       | string |
 
 ### Required UBO Documents
 
@@ -4061,17 +4031,6 @@ Valid `doc_type` values (same as individual customers):
 | 200  | Document uploaded successfully | Success object |
 | 400  | Invalid doc_type               | Error array    |
 | 422  | Validation error               | Error array    |
-
-### Merchant Document Upload Summary
-
-All merchant-related document uploads use the same route (`/verification/merchants/documents`) but with different form field keys to identify the target:
-
-| Target                         | Form Field Key     | Description                                   |
-| ------------------------------ | ------------------ | --------------------------------------------- |
-| Merchant's own KYB docs        | `merchant_uid`     | The merchant entity's business documents      |
-| Merchant's own UBO docs        | `ubo_uid`          | UBO of the merchant itself                    |
-| Merchant's customer docs       | `customer_uid`     | Customer created under the merchant           |
-| Merchant's customer's UBO docs | `customer_ubo_uid` | UBO of a business customer under the merchant |
 
 # Trading
 
