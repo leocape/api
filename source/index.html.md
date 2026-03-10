@@ -1361,9 +1361,16 @@ The `deposit_action` parameter accepts a JSON object with the following structur
   "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
   "beneficiary_id": 123, // Required for withdraw actions
   "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
-  "max_slippage": 2.0 // Optional: Max slippage percentage (0.1-10, default: 2.0)
+  "max_slippage": 2.5, // Optional: Max slippage percentage (0.1-10, default: 2.0)
+  "beneficiary_amount": "50.00" // Optional: Exact amount the beneficiary should receive
 }
 ```
+
+**Beneficiary Amount:**
+
+When `beneficiary_amount` is specified (as a string), it defines the exact amount that the beneficiary should receive in the target currency. If, after conversion, the account does not have sufficient funds to cover this amount, the withdrawal will **not** be placed. Instead, the payment will be marked as `completed`, with the converted funds remaining in the account.
+
+**Note:** When using `lightning_invoice` together with `beneficiary_amount`, the invoice amount must match the `beneficiary_amount`.
 
 **Available Actions:**
 
@@ -1394,7 +1401,7 @@ The `deposit_action` parameter accepts a JSON object with the following structur
     "action": "convert_and_withdraw",
     "target_currency": "usd",
     "beneficiary_id": 789,
-    "max_slippage": 1.5
+    "max_slippage": 2.5
   }
 }
 ```
@@ -1756,9 +1763,16 @@ The optional `deposit_action` parameter accepts a JSON object with the following
   "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
   "beneficiary_id": 123, // Required for withdraw actions
   "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
-  "max_slippage": 2.0 // Optional: Max slippage percentage (0.1-10, default: 2.0)
+  "max_slippage": 2.5, // Optional: Max slippage percentage
+  "beneficiary_amount": "50.00" // Optional: Exact amount the beneficiary should receive
 }
 ```
+
+**Beneficiary Amount:**
+
+When `beneficiary_amount` is specified (as a string), it defines the exact amount that the beneficiary should receive in the target currency. If, after conversion, the account does not have sufficient funds to cover this amount, the withdrawal will **not** be placed. Instead, the payment will be marked as `completed`, with the converted funds remaining in the account.
+
+**Note:** When using `lightning_invoice` together with `beneficiary_amount`, the invoice amount must match the `beneficiary_amount`.
 
 **Available Actions:**
 
@@ -2648,7 +2662,7 @@ const createPaymentReference = async () => {
       action: "aggregate_convert_and_withdraw",
       target_currency: "zar",
       beneficiary_id: 456,
-      max_slippage: 0.5,
+      max_slippage: 2.5,
     },
     webhook_url: "https://merchant.com/webhooks/deposits",
     webhook_secret: "my_secret_key",
@@ -2749,13 +2763,14 @@ For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is se
 
 **Deposit Action Object:**
 
-| Field             | Description                                                                                | Required    | Schema  |
-| ----------------- | ------------------------------------------------------------------------------------------ | ----------- | ------- |
-| action            | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" | Yes         | string  |
-| target_currency   | Target currency for conversion (required if action includes conversion)                    | Conditional | string  |
-| beneficiary_id    | Beneficiary ID for withdrawal (required if action includes withdrawal)                     | Conditional | integer |
-| lightning_invoice | Lightning invoice for withdrawal (alternative to beneficiary_id)                           | No          | string  |
-| max_slippage      | Maximum slippage percentage for conversion (default: 1.0, max: 5.0)                        | No          | decimal |
+| Field              | Description                                                                                                                                                                                                                                                                                                      | Required    | Schema  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------- |
+| action             | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw"                                                                                                                                                                                                                       | Yes         | string  |
+| target_currency    | Target currency for conversion (required if action includes conversion)                                                                                                                                                                                                                                          | Conditional | string  |
+| beneficiary_id     | Beneficiary ID for withdrawal (required if action includes withdrawal)                                                                                                                                                                                                                                           | Conditional | integer |
+| lightning_invoice  | Lightning invoice for withdrawal (alternative to beneficiary_id)                                                                                                                                                                                                                                                 | No          | string  |
+| max_slippage       | Maximum slippage percentage for conversion                                                                                                                                                                                                                                                                       | No          | decimal |
+| beneficiary_amount | Exact amount the beneficiary should receive. If specified and the account has insufficient funds after conversion, the withdrawal is skipped and the payment is marked as completed with the converted funds remaining in the account. When using `lightning_invoice`, the invoice amount must match this value. | No          | string  |
 
 **Deposit Action Types:**
 
@@ -2791,7 +2806,7 @@ For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is se
     "target_currency": "zar",
     "beneficiary_id": 456,
     "lightning_invoice": null,
-    "max_slippage": 0.5
+    "max_slippage": 2.5
   },
   "state": "pending_deposit",
   "webhook_url": "https://merchant.com/webhooks/deposits",
@@ -2834,7 +2849,7 @@ For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is se
     "action": "convert_and_withdraw",
     "target_currency": "btc",
     "lightning_invoice": "lnbc100n1...",
-    "max_slippage": 1.0
+    "max_slippage": 2.5
   },
   "webhook_url": "https://merchant.com/webhooks/deposits",
   "webhook_secret": "my_secret_key",
@@ -3073,7 +3088,7 @@ List all payment references for your customer accounts. Returns paginated result
       "action": "convert_and_withdraw",
       "target_currency": "zar",
       "beneficiary_id": 456,
-      "max_slippage": 0.5
+      "max_slippage": 2.5
     },
     "state": "pending_deposit",
     "webhook_url": "https://merchant.com/webhooks/deposits",
@@ -3157,7 +3172,7 @@ Retrieve details of a specific payment reference.
     "target_currency": "zar",
     "beneficiary_id": 456,
     "lightning_invoice": null,
-    "max_slippage": 0.5
+    "max_slippage": 2.5
   },
   "state": "completed",
   "webhook_url": "https://merchant.com/webhooks/deposits",
@@ -4931,13 +4946,14 @@ Customer accounts come in two types with different response structures:
 
 **Deposit Action Object Structure:**
 
-| Field             | Type    | Description                                                                                |
-| ----------------- | ------- | ------------------------------------------------------------------------------------------ |
-| action            | string  | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw" |
-| target_currency   | string  | Target currency for conversion (only for convert actions)                                  |
-| beneficiary_id    | integer | Beneficiary ID for withdrawals (only for withdraw actions)                                 |
-| lightning_invoice | string  | Lightning invoice for lightning withdrawals (alternative to beneficiary_id)                |
-| max_slippage      | number  | Maximum slippage percentage (0.1-10, default: 2.0)                                         |
+| Field              | Type    | Description                                                                                                                                                                                                                                                                                          |
+| ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| action             | string  | Action type: "none", "aggregate", "convert_and_withdraw", "aggregate_convert_and_withdraw"                                                                                                                                                                                                           |
+| target_currency    | string  | Target currency for conversion (only for convert actions)                                                                                                                                                                                                                                            |
+| beneficiary_id     | integer | Beneficiary ID for withdrawals (only for withdraw actions)                                                                                                                                                                                                                                           |
+| lightning_invoice  | string  | Lightning invoice for lightning withdrawals (alternative to beneficiary_id)                                                                                                                                                                                                                          |
+| max_slippage       | number  | Maximum slippage percentage                                                                                                                                                                                                                                                                          |
+| beneficiary_amount | string  | Exact amount the beneficiary should receive. If specified and account has insufficient funds after conversion, the withdrawal is skipped and payment is marked as completed with converted funds remaining in the account. When using `lightning_invoice`, the invoice amount must match this value. |
 
 **PaymentReference States:**
 
