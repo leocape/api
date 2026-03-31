@@ -1292,6 +1292,244 @@ The invoice expires in 1 hour.
 | ---- | ------------------ | ------------------------------------------- |
 | 201  | Lightning invoice. | [ [Lightning invoice](#lightning-invoice) ] |
 
+# Webhook Configuration
+
+**Note:** Webhook endpoints use the `/api/v2/persona` base path.
+
+Configure a webhook URL on your account to receive notifications for deposit events (e.g., `deposit.travel_rule_required`, `deposit.accepted`, `deposit.rejected`). This works for any authenticated account — members, merchants, and aggregators.
+
+**For customer/sub-account accounts:** Include the `X-Auth-Subaccount-Uid` header with the customer's UID. The webhook is then configured on the customer's account.
+
+**Webhook Object:**
+
+| Field    | Type   | Description                                            | Required |
+| -------- | ------ | ------------------------------------------------------ | -------- |
+| url      | string | The URL to receive webhook notifications               | Yes      |
+| secret   | string | Secret used for HMAC signing                           | No       |
+| protocol | string | Authentication mode: `hmac`, `plain_text`, or `none`   | No       |
+
+See [Authentication / Protocol Modes](#authentication-protocol-modes-webhook_protocol) for details on HMAC verification.
+
+**Convenience:** For customer and sub-account accounts, you can also specify the webhook at creation time via the `webhook` parameter on [Create Individual Customer](#post-create-individual-customer), [Create Business Customer](#post-create-business-customer), or [Create Sub-Account](#post-create-sub-account). The endpoints below can then be used to manage it afterwards.
+
+## <span class="request-type__get">GET</span> Get Webhook
+
+```javascript
+// getWebhook.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getWebhook = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/persona/resource/users/webhook`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getWebhook();
+```
+
+`/persona/resource/users/webhook`
+
+### Description
+
+Returns the current webhook configuration for the authenticated account. Returns `null` if no webhook is configured.
+
+### Example Response
+
+```json
+{
+  "webhook": {
+    "url": "https://example.com/webhooks/deposits",
+    "secret": "my-secret",
+    "protocol": "hmac"
+  }
+}
+```
+
+### Responses
+
+| Code | Description          | Schema                      |
+| ---- | -------------------- | --------------------------- |
+| 200  | Webhook config       | `{ webhook: object\|null }` |
+
+## <span class="request-type__post">POST</span> Create Webhook
+
+```javascript
+// createWebhook.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+createWebhook = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "POST";
+  const path = `/api/v2/persona/resource/users/webhook`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const webhookData = {
+    url: "https://example.com/webhooks/deposits",
+    secret: "my-webhook-secret",
+    protocol: "hmac",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: webhookData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+createWebhook();
+```
+
+`/persona/resource/users/webhook`
+
+### Description
+
+Create a webhook configuration for the authenticated account. Fails with `409` if a webhook is already configured — use PUT to update instead.
+
+### Parameters
+
+| Name     | Located in | Description                                          | Required | Schema |
+| -------- | ---------- | ---------------------------------------------------- | -------- | ------ |
+| url      | body       | Webhook URL for notifications                        | Yes      | string |
+| secret   | body       | Secret for HMAC signing                              | No       | string |
+| protocol | body       | Protocol: "hmac", "plain_text", or "none"            | No       | string |
+
+### Responses
+
+| Code | Description               | Schema                 |
+| ---- | ------------------------- | ---------------------- |
+| 201  | Webhook created           | `{ webhook: object }`  |
+| 409  | Webhook already exists    | Error array            |
+| 422  | Validation error          | Error array            |
+
+## <span class="request-type__put">PUT</span> Update Webhook
+
+```javascript
+// updateWebhook.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+updateWebhook = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "PUT";
+  const path = `/api/v2/persona/resource/users/webhook`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const webhookData = {
+    url: "https://example.com/webhooks/deposits-v2",
+    secret: "new-webhook-secret",
+    protocol: "hmac",
+  };
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+    data: webhookData,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+updateWebhook();
+```
+
+`/persona/resource/users/webhook`
+
+### Description
+
+Update the webhook configuration for the authenticated account. Creates the webhook if none exists.
+
+### Parameters
+
+| Name     | Located in | Description                                          | Required | Schema |
+| -------- | ---------- | ---------------------------------------------------- | -------- | ------ |
+| url      | body       | Webhook URL for notifications                        | Yes      | string |
+| secret   | body       | Secret for HMAC signing                              | No       | string |
+| protocol | body       | Protocol: "hmac", "plain_text", or "none"            | No       | string |
+
+### Responses
+
+| Code | Description               | Schema                 |
+| ---- | ------------------------- | ---------------------- |
+| 200  | Webhook updated           | `{ webhook: object }`  |
+| 422  | Validation error          | Error array            |
+
+## <span class="request-type__delete">DELETE</span> Delete Webhook
+
+```javascript
+// deleteWebhook.js
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+deleteWebhook = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "DELETE";
+  const path = `/api/v2/persona/resource/users/webhook`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+deleteWebhook();
+```
+
+`/persona/resource/users/webhook`
+
+### Description
+
+Remove the webhook configuration from the authenticated account.
+
+### Responses
+
+| Code | Description               | Schema                    |
+| ---- | ------------------------- | ------------------------- |
+| 200  | Webhook removed           | `{ message: string }`     |
+| 404  | No webhook configured     | Error array               |
+
 # Sub-Accounts
 
 **Note:** Sub-account endpoints use the `/api/v2/persona` base path instead of `/api/v2/atlas`.
@@ -1345,9 +1583,10 @@ Create a new sub-account that inherits the parent's KYC verification. Sub-accoun
 
 | Name           | Located in | Description                                                                        | Required | Schema |
 | -------------- | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
-| account_name   | formData   | Display name for the sub-account (1-100 characters)                                | Yes      | string |
-| deposit_action | formData   | JSON object defining automated deposit handling (see deposit action options below) | No       | json   |
-| data           | formData   | Optional additional data in JSON format                                            | No       | json   |
+| account_name   | formData   | Display name for the sub-account (1-100 characters)                                 | Yes      | string |
+| deposit_action | formData   | JSON object defining automated deposit handling (see deposit action options below)  | No       | json   |
+| webhook        | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration))  | No       | object |
+| data           | formData   | Optional additional data in JSON format                                             | No       | json   |
 
 **Deposit Action Options:**
 
@@ -1639,6 +1878,16 @@ Soft delete a sub-account (sets state to 'deleted'). The sub-account will no lon
 
 **Acting as a Customer:** To make API requests for a customer (e.g., placing trades, checking balances, making withdrawals), include the `X-Auth-Subaccount-Uid` header with the customer's UID. Your merchant/aggregator API credentials are used for authentication, but operations are performed in the customer's context.
 
+**Deposit Webhook Notification Hierarchy:**
+
+When a deposit event occurs for a customer account (e.g., `deposit.travel_rule_required`, `deposit.accepted`, `deposit.rejected`), the system resolves the webhook URL using the following priority:
+
+1. **Payment reference webhook** — If the deposit matches a payment reference that has a `webhook_url` configured, that webhook is used.
+2. **Customer account webhook** — If no payment reference webhook is found, the customer's own webhook is used (configured via [`/resource/users/webhook`](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header).
+3. **Parent account webhook** — If the customer has no webhook configured, the parent merchant/aggregator's webhook is used as a fallback.
+
+This allows merchants to receive deposit notifications for their customers without configuring webhooks on every individual customer account — simply configure a webhook on your merchant account, and it will serve as the default for all your customers.
+
 ## <span class="request-type__post">POST</span> Create Individual Customer
 
 ```javascript
@@ -1752,6 +2001,21 @@ Once all documents are received the customer account will be verified by Cape Cr
 | is_pip               | formData   | Is the customer a Prominent Influential Person? (default: false)                   | No                            | boolean |
 | pip_data             | formData   | Details if is_pip is true                                                          | Yes if is_pip=true            | string  |
 | deposit_action       | formData   | JSON object defining automated deposit handling (see deposit action options below) | No                            | json    |
+| webhook              | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No                            | object  |
+
+**Webhook Configuration (optional):**
+
+Set an initial webhook on the customer account during creation. The webhook object accepts `url` (required), `secret` (optional), and `protocol` (optional: `hmac`, `plain_text`, or `none`). After creation, use the [Webhook CRUD endpoints](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header to manage the customer's webhook.
+
+```json
+{
+  "webhook": {
+    "url": "https://example.com/webhooks",
+    "secret": "my-secret",
+    "protocol": "hmac"
+  }
+}
+```
 
 **Deposit Action Options:**
 
@@ -1958,6 +2222,9 @@ Create a new business customer account with company details and Ultimate Benefic
 | phone_number | formData   | Business phone number in international format                    | Yes      | string |
 | account_name | formData   | Business account display name (typically company name)           | Yes      | string |
 | merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant) | No       | string |
+| webhook      | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No       | object |
+
+**Webhook:** Same as individual customer — see [Create Individual Customer](#post-create-individual-customer) for the webhook object format. After creation, use the [Webhook CRUD endpoints](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header to manage the customer's webhook.
 
 **Business Profile (JSON Object):**
 
@@ -2197,15 +2464,16 @@ updateCustomer();
 
 ### Description
 
-Update customer metadata (custom_id and external_verification_url).
+Update customer metadata. You can also update the customer's webhook configuration here, or use the dedicated [Webhook CRUD endpoints](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header.
 
 ### Parameters
 
-| Name                      | Located in | Description                       | Required | Schema |
-| ------------------------- | ---------- | --------------------------------- | -------- | ------ |
-| uid                       | path       | Customer identifier               | Yes      | string |
-| custom_id                 | formData   | Updated custom identifier         | No       | string |
-| external_verification_url | formData   | Updated external verification URL | No       | string |
+| Name                      | Located in | Description                                                                        | Required | Schema |
+| ------------------------- | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
+| uid                       | path       | Customer identifier                                                                | Yes      | string |
+| custom_id                 | formData   | Updated custom identifier                                                          | No       | string |
+| external_verification_url | formData   | Updated external verification URL                                                  | No       | string |
+| webhook                   | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No       | object |
 
 ### Responses
 
