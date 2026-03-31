@@ -442,6 +442,23 @@
               </ul>
           </li>
           <li>
+            <a href="#webhook-configuration" class="toc-h1 toc-link" data-title="Webhook Configuration">Webhook Configuration</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-get-webhook" class="toc-h2 toc-link" data-title="GET Get Webhook"><span class="request-type__get">GET</span> Get Webhook</a>
+                  </li>
+                  <li>
+                    <a href="#post-create-webhook" class="toc-h2 toc-link" data-title="POST Create Webhook"><span class="request-type__post">POST</span> Create Webhook</a>
+                  </li>
+                  <li>
+                    <a href="#put-update-webhook" class="toc-h2 toc-link" data-title="PUT Update Webhook"><span class="request-type__put">PUT</span> Update Webhook</a>
+                  </li>
+                  <li>
+                    <a href="#delete-delete-webhook" class="toc-h2 toc-link" data-title="DELETE Delete Webhook"><span class="request-type__delete">DELETE</span> Delete Webhook</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#sub-accounts" class="toc-h1 toc-link" data-title="Sub-Accounts">Sub-Accounts</a>
               <ul class="toc-list-h2">
                   <li>
@@ -2962,6 +2979,327 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>[ <a href="#lightning-invoice">Lightning invoice</a> ]</td>
 </tr>
 </tbody></table>
+<h1 id='webhook-configuration'>Webhook Configuration</h1>
+<p><strong>Note:</strong> Webhook endpoints use the <code>/api/v2/persona</code> base path.</p>
+
+<p>Configure a webhook URL on your account to receive notifications for deposit events (e.g., <code>deposit.travel_rule_required</code>, <code>deposit.accepted</code>, <code>deposit.rejected</code>). This works for any authenticated account — members, merchants, and aggregators.</p>
+
+<p><strong>For customer/sub-account accounts:</strong> Include the <code>X-Auth-Subaccount-Uid</code> header with the customer&#39;s UID. The webhook is then configured on the customer&#39;s account.</p>
+
+<p><strong>Webhook Object:</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Required</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>The URL to receive webhook notifications</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>secret</td>
+<td>string</td>
+<td>Secret used for HMAC signing</td>
+<td>No</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>string</td>
+<td>Authentication mode: <code>hmac</code>, <code>plain_text</code>, or <code>none</code></td>
+<td>No</td>
+</tr>
+</tbody></table>
+
+<p>See <a href="#authentication-protocol-modes-webhook_protocol">Authentication / Protocol Modes</a> for details on HMAC verification.</p>
+
+<p><strong>Convenience:</strong> For customer and sub-account accounts, you can also specify the webhook at creation time via the <code>webhook</code> parameter on <a href="#post-create-individual-customer">Create Individual Customer</a>, <a href="#post-create-business-customer">Create Business Customer</a>, or <a href="#post-create-sub-account">Create Sub-Account</a>. The endpoints below can then be used to manage it afterwards.</p>
+<h2 id='get-get-webhook'><span class="request-type__get">GET</span> Get Webhook</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// getWebhook.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">getWebhook</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/users/webhook`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">getWebhook</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/persona/resource/users/webhook</code></p>
+<h3 id='description-31'>Description</h3>
+<p>Returns the current webhook configuration for the authenticated account. Returns <code>null</code> if no webhook is configured.</p>
+<h3 id='example-response'>Example Response</h3><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"webhook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://example.com/webhooks/deposits"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-secret"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h3 id='responses-31'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Webhook config</td>
+<td>`{ webhook: object\</td>
+</tr>
+</tbody></table>
+<h2 id='post-create-webhook'><span class="request-type__post">POST</span> Create Webhook</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// createWebhook.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">createWebhook</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/users/webhook`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="nx">webhookData</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">https://example.com/webhooks/deposits</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">secret</span><span class="p">:</span> <span class="dl">"</span><span class="s2">my-webhook-secret</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">protocol</span><span class="p">:</span> <span class="dl">"</span><span class="s2">hmac</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">webhookData</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">createWebhook</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/persona/resource/users/webhook</code></p>
+<h3 id='description-32'>Description</h3>
+<p>Create a webhook configuration for the authenticated account. Fails with <code>409</code> if a webhook is already configured — use PUT to update instead.</p>
+<h3 id='parameters-27'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>url</td>
+<td>body</td>
+<td>Webhook URL for notifications</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>secret</td>
+<td>body</td>
+<td>Secret for HMAC signing</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>body</td>
+<td>Protocol: &quot;hmac&quot;, &quot;plain_text&quot;, or &quot;none&quot;</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-32'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>201</td>
+<td>Webhook created</td>
+<td><code>{ webhook: object }</code></td>
+</tr>
+<tr>
+<td>409</td>
+<td>Webhook already exists</td>
+<td>Error array</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validation error</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+<h2 id='put-update-webhook'><span class="request-type__put">PUT</span> Update Webhook</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// updateWebhook.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">updateWebhook</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">PUT</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/users/webhook`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="nx">webhookData</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">https://example.com/webhooks/deposits-v2</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">secret</span><span class="p">:</span> <span class="dl">"</span><span class="s2">new-webhook-secret</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">protocol</span><span class="p">:</span> <span class="dl">"</span><span class="s2">hmac</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">webhookData</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">updateWebhook</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/persona/resource/users/webhook</code></p>
+<h3 id='description-33'>Description</h3>
+<p>Update the webhook configuration for the authenticated account. Creates the webhook if none exists.</p>
+<h3 id='parameters-28'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Located in</th>
+<th>Description</th>
+<th>Required</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>url</td>
+<td>body</td>
+<td>Webhook URL for notifications</td>
+<td>Yes</td>
+<td>string</td>
+</tr>
+<tr>
+<td>secret</td>
+<td>body</td>
+<td>Secret for HMAC signing</td>
+<td>No</td>
+<td>string</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>body</td>
+<td>Protocol: &quot;hmac&quot;, &quot;plain_text&quot;, or &quot;none&quot;</td>
+<td>No</td>
+<td>string</td>
+</tr>
+</tbody></table>
+<h3 id='responses-33'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Webhook updated</td>
+<td><code>{ webhook: object }</code></td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validation error</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+<h2 id='delete-delete-webhook'><span class="request-type__delete">DELETE</span> Delete Webhook</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// deleteWebhook.js</span>
+<span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">deleteWebhook</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">DELETE</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/persona/resource/users/webhook`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">deleteWebhook</span><span class="p">();</span>
+</code></pre></div>
+<p><code>/persona/resource/users/webhook</code></p>
+<h3 id='description-34'>Description</h3>
+<p>Remove the webhook configuration from the authenticated account.</p>
+<h3 id='responses-34'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Webhook removed</td>
+<td><code>{ message: string }</code></td>
+</tr>
+<tr>
+<td>404</td>
+<td>No webhook configured</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
 <h1 id='sub-accounts'>Sub-Accounts</h1>
 <p><strong>Note:</strong> Sub-account endpoints use the <code>/api/v2/persona</code> base path instead of <code>/api/v2/atlas</code>.</p>
 
@@ -3000,9 +3338,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts</code></p>
-<h3 id='description-31'>Description</h3>
+<h3 id='description-35'>Description</h3>
 <p>Create a new sub-account that inherits the parent&#39;s KYC verification. Sub-accounts cannot login independently and are managed by the parent account.</p>
-<h3 id='parameters-27'>Parameters</h3>
+<h3 id='parameters-29'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3025,6 +3363,13 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>JSON object defining automated deposit handling (see deposit action options below)</td>
 <td>No</td>
 <td>json</td>
+</tr>
+<tr>
+<td>webhook</td>
+<td>formData</td>
+<td>Webhook configuration object (see <a href="#webhook-configuration">Webhook Configuration</a>)</td>
+<td>No</td>
+<td>object</td>
 </tr>
 <tr>
 <td>data</td>
@@ -3104,7 +3449,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='responses-31'>Responses</h3>
+</span></code></pre></div><h3 id='responses-35'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3151,9 +3496,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">listSubAccounts</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts</code></p>
-<h3 id='description-32'>Description</h3>
+<h3 id='description-36'>Description</h3>
 <p>Get a paginated list of the user&#39;s sub-accounts.</p>
-<h3 id='parameters-28'>Parameters</h3>
+<h3 id='parameters-30'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3178,7 +3523,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-32'>Responses</h3>
+<h3 id='responses-36'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3221,9 +3566,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">getSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-33'>Description</h3>
+<h3 id='description-37'>Description</h3>
 <p>Retrieve a specific sub-account by its unique identifier.</p>
-<h3 id='parameters-29'>Parameters</h3>
+<h3 id='parameters-31'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3241,7 +3586,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-33'>Responses</h3>
+<h3 id='responses-37'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3294,9 +3639,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">updateSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-34'>Description</h3>
+<h3 id='description-38'>Description</h3>
 <p>Update sub-account settings.</p>
-<h3 id='parameters-30'>Parameters</h3>
+<h3 id='parameters-32'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3321,7 +3666,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-34'>Responses</h3>
+<h3 id='responses-38'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3374,9 +3719,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">deleteSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-35'>Description</h3>
+<h3 id='description-39'>Description</h3>
 <p>Soft delete a sub-account (sets state to &#39;deleted&#39;). The sub-account will no longer be accessible.</p>
-<h3 id='parameters-31'>Parameters</h3>
+<h3 id='parameters-33'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -3394,7 +3739,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-35'>Responses</h3>
+<h3 id='responses-39'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3428,6 +3773,18 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </ul>
 
 <p><strong>Acting as a Customer:</strong> To make API requests for a customer (e.g., placing trades, checking balances, making withdrawals), include the <code>X-Auth-Subaccount-Uid</code> header with the customer&#39;s UID. Your merchant/aggregator API credentials are used for authentication, but operations are performed in the customer&#39;s context.</p>
+
+<p><strong>Deposit Webhook Notification Hierarchy:</strong></p>
+
+<p>When a deposit event occurs for a customer account (e.g., <code>deposit.travel_rule_required</code>, <code>deposit.accepted</code>, <code>deposit.rejected</code>), the system resolves the webhook URL using the following priority:</p>
+
+<ol>
+<li><strong>Payment reference webhook</strong> — If the deposit matches a payment reference that has a <code>webhook_url</code> configured, that webhook is used.</li>
+<li><strong>Customer account webhook</strong> — If no payment reference webhook is found, the customer&#39;s own webhook is used (configured via <a href="#webhook-configuration"><code>/resource/users/webhook</code></a> with the <code>X-Auth-Subaccount-Uid</code> header).</li>
+<li><strong>Parent account webhook</strong> — If the customer has no webhook configured, the parent merchant/aggregator&#39;s webhook is used as a fallback.</li>
+</ol>
+
+<p>This allows merchants to receive deposit notifications for their customers without configuring webhooks on every individual customer account — simply configure a webhook on your merchant account, and it will serve as the default for all your customers.</p>
 <h2 id='post-create-individual-customer'><span class="request-type__post">POST</span> Create Individual Customer</h2><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="c1">// createIndividualCustomer.js</span>
 <span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
@@ -3493,7 +3850,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createIndividualCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-36'>Description</h3>
+<h3 id='description-40'>Description</h3>
 <p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Individual customers</strong> are created in two steps:</p>
@@ -3506,7 +3863,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <p>Once all documents are received the customer account will be verified by Cape Crypto, and their parent cant then create payment requests, or have the customer deposit funds into their account.</p>
 
 <hr>
-<h3 id='parameters-32'>Parameters</h3>
+<h3 id='parameters-34'>Parameters</h3>
 <p><strong>Account Information:</strong></p>
 
 <table><thead>
@@ -3686,8 +4043,26 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>No</td>
 <td>json</td>
 </tr>
+<tr>
+<td>webhook</td>
+<td>formData</td>
+<td>Webhook configuration object (see <a href="#webhook-configuration">Webhook Configuration</a>)</td>
+<td>No</td>
+<td>object</td>
+</tr>
 </tbody></table>
 
+<p><strong>Webhook Configuration (optional):</strong></p>
+
+<p>Set an initial webhook on the customer account during creation. The webhook object accepts <code>url</code> (required), <code>secret</code> (optional), and <code>protocol</code> (optional: <code>hmac</code>, <code>plain_text</code>, or <code>none</code>). After creation, use the <a href="#webhook-configuration">Webhook CRUD endpoints</a> with the <code>X-Auth-Subaccount-Uid</code> header to manage the customer&#39;s webhook.</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"webhook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://example.com/webhooks"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-secret"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
 <p><strong>Deposit Action Options:</strong></p>
 
 <p>The optional <code>deposit_action</code> parameter accepts a JSON object with the following structure:</p>
@@ -3755,7 +4130,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='responses-36'>Responses</h3>
+</span></code></pre></div><h3 id='responses-40'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3896,13 +4271,13 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createBusinessCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-37'>Description</h3>
+<h3 id='description-41'>Description</h3>
 <p>Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Business customers</strong> start with &#39;pending&#39; status and require verification. Business documents must be uploaded separately using the document upload endpoint (see &quot;Upload Business Customer Documents&quot; section below).</p>
 
 <hr>
-<h3 id='parameters-33'>Parameters</h3>
+<h3 id='parameters-35'>Parameters</h3>
 <p><strong>Account Information:</strong></p>
 
 <table><thead>
@@ -3949,7 +4324,16 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>No</td>
 <td>string</td>
 </tr>
+<tr>
+<td>webhook</td>
+<td>formData</td>
+<td>Webhook configuration object (see <a href="#webhook-configuration">Webhook Configuration</a>)</td>
+<td>No</td>
+<td>object</td>
+</tr>
 </tbody></table>
+
+<p><strong>Webhook:</strong> Same as individual customer — see <a href="#post-create-individual-customer">Create Individual Customer</a> for the webhook object format. After creation, use the <a href="#webhook-configuration">Webhook CRUD endpoints</a> with the <code>X-Auth-Subaccount-Uid</code> header to manage the customer&#39;s webhook.</p>
 
 <p><strong>Business Profile (JSON Object):</strong></p>
 
@@ -4208,7 +4592,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-37'>Responses</h3>
+<h3 id='responses-41'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4255,9 +4639,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">listCustomers</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-38'>Description</h3>
+<h3 id='description-42'>Description</h3>
 <p>Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants&#39; customers). Aggregators can filter by specific merchant using <code>merchant_uid</code>.</p>
-<h3 id='parameters-34'>Parameters</h3>
+<h3 id='parameters-36'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -4289,7 +4673,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-38'>Responses</h3>
+<h3 id='responses-42'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4363,9 +4747,9 @@ Total: 150
 <span class="nx">getCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers/{uid}</code></p>
-<h3 id='description-39'>Description</h3>
+<h3 id='description-43'>Description</h3>
 <p>Retrieve a specific customer with full details including profile, phone, labels, and business information (if applicable).</p>
-<h3 id='parameters-35'>Parameters</h3>
+<h3 id='parameters-37'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -4383,7 +4767,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-39'>Responses</h3>
+<h3 id='responses-43'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4437,9 +4821,9 @@ Total: 150
 <span class="nx">updateCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers/{uid}</code></p>
-<h3 id='description-40'>Description</h3>
-<p>Update customer metadata (custom_id and external_verification_url).</p>
-<h3 id='parameters-36'>Parameters</h3>
+<h3 id='description-44'>Description</h3>
+<p>Update customer metadata. You can also update the customer&#39;s webhook configuration here, or use the dedicated <a href="#webhook-configuration">Webhook CRUD endpoints</a> with the <code>X-Auth-Subaccount-Uid</code> header.</p>
+<h3 id='parameters-38'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -4470,8 +4854,15 @@ Total: 150
 <td>No</td>
 <td>string</td>
 </tr>
+<tr>
+<td>webhook</td>
+<td>formData</td>
+<td>Webhook configuration object (see <a href="#webhook-configuration">Webhook Configuration</a>)</td>
+<td>No</td>
+<td>object</td>
+</tr>
 </tbody></table>
-<h3 id='responses-40'>Responses</h3>
+<h3 id='responses-44'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4574,7 +4965,7 @@ Total: 150
 <span class="nx">uploadDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-41'>Description</h3>
+<h3 id='description-45'>Description</h3>
 <p>Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:</p>
 
 <ul>
@@ -4588,7 +4979,7 @@ Total: 150
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> This endpoint should be called after creating an individual customer using the <a href="#post-create-individual-customer">Create Individual Customer</a> endpoint. Use the customer UID returned from the creation response. All documents must be uploaded seperately.</p>
-<h3 id='parameters-37'>Parameters</h3>
+<h3 id='parameters-39'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -4697,7 +5088,7 @@ Total: 150
 <li><code>Drivers license back</code></li>
 <li><code>Green Identity Book</code></li>
 </ul>
-<h3 id='responses-41'>Responses</h3>
+<h3 id='responses-45'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4774,13 +5165,13 @@ Total: 150
 <span class="nx">uploadAllBusinessDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-42'>Description</h3>
+<h3 id='description-46'>Description</h3>
 <p>Upload KYB verification documents for business customers. Nine business documents are required for complete verification. Additionally, all UBOs (Ultimate Beneficial Owners) must upload their individual KYC documents (see &quot;Upload UBO Documents&quot; section below). Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> This endpoint should be called after creating a business customer using the &quot;Create Business Customer&quot; endpoint. Use the customer UID returned from the creation response. When all 9 business documents and all UBO documents are uploaded, the system will notify administrators for manual review.</p>
-<h3 id='parameters-38'>Parameters</h3>
+<h3 id='parameters-40'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -4828,7 +5219,7 @@ Total: 150
 <li><code>Bank Statement</code> - Recent company bank statement (must be less than 3 months old)</li>
 <li><code>Tax Statement</code> - Valid tax compliance certificate proving good standing with tax authorities</li>
 </ul>
-<h3 id='responses-42'>Responses</h3>
+<h3 id='responses-46'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4918,7 +5309,7 @@ Total: 150
 <span class="nx">uploadUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_002_XYZ</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-43'>Description</h3>
+<h3 id='description-47'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.</p>
 
 <p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
@@ -4933,7 +5324,7 @@ Total: 150
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
-<h3 id='parameters-39'>Parameters</h3>
+<h3 id='parameters-41'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5037,7 +5428,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-43'>Responses</h3>
+<h3 id='responses-47'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5122,7 +5513,7 @@ Total: 150
 <span class="nx">createPaymentReference</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments</code></p>
-<h3 id='description-44'>Description</h3>
+<h3 id='description-48'>Description</h3>
 <p>Create a new payment reference for a customer account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received. You can optionally provide a webhook url, with optional secret and protocol that will be sent as a header with the webhook notification.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
@@ -5224,7 +5615,7 @@ Total: 150
 <p><strong>Warning:</strong> Plain text mode is not recommended for production as the secret is transmitted in clear text.</p>
 <h4 id='no-authentication-mode'>No Authentication Mode</h4>
 <p>For <code>webhook_protocol: &quot;none&quot;</code> or when not set, no <code>X-Auth-Webhook</code> header is sent. Consider implementing additional security measures like IP whitelisting or using webhook signing URLs.</p>
-<h3 id='parameters-40'>Parameters</h3>
+<h3 id='parameters-42'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5341,7 +5732,7 @@ Total: 150
 <li><strong>convert_and_withdraw</strong>: Convert currency and withdraw to beneficiary</li>
 <li><strong>aggregate_convert_and_withdraw</strong>: Aggregate deposits, then convert and withdraw</li>
 </ul>
-<h3 id='responses-44'>Responses</h3>
+<h3 id='responses-48'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5571,7 +5962,7 @@ Total: 150
 <span class="nx">listPaymentReferences</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments</code></p>
-<h3 id='description-45'>Description</h3>
+<h3 id='description-49'>Description</h3>
 <p>List all payment references for your customer accounts. Returns paginated results.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
@@ -5579,7 +5970,7 @@ Total: 150
 <p><strong>Acting as a Customer:</strong> Provide <code>uid</code> parameter to list payment references for that customer sub-account. The customer must belong to your merchant account.</p>
 
 <hr>
-<h3 id='parameters-41'>Parameters</h3>
+<h3 id='parameters-43'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5611,7 +6002,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-45'>Responses</h3>
+<h3 id='responses-49'>Responses</h3>
 <p><strong>Headers:</strong></p>
 
 <table><thead>
@@ -5710,13 +6101,13 @@ Total: 150
 <span class="nx">showPaymentReference</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments/:id</code></p>
-<h3 id='description-46'>Description</h3>
+<h3 id='description-50'>Description</h3>
 <p>Retrieve details of a specific payment reference.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
 
 <hr>
-<h3 id='parameters-42'>Parameters</h3>
+<h3 id='parameters-44'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5741,7 +6132,7 @@ Total: 150
 <td>boolean</td>
 </tr>
 </tbody></table>
-<h3 id='responses-46'>Responses</h3>
+<h3 id='responses-50'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5819,9 +6210,9 @@ Total: 150
 <span class="nx">listMerchants</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants</code></p>
-<h3 id='description-47'>Description</h3>
+<h3 id='description-51'>Description</h3>
 <p>Get a paginated list of merchant accounts managed by the aggregator.</p>
-<h3 id='parameters-43'>Parameters</h3>
+<h3 id='parameters-45'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5846,7 +6237,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-47'>Responses</h3>
+<h3 id='responses-51'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5891,9 +6282,9 @@ Total: 150
 <span class="nx">listMerchantCustomers</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants/{uid}/customers</code></p>
-<h3 id='description-48'>Description</h3>
+<h3 id='description-52'>Description</h3>
 <p>Get a paginated list of customers belonging to a specific merchant. This provides a nested view for aggregators to see which customers belong to which merchant.</p>
-<h3 id='parameters-44'>Parameters</h3>
+<h3 id='parameters-46'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -5925,7 +6316,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-48'>Responses</h3>
+<h3 id='responses-52'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6042,13 +6433,13 @@ Total: 150
 <span class="nx">createMerchant</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants</code></p>
-<h3 id='description-49'>Description</h3>
+<h3 id='description-53'>Description</h3>
 <p>Create a new merchant account under the aggregator. The request body follows the same structure as <a href="#post-create-business-customer">Create Business Customer</a>, including company details and Ultimate Beneficial Owner (UBO) information.</p>
 
 <p><strong>Merchants</strong> start with &#39;pending&#39; status and require KYB verification. Business documents must be uploaded separately using the merchant document upload endpoint (see &quot;Upload Merchant Documents&quot; section below).</p>
 
 <hr>
-<h3 id='parameters-45'>Parameters</h3>
+<h3 id='parameters-47'>Parameters</h3>
 <p><strong>Account Information:</strong></p>
 
 <table><thead>
@@ -6093,7 +6484,7 @@ Total: 150
 <p><strong>Business Profile (JSON Object):</strong></p>
 
 <p>Same fields as <a href="#post-create-business-customer">Create Business Customer</a> — see that section for the full <code>business_profile</code> and <code>ubos</code> parameter tables.</p>
-<h3 id='responses-49'>Responses</h3>
+<h3 id='responses-53'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6142,9 +6533,9 @@ Total: 150
 <span class="nx">getMerchant</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants/{uid}</code></p>
-<h3 id='description-50'>Description</h3>
+<h3 id='description-54'>Description</h3>
 <p>Get details for a specific merchant account, including KYC/KYB status and UBO KYC status.</p>
-<h3 id='parameters-46'>Parameters</h3>
+<h3 id='parameters-48'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -6162,7 +6553,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-50'>Responses</h3>
+<h3 id='responses-54'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6235,13 +6626,13 @@ Total: 150
 <span class="nx">uploadAllMerchantDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/merchants/documents</code></p>
-<h3 id='description-51'>Description</h3>
+<h3 id='description-55'>Description</h3>
 <p>Upload KYB verification documents for a merchant entity. Nine business documents are required for complete verification. Additionally, all merchant UBOs must upload their individual KYC documents (see &quot;Upload Merchant UBO Documents&quot; section below). Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> This endpoint should be called after creating a merchant using the <a href="#post-create-merchant">Create Merchant</a> endpoint. Use the merchant UID returned from the creation response.</p>
-<h3 id='parameters-47'>Parameters</h3>
+<h3 id='parameters-49'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -6289,7 +6680,7 @@ Total: 150
 <li><code>Bank Statement</code> - Recent company bank statement (must be less than 3 months old)</li>
 <li><code>Tax Statement</code> - Valid tax compliance certificate proving good standing with tax authorities</li>
 </ul>
-<h3 id='responses-51'>Responses</h3>
+<h3 id='responses-55'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6394,7 +6785,7 @@ Total: 150
 <span class="nx">uploadMerchantUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-52'>Description</h3>
+<h3 id='description-56'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of a merchant. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the merchant&#39;s business entity documents.</p>
 
 <p><strong>When creating a merchant</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
@@ -6409,7 +6800,7 @@ Total: 150
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
-<h3 id='parameters-48'>Parameters</h3>
+<h3 id='parameters-50'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -6515,7 +6906,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-52'>Responses</h3>
+<h3 id='responses-56'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6656,7 +7047,7 @@ Total: 150
 <span class="c1">// uploadBusinessCustomerDocs("CCT1234567");</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-53'>Description</h3>
+<h3 id='description-57'>Description</h3>
 <p>Upload verification documents for customers that belong to a merchant. This endpoint handles both <strong>individual customer KYC</strong> documents and <strong>business customer KYB</strong> documents.</p>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
@@ -6664,7 +7055,7 @@ Total: 150
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
 
 <p><strong>Note:</strong> Use the customer UID returned from the customer creation response. This is the same <code>uid</code> form field used in standard customer uploads.</p>
-<h3 id='parameters-49'>Parameters</h3>
+<h3 id='parameters-51'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -6714,7 +7105,7 @@ Total: 150
 <p><strong>For individual customers:</strong> Use the same document types as <a href="#post-upload-individual-customer-documents">Upload Individual Customer Documents</a> (ID document, selfie, proof of address).</p>
 
 <p><strong>For business customers:</strong> Use the same document types as <a href="#post-upload-business-customer-documents">Upload Business Customer Documents</a> (9 business KYB documents).</p>
-<h3 id='responses-53'>Responses</h3>
+<h3 id='responses-57'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6803,7 +7194,7 @@ Total: 150
 <span class="nx">uploadUBODocs</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-54'>Description</h3>
+<h3 id='description-58'>Description</h3>
 <p>Upload KYC verification documents for UBOs of a merchant&#39;s business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading documents.</p>
 
 <p><strong>Business customer KYB completion under a merchant requires</strong>:</p>
@@ -6816,7 +7207,7 @@ Total: 150
 <p>Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
-<h3 id='parameters-50'>Parameters</h3>
+<h3 id='parameters-52'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -6922,7 +7313,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-54'>Responses</h3>
+<h3 id='responses-58'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6948,13 +7339,13 @@ Total: 150
 </tbody></table>
 <h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-55'>Description</h3>
+<h3 id='description-59'>Description</h3>
 <p>Submits a Buy/Sell order to the order book. Orders should be confirmed that they have been created either by querying the order ID that is returned in the response, or subscribing to the websockets for order updates.</p>
 
 <p>You can supply your own custom_order_id for tracking purposes for you own system.</p>
 
 <p>For limit orders, you can specify post_only to ensure that orders wont complete if they would have matched. The order request will fail if post_only is true, and the order would have matched.</p>
-<h3 id='parameters-51'>Parameters</h3>
+<h3 id='parameters-53'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7006,7 +7397,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-55'>Responses</h3>
+<h3 id='responses-59'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7022,9 +7413,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-order-by-id'><span class="request-type__get">GET</span> Order by id</h2>
 <p><code>/market/orders/{id}</code></p>
-<h3 id='description-56'>Description</h3>
+<h3 id='description-60'>Description</h3>
 <p>Get single order details.</p>
-<h3 id='parameters-52'>Parameters</h3>
+<h3 id='parameters-54'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7042,7 +7433,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-56'>Responses</h3>
+<h3 id='responses-60'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7058,9 +7449,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-all-orders'><span class="request-type__post">GET</span> All orders</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-57'>Description</h3>
+<h3 id='description-61'>Description</h3>
 <p>Get orders, result is paginated.</p>
-<h3 id='parameters-53'>Parameters</h3>
+<h3 id='parameters-55'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7148,7 +7539,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-57'>Responses</h3>
+<h3 id='responses-61'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7164,9 +7555,9 @@ Total: 150
 </tbody></table>
 <h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
 <p><code>/market/trades</code></p>
-<h3 id='description-58'>Description</h3>
+<h3 id='description-62'>Description</h3>
 <p>Fetch your trades executed on your orders.</p>
-<h3 id='parameters-54'>Parameters</h3>
+<h3 id='parameters-56'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7226,7 +7617,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-58'>Responses</h3>
+<h3 id='responses-62'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7242,9 +7633,9 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-order'><span class="request-type__post">POST</span> Cancel Order</h2>
 <p><code>/market/orders/{id}/cancel</code></p>
-<h3 id='description-59'>Description</h3>
+<h3 id='description-63'>Description</h3>
 <p>Cancel a specific order by Order id.</p>
-<h3 id='parameters-55'>Parameters</h3>
+<h3 id='parameters-57'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7262,7 +7653,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-59'>Responses</h3>
+<h3 id='responses-63'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7276,9 +7667,9 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
 <p><code>/market/orders/cancel</code></p>
-<h3 id='description-60'>Description</h3>
+<h3 id='description-64'>Description</h3>
 <p>Cancel all of your open orders.</p>
-<h3 id='parameters-56'>Parameters</h3>
+<h3 id='parameters-58'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7303,7 +7694,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-60'>Responses</h3>
+<h3 id='responses-64'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7378,13 +7769,13 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.ob-inc</code></p>
-<h3 id='description-61'>Description</h3>
+<h3 id='description-65'>Description</h3>
 <p>Subscribe to orderbook updates for the specified market. You can subscribe to multiple markets at the same time by adding each market as a param, eg</p>
 
 <p><code>?stream=btczar.ob-inc&amp;ethzar.ob-inc</code></p>
 
 <p>Note: if the amount is empty &quot;&quot;, the order has been removed from the orderbook</p>
-<h3 id='parameters-57'>Parameters</h3>
+<h3 id='parameters-59'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7402,7 +7793,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-61'>Responses</h3>
+<h3 id='responses-65'>Responses</h3>
 <table><thead>
 <tr>
 <th>Description</th>
@@ -7449,9 +7840,9 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.kline-{period}</code></p>
-<h3 id='description-62'>Description</h3>
+<h3 id='description-66'>Description</h3>
 <p>Subscribe to the K-LINE (OHLC) for the specified market to get updates on the OHLC for each period. Similary to the otherendpoints, you can combine streams into a single subscription request.</p>
-<h3 id='parameters-58'>Parameters</h3>
+<h3 id='parameters-60'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -7476,7 +7867,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-62'>Responses</h3>
+<h3 id='responses-66'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
