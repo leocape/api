@@ -1551,6 +1551,8 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
+
+<p>To receive the response as a CSV file download, include the <code>Accept: text/csv</code> header. The response will be streamed as a CSV attachment. CSV downloads ignore the <code>page</code> and <code>limit</code> parameters and return all matching results. CSV exports are limited to a maximum of 18 months of data — if no start date is provided, it defaults to the last 1 month. Use <code>time_from</code> and <code>time_to</code> to scope the data. If you need data beyond 18 months, please contact us at support@capecrypto.com.</p>
 <h3 id='response-headers-2'>Response Headers</h3>
 <table><thead>
 <tr>
