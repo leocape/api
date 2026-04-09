@@ -580,6 +580,7 @@ Retrieve your complete transaction history with flexible filtering options. This
 
 Transactions can be filtered by currency (matches both credit and debit currencies), transaction type, time range, and specific transaction ID. Results are paginated and can be ordered by creation time.
 
+
 ### Parameters
 
 | Name      | Located in | Description                                                                                                 | Required | Schema  |
@@ -592,6 +593,8 @@ Transactions can be filtered by currency (matches both credit and debit currenci
 | order_by  | query      | Sort order: 'asc' or 'desc' (default: 'desc')                                                               | No       | string  |
 | page      | query      | Page number (default: 1, min: 1)                                                                            | No       | integer |
 | limit     | query      | Results per page (default: 50, min: 1, max: 1000)                                                           | No       | integer |
+
+To receive the response as a CSV file download, include the `Accept: text/csv` header. The response will be streamed as a CSV attachment. CSV downloads ignore the `page` and `limit` parameters and return all matching results. CSV exports are limited to a maximum of 18 months of data — if no start date is provided, it defaults to the last 1 month. Use `time_from` and `time_to` to scope the data. If you need data beyond 18 months, please contact us at support@capecrypto.com.
 
 ### Response Headers
 
@@ -1302,11 +1305,11 @@ Configure a webhook URL on your account to receive notifications for deposit eve
 
 **Webhook Object:**
 
-| Field    | Type   | Description                                            | Required |
-| -------- | ------ | ------------------------------------------------------ | -------- |
-| url      | string | The URL to receive webhook notifications               | Yes      |
-| secret   | string | Secret used for HMAC signing                           | No       |
-| protocol | string | Authentication mode: `hmac`, `plain_text`, or `none`   | No       |
+| Field    | Type   | Description                                          | Required |
+| -------- | ------ | ---------------------------------------------------- | -------- |
+| url      | string | The URL to receive webhook notifications             | Yes      |
+| secret   | string | Secret used for HMAC signing                         | No       |
+| protocol | string | Authentication mode: `hmac`, `plain_text`, or `none` | No       |
 
 See [Authentication / Protocol Modes](#authentication-protocol-modes-webhook_protocol) for details on HMAC verification.
 
@@ -1363,9 +1366,9 @@ Returns the current webhook configuration for the authenticated account. Returns
 
 ### Responses
 
-| Code | Description          | Schema                      |
-| ---- | -------------------- | --------------------------- |
-| 200  | Webhook config       | `{ webhook: object\|null }` |
+| Code | Description    | Schema                      |
+| ---- | -------------- | --------------------------- |
+| 200  | Webhook config | `{ webhook: object\|null }` |
 
 ## <span class="request-type__post">POST</span> Create Webhook
 
@@ -1413,19 +1416,19 @@ Create a webhook configuration for the authenticated account. Fails with `409` i
 
 ### Parameters
 
-| Name     | Located in | Description                                          | Required | Schema |
-| -------- | ---------- | ---------------------------------------------------- | -------- | ------ |
-| url      | body       | Webhook URL for notifications                        | Yes      | string |
-| secret   | body       | Secret for HMAC signing                              | No       | string |
-| protocol | body       | Protocol: "hmac", "plain_text", or "none"            | No       | string |
+| Name     | Located in | Description                               | Required | Schema |
+| -------- | ---------- | ----------------------------------------- | -------- | ------ |
+| url      | body       | Webhook URL for notifications             | Yes      | string |
+| secret   | body       | Secret for HMAC signing                   | No       | string |
+| protocol | body       | Protocol: "hmac", "plain_text", or "none" | No       | string |
 
 ### Responses
 
-| Code | Description               | Schema                 |
-| ---- | ------------------------- | ---------------------- |
-| 201  | Webhook created           | `{ webhook: object }`  |
-| 409  | Webhook already exists    | Error array            |
-| 422  | Validation error          | Error array            |
+| Code | Description            | Schema                |
+| ---- | ---------------------- | --------------------- |
+| 201  | Webhook created        | `{ webhook: object }` |
+| 409  | Webhook already exists | Error array           |
+| 422  | Validation error       | Error array           |
 
 ## <span class="request-type__put">PUT</span> Update Webhook
 
@@ -1473,18 +1476,18 @@ Update the webhook configuration for the authenticated account. Creates the webh
 
 ### Parameters
 
-| Name     | Located in | Description                                          | Required | Schema |
-| -------- | ---------- | ---------------------------------------------------- | -------- | ------ |
-| url      | body       | Webhook URL for notifications                        | Yes      | string |
-| secret   | body       | Secret for HMAC signing                              | No       | string |
-| protocol | body       | Protocol: "hmac", "plain_text", or "none"            | No       | string |
+| Name     | Located in | Description                               | Required | Schema |
+| -------- | ---------- | ----------------------------------------- | -------- | ------ |
+| url      | body       | Webhook URL for notifications             | Yes      | string |
+| secret   | body       | Secret for HMAC signing                   | No       | string |
+| protocol | body       | Protocol: "hmac", "plain_text", or "none" | No       | string |
 
 ### Responses
 
-| Code | Description               | Schema                 |
-| ---- | ------------------------- | ---------------------- |
-| 200  | Webhook updated           | `{ webhook: object }`  |
-| 422  | Validation error          | Error array            |
+| Code | Description      | Schema                |
+| ---- | ---------------- | --------------------- |
+| 200  | Webhook updated  | `{ webhook: object }` |
+| 422  | Validation error | Error array           |
 
 ## <span class="request-type__delete">DELETE</span> Delete Webhook
 
@@ -1525,10 +1528,10 @@ Remove the webhook configuration from the authenticated account.
 
 ### Responses
 
-| Code | Description               | Schema                    |
-| ---- | ------------------------- | ------------------------- |
-| 200  | Webhook removed           | `{ message: string }`     |
-| 404  | No webhook configured     | Error array               |
+| Code | Description           | Schema                |
+| ---- | --------------------- | --------------------- |
+| 200  | Webhook removed       | `{ message: string }` |
+| 404  | No webhook configured | Error array           |
 
 # Sub-Accounts
 
@@ -1583,10 +1586,10 @@ Create a new sub-account that inherits the parent's KYC verification. Sub-accoun
 
 | Name           | Located in | Description                                                                        | Required | Schema |
 | -------------- | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
-| account_name   | formData   | Display name for the sub-account (1-100 characters)                                 | Yes      | string |
-| deposit_action | formData   | JSON object defining automated deposit handling (see deposit action options below)  | No       | json   |
-| webhook        | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration))  | No       | object |
-| data           | formData   | Optional additional data in JSON format                                             | No       | json   |
+| account_name   | formData   | Display name for the sub-account (1-100 characters)                                | Yes      | string |
+| deposit_action | formData   | JSON object defining automated deposit handling (see deposit action options below) | No       | json   |
+| webhook        | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No       | object |
+| data           | formData   | Optional additional data in JSON format                                            | No       | json   |
 
 **Deposit Action Options:**
 
@@ -2215,13 +2218,13 @@ Create a new business customer account with company details and Ultimate Benefic
 
 **Account Information:**
 
-| Name         | Located in | Description                                                      | Required | Schema |
-| ------------ | ---------- | ---------------------------------------------------------------- | -------- | ------ |
-| entity_type  | formData   | Must be 'business'                                               | Yes      | string |
-| email        | formData   | Business email address (unique per merchant)                     | Yes      | string |
-| phone_number | formData   | Business phone number in international format                    | Yes      | string |
-| account_name | formData   | Business account display name (typically company name)           | Yes      | string |
-| merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant) | No       | string |
+| Name         | Located in | Description                                                                        | Required | Schema |
+| ------------ | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
+| entity_type  | formData   | Must be 'business'                                                                 | Yes      | string |
+| email        | formData   | Business email address (unique per merchant)                                       | Yes      | string |
+| phone_number | formData   | Business phone number in international format                                      | Yes      | string |
+| account_name | formData   | Business account display name (typically company name)                             | Yes      | string |
+| merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant)                   | No       | string |
 | webhook      | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No       | object |
 
 **Webhook:** Same as individual customer — see [Create Individual Customer](#post-create-individual-customer) for the webhook object format. After creation, use the [Webhook CRUD endpoints](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header to manage the customer's webhook.
