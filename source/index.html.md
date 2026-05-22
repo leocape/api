@@ -580,7 +580,6 @@ Retrieve your complete transaction history with flexible filtering options. This
 
 Transactions can be filtered by currency (matches both credit and debit currencies), transaction type, time range, and specific transaction ID. Results are paginated and can be ordered by creation time.
 
-
 ### Parameters
 
 | Name      | Located in | Description                                                                                                 | Required | Schema  |
@@ -1197,6 +1196,51 @@ Get account balances for all currencies
 | ---- | ----------------- | ----------------------- |
 | 200  | Array of balances | [ [Account](#account) ] |
 
+## <span class="request-type__get">GET</span> Get fees
+
+`/account/fees`
+
+### Description
+
+Get the trading and funding fees for your account. Fees are applied per active market (for trading fees) or per funding method (for funding fees).
+
+### Responses
+
+| Code | Description    | Schema                                                                                       |
+| ---- | -------------- | -------------------------------------------------------------------------------------------- |
+| 200  | Fees retrieved | trading_fees: [ [Trading Fee](#trading-fee) ], funding_fees: [ [Funding Fee](#funding-fee) ] |
+| 401  | Unauthorized   | Error array                                                                                  |
+
+### Example Request
+
+```javascript
+const axios = require("axios");
+const generateHeaders = require("./generateHeaders");
+
+getFees = async () => {
+  const baseUrl = "https://trade.capecrypto.com";
+  const method = "GET";
+  const path = `/api/v2/atlas/account/fees`;
+  const url = `${baseUrl}${path}`;
+  const headers = await generateHeaders();
+
+  const axiosConfig = {
+    method: method,
+    url: url,
+    headers: headers,
+  };
+
+  try {
+    const results = await axios(axiosConfig);
+    console.log(JSON.stringify(results.data, undefined, 2));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getFees();
+```
+
 ## <span class="request-type__post">POST</span> New lightning payment
 
 `/account/lightning/pays`
@@ -1555,7 +1599,9 @@ createSubAccount = async () => {
 
   const subAccountData = {
     account_name: "Trading Account 1",
-    deposit_action: "transfer_to_parent",
+    deposit_action: {
+      action: "aggregate",
+    },
   };
 
   const axiosConfig = {
@@ -1647,6 +1693,29 @@ When `beneficiary_amount` is specified (as a string), it defines the exact amoun
   }
 }
 ```
+
+**Direction-Specific Form (Advanced):**
+
+For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate `coin` and `fiat` configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit's currency type. If a sub-object for the deposit's direction is not provided, the deposit is credited as normal (`none` behavior).
+
+```json
+{
+  "account_name": "Routing Account",
+  "deposit_action": {
+    "coin": {
+      "action": "aggregate_convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 456,
+      "max_slippage": 2.5
+    },
+    "fiat": {
+      "action": "aggregate"
+    }
+  }
+}
+```
+
+The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (`coin` / `fiat`) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.
 
 ### Responses
 
@@ -1772,7 +1841,9 @@ updateSubAccount = async () => {
   const headers = await generateHeaders();
 
   const updateData = {
-    deposit_action: "none",
+    deposit_action: {
+      action: "none",
+    },
   };
 
   const axiosConfig = {
@@ -1801,10 +1872,10 @@ Update sub-account settings.
 
 ### Parameters
 
-| Name           | Located in | Description                                         | Required | Schema |
-| -------------- | ---------- | --------------------------------------------------- | -------- | ------ |
-| uid            | path       | Sub-account identifier                              | Yes      | string |
-| deposit_action | formData   | Action for deposits: 'none' or 'transfer_to_parent' | No       | string |
+| Name           | Located in | Description                                                                                       | Required | Schema |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------------- | -------- | ------ |
+| uid            | path       | Sub-account identifier                                                                            | Yes      | string |
+| deposit_action | formData   | JSON object defining automated deposit handling (same shape as in [Create Sub-Account](#post-create-sub-account)) | No       | object |
 
 ### Responses
 
@@ -2072,6 +2143,31 @@ Note: Only the "none" action is currently available, the additional actions are 
 }
 ```
 
+**Direction-Specific Form (Advanced):**
+
+For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate `coin` and `fiat` configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit's currency type. If a sub-object for the deposit's direction is not provided, the deposit is credited as normal (`none` behavior).
+
+```json
+{
+  "entity_type": "individual",
+  "email": "customer@example.com",
+  // ... other required fields ...
+  "deposit_action": {
+    "coin": {
+      "action": "convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 456,
+      "max_slippage": 2.5
+    },
+    "fiat": {
+      "action": "none"
+    }
+  }
+}
+```
+
+The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (`coin` / `fiat`) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.
+
 ### Responses
 
 | Code | Description                   | Schema                |
@@ -2220,14 +2316,17 @@ Create a new business customer account with company details and Ultimate Benefic
 
 | Name         | Located in | Description                                                                        | Required | Schema |
 | ------------ | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
-| entity_type  | formData   | Must be 'business'                                                                 | Yes      | string |
-| email        | formData   | Business email address (unique per merchant)                                       | Yes      | string |
-| phone_number | formData   | Business phone number in international format                                      | Yes      | string |
-| account_name | formData   | Business account display name (typically company name)                             | Yes      | string |
-| merchant_uid | formData   | Merchant UID (aggregators only - create under specific merchant)                   | No       | string |
-| webhook      | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration)) | No       | object |
+| entity_type    | formData   | Must be 'business'                                                                                                              | Yes      | string |
+| email          | formData   | Business email address (unique per merchant)                                                                                    | Yes      | string |
+| phone_number   | formData   | Business phone number in international format                                                                                   | Yes      | string |
+| account_name   | formData   | Business account display name (typically company name)                                                                          | Yes      | string |
+| merchant_uid   | formData   | Merchant UID (aggregators only - create under specific merchant)                                                                | No       | string |
+| webhook        | formData   | Webhook configuration object (see [Webhook Configuration](#webhook-configuration))                                              | No       | object |
+| deposit_action | formData   | JSON object defining automated deposit handling (same shape as in [Create Individual Customer](#post-create-individual-customer)) | No       | object |
 
 **Webhook:** Same as individual customer — see [Create Individual Customer](#post-create-individual-customer) for the webhook object format. After creation, use the [Webhook CRUD endpoints](#webhook-configuration) with the `X-Auth-Subaccount-Uid` header to manage the customer's webhook.
+
+**Deposit Action:** Business customers support the same automated deposit handling as individual customers. See the [Create Individual Customer](#post-create-individual-customer) section above for the full schema (flat and direction-specific forms) and the list of available actions.
 
 **Business Profile (JSON Object):**
 
@@ -5080,7 +5179,7 @@ All paginated list endpoints return an array of items in the response body, with
 | uid            | string | Sub-account unique identifier                                                             |
 | account_name   | string | Display name for the sub-account                                                          |
 | state          | string | Account state (active, deleted)                                                           |
-| deposit_action | string | Action for deposits: 'none' (keep in sub-account) or 'transfer_to_parent' (auto-transfer) |
+| deposit_action | object | Automated deposit handling configuration, or `null` if not configured. Same shape as the request parameter — see [Create Sub-Account](#post-create-sub-account) for the full schema. |
 | created_at     | string | Timestamp when the sub-account was created in ISO 8601 format                             |
 
 ### Customer
@@ -5352,6 +5451,29 @@ The `remainingLimits` object is included in both Deposit Method and Withdraw Met
 | created_at         | String (ISO8601 formatted) | The datetime when invoice was created.       |
 | expires_at         | String (ISO8601 formatted) | The datetime when invoice expires.           |
 | paid_at            | String (ISO8601 formatted) | The datetime when invoice was paid.          |
+
+### Trading Fee
+
+| Name      | Type   | Description                             |
+| --------- | ------ | --------------------------------------- |
+| market_id | string | Market identifier (e.g., "btczar")      |
+| group     | string | Fee group applied to your account       |
+| maker     | string | Maker fee rate as a decimal (e.g., "0.001" = 0.1%) |
+| taker     | string | Taker fee rate as a decimal (e.g., "0.001" = 0.1%) |
+| instant   | string | Instant buy/sell fee rate as a decimal              |
+
+### Funding Fee
+
+| Name           | Type    | Description                                |
+| -------------- | ------- | ------------------------------------------ |
+| id             | integer | Fee record ID                              |
+| group          | string  | Fee group applied to your account          |
+| reference_type | string  | Type of funding method this fee applies to |
+| reference_id   | integer | ID of the specific funding method          |
+| fee            | string  | Fee rate as a decimal (e.g., "0.0015")            |
+| min_fee        | string  | Minimum fee amount in currency units (e.g., "5.0") |
+| created_at     | string  | ISO 8601 timestamp                         |
+| updated_at     | string  | ISO 8601 timestamp                         |
 
 ### Websocket orderbook snapshot
 
