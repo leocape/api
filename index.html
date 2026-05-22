@@ -434,6 +434,9 @@
                     <a href="#get-all-balances" class="toc-h2 toc-link" data-title="GET All balances"><span class="request-type__get">GET</span> All balances</a>
                   </li>
                   <li>
+                    <a href="#get-get-fees" class="toc-h2 toc-link" data-title="GET Get fees"><span class="request-type__get">GET</span> Get fees</a>
+                  </li>
+                  <li>
                     <a href="#post-new-lightning-payment" class="toc-h2 toc-link" data-title="POST New lightning payment"><span class="request-type__post">POST</span> New lightning payment</a>
                   </li>
                   <li>
@@ -665,6 +668,12 @@
                   </li>
                   <li>
                     <a href="#lightning-invoice" class="toc-h2 toc-link" data-title="Lightning invoice">Lightning invoice</a>
+                  </li>
+                  <li>
+                    <a href="#trading-fee" class="toc-h2 toc-link" data-title="Trading Fee">Trading Fee</a>
+                  </li>
+                  <li>
+                    <a href="#funding-fee" class="toc-h2 toc-link" data-title="Funding Fee">Funding Fee</a>
                   </li>
                   <li>
                     <a href="#websocket-orderbook-snapshot" class="toc-h2 toc-link" data-title="Websocket orderbook snapshot">Websocket orderbook snapshot</a>
@@ -2750,9 +2759,57 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>[ <a href="#account">Account</a> ]</td>
 </tr>
 </tbody></table>
-<h2 id='post-new-lightning-payment'><span class="request-type__post">POST</span> New lightning payment</h2>
-<p><code>/account/lightning/pays</code></p>
+<h2 id='get-get-fees'><span class="request-type__get">GET</span> Get fees</h2>
+<p><code>/account/fees</code></p>
 <h3 id='description-29'>Description</h3>
+<p>Get the trading and funding fees for your account. Fees are applied per active market (for trading fees) or per funding method (for funding fees).</p>
+<h3 id='responses-29'>Responses</h3>
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Fees retrieved</td>
+<td>trading_fees: [ <a href="#trading-fee">Trading Fee</a> ], funding_fees: [ <a href="#funding-fee">Funding Fee</a> ]</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized</td>
+<td>Error array</td>
+</tr>
+</tbody></table>
+<h3 id='example-request-2'>Example Request</h3><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">axios</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">axios</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">generateHeaders</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./generateHeaders</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">getFees</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://trade.capecrypto.com</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">method</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">`/api/v2/atlas/account/fees`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">baseUrl</span><span class="p">}${</span><span class="nx">path</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+    <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span>
+  <span class="p">};</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">(</span><span class="nx">axiosConfig</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">getFees</span><span class="p">();</span>
+</code></pre></div><h2 id='post-new-lightning-payment'><span class="request-type__post">POST</span> New lightning payment</h2>
+<p><code>/account/lightning/pays</code></p>
+<h3 id='description-30'>Description</h3>
 <p>Submits a payment request to pay a BTC Lightning BOLT11 invoice (withdraws this balance from your BTC account).</p>
 
 <p>As the payment is requested and validated on the lightning network, please query your withdrawal history to confirm that the payment succeeded.</p>
@@ -2906,7 +2963,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>Type of identification document</td>
 </tr>
 </tbody></table>
-<h3 id='responses-29'>Responses</h3>
+<h3 id='responses-30'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -2922,7 +2979,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </tbody></table>
 <h2 id='post-create-a-lightning-invoice'><span class="request-type__post">POST</span> Create a Lightning invoice</h2>
 <p><code>/account/lightning/invoices</code></p>
-<h3 id='description-30'>Description</h3>
+<h3 id='description-31'>Description</h3>
 <p>Create a new lightning invoice to be paid (receive) over the BTC Lightning network.</p>
 
 <p>You can optionally specify a conversion_percent (1 = 100%, 0.1 = 10%) to automatically convert once the invoice is paid. The conversion percent should be such that the conversion amount is greater than or equal to the minimum order amount for the market eg. &#39;btczar&#39;. For example if receiving BTC 0.00001, and the minimum order amount on &#39;btczar&#39; is 0.00001, your conversion percent would have to be 1 (100%). Anything less would cause the invoice creation to fail, as the conversion amount would be below the minimum market order amount.</p>
@@ -2967,7 +3024,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-30'>Responses</h3>
+<h3 id='responses-31'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3049,7 +3106,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">getWebhook</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/users/webhook</code></p>
-<h3 id='description-31'>Description</h3>
+<h3 id='description-32'>Description</h3>
 <p>Returns the current webhook configuration for the authenticated account. Returns <code>null</code> if no webhook is configured.</p>
 <h3 id='example-response'>Example Response</h3><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"webhook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -3058,7 +3115,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
     </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hmac"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='responses-31'>Responses</h3>
+</span></code></pre></div><h3 id='responses-32'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3107,7 +3164,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createWebhook</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/users/webhook</code></p>
-<h3 id='description-32'>Description</h3>
+<h3 id='description-33'>Description</h3>
 <p>Create a webhook configuration for the authenticated account. Fails with <code>409</code> if a webhook is already configured — use PUT to update instead.</p>
 <h3 id='parameters-27'>Parameters</h3>
 <table><thead>
@@ -3141,7 +3198,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-32'>Responses</h3>
+<h3 id='responses-33'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3200,7 +3257,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">updateWebhook</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/users/webhook</code></p>
-<h3 id='description-33'>Description</h3>
+<h3 id='description-34'>Description</h3>
 <p>Update the webhook configuration for the authenticated account. Creates the webhook if none exists.</p>
 <h3 id='parameters-28'>Parameters</h3>
 <table><thead>
@@ -3234,7 +3291,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-33'>Responses</h3>
+<h3 id='responses-34'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3281,9 +3338,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">deleteWebhook</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/users/webhook</code></p>
-<h3 id='description-34'>Description</h3>
+<h3 id='description-35'>Description</h3>
 <p>Remove the webhook configuration from the authenticated account.</p>
-<h3 id='responses-34'>Responses</h3>
+<h3 id='responses-35'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3319,7 +3376,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 
   <span class="kd">const</span> <span class="nx">subAccountData</span> <span class="o">=</span> <span class="p">{</span>
     <span class="na">account_name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Trading Account 1</span><span class="dl">"</span><span class="p">,</span>
-    <span class="na">deposit_action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">transfer_to_parent</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">deposit_action</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">aggregate</span><span class="dl">"</span><span class="p">,</span>
+    <span class="p">},</span>
   <span class="p">};</span>
 
   <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
@@ -3340,7 +3399,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts</code></p>
-<h3 id='description-35'>Description</h3>
+<h3 id='description-36'>Description</h3>
 <p>Create a new sub-account that inherits the parent&#39;s KYC verification. Sub-accounts cannot login independently and are managed by the parent account.</p>
 <h3 id='parameters-29'>Parameters</h3>
 <table><thead>
@@ -3451,7 +3510,27 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='responses-35'>Responses</h3>
+</span></code></pre></div>
+<p><strong>Direction-Specific Form (Advanced):</strong></p>
+
+<p>For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate <code>coin</code> and <code>fiat</code> configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit&#39;s currency type. If a sub-object for the deposit&#39;s direction is not provided, the deposit is credited as normal (<code>none</code> behavior).</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Routing Account"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate_convert_and_withdraw"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (<code>coin</code> / <code>fiat</code>) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.</p>
+<h3 id='responses-36'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3498,7 +3577,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">listSubAccounts</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts</code></p>
-<h3 id='description-36'>Description</h3>
+<h3 id='description-37'>Description</h3>
 <p>Get a paginated list of the user&#39;s sub-accounts.</p>
 <h3 id='parameters-30'>Parameters</h3>
 <table><thead>
@@ -3525,7 +3604,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-36'>Responses</h3>
+<h3 id='responses-37'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3568,7 +3647,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">getSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-37'>Description</h3>
+<h3 id='description-38'>Description</h3>
 <p>Retrieve a specific sub-account by its unique identifier.</p>
 <h3 id='parameters-31'>Parameters</h3>
 <table><thead>
@@ -3588,7 +3667,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-37'>Responses</h3>
+<h3 id='responses-38'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3620,7 +3699,9 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
   <span class="kd">const</span> <span class="nx">headers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">generateHeaders</span><span class="p">();</span>
 
   <span class="kd">const</span> <span class="nx">updateData</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">deposit_action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">none</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">deposit_action</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">"</span><span class="s2">none</span><span class="dl">"</span><span class="p">,</span>
+    <span class="p">},</span>
   <span class="p">};</span>
 
   <span class="kd">const</span> <span class="nx">axiosConfig</span> <span class="o">=</span> <span class="p">{</span>
@@ -3641,7 +3722,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">updateSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-38'>Description</h3>
+<h3 id='description-39'>Description</h3>
 <p>Update sub-account settings.</p>
 <h3 id='parameters-32'>Parameters</h3>
 <table><thead>
@@ -3663,12 +3744,12 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <tr>
 <td>deposit_action</td>
 <td>formData</td>
-<td>Action for deposits: &#39;none&#39; or &#39;transfer_to_parent&#39;</td>
+<td>JSON object defining automated deposit handling (same shape as in <a href="#post-create-sub-account">Create Sub-Account</a>)</td>
 <td>No</td>
-<td>string</td>
+<td>object</td>
 </tr>
 </tbody></table>
-<h3 id='responses-38'>Responses</h3>
+<h3 id='responses-39'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3721,7 +3802,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">deleteSubAccount</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/sub_accounts/{uid}</code></p>
-<h3 id='description-39'>Description</h3>
+<h3 id='description-40'>Description</h3>
 <p>Soft delete a sub-account (sets state to &#39;deleted&#39;). The sub-account will no longer be accessible.</p>
 <h3 id='parameters-33'>Parameters</h3>
 <table><thead>
@@ -3741,7 +3822,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-39'>Responses</h3>
+<h3 id='responses-40'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -3852,7 +3933,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createIndividualCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-40'>Description</h3>
+<h3 id='description-41'>Description</h3>
 <p>Create a new individual customer account. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Individual customers</strong> are created in two steps:</p>
@@ -4132,7 +4213,29 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='responses-40'>Responses</h3>
+</span></code></pre></div>
+<p><strong>Direction-Specific Form (Advanced):</strong></p>
+
+<p>For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate <code>coin</code> and <code>fiat</code> configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit&#39;s currency type. If a sub-object for the deposit&#39;s direction is not provided, the deposit is credited as normal (<code>none</code> behavior).</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"individual"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer@example.com"</span><span class="p">,</span><span class="w">
+  </span><span class="err">//</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">other</span><span class="w"> </span><span class="err">required</span><span class="w"> </span><span class="err">fields</span><span class="w"> </span><span class="err">...</span><span class="w">
+  </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (<code>coin</code> / <code>fiat</code>) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.</p>
+<h3 id='responses-41'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4273,7 +4376,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">createBusinessCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-41'>Description</h3>
+<h3 id='description-42'>Description</h3>
 <p>Create a new business customer account with company details and Ultimate Beneficial Owner (UBO) information. Merchants create customers under their own account. Aggregators can create customers under their own account or under a specific merchant by providing <code>merchant_uid</code>.</p>
 
 <p><strong>Business customers</strong> start with &#39;pending&#39; status and require verification. Business documents must be uploaded separately using the document upload endpoint (see &quot;Upload Business Customer Documents&quot; section below).</p>
@@ -4333,9 +4436,18 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>No</td>
 <td>object</td>
 </tr>
+<tr>
+<td>deposit_action</td>
+<td>formData</td>
+<td>JSON object defining automated deposit handling (same shape as in <a href="#post-create-individual-customer">Create Individual Customer</a>)</td>
+<td>No</td>
+<td>object</td>
+</tr>
 </tbody></table>
 
 <p><strong>Webhook:</strong> Same as individual customer — see <a href="#post-create-individual-customer">Create Individual Customer</a> for the webhook object format. After creation, use the <a href="#webhook-configuration">Webhook CRUD endpoints</a> with the <code>X-Auth-Subaccount-Uid</code> header to manage the customer&#39;s webhook.</p>
+
+<p><strong>Deposit Action:</strong> Business customers support the same automated deposit handling as individual customers. See the <a href="#post-create-individual-customer">Create Individual Customer</a> section above for the full schema (flat and direction-specific forms) and the list of available actions.</p>
 
 <p><strong>Business Profile (JSON Object):</strong></p>
 
@@ -4594,7 +4706,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-41'>Responses</h3>
+<h3 id='responses-42'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4641,7 +4753,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <span class="nx">listCustomers</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers</code></p>
-<h3 id='description-42'>Description</h3>
+<h3 id='description-43'>Description</h3>
 <p>Get a paginated list of customers. Merchants see only their own customers. Aggregators see all customers (their own + all their merchants&#39; customers). Aggregators can filter by specific merchant using <code>merchant_uid</code>.</p>
 <h3 id='parameters-36'>Parameters</h3>
 <table><thead>
@@ -4675,7 +4787,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-42'>Responses</h3>
+<h3 id='responses-43'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4749,7 +4861,7 @@ Total: 150
 <span class="nx">getCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers/{uid}</code></p>
-<h3 id='description-43'>Description</h3>
+<h3 id='description-44'>Description</h3>
 <p>Retrieve a specific customer with full details including profile, phone, labels, and business information (if applicable).</p>
 <h3 id='parameters-37'>Parameters</h3>
 <table><thead>
@@ -4769,7 +4881,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-43'>Responses</h3>
+<h3 id='responses-44'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4823,7 +4935,7 @@ Total: 150
 <span class="nx">updateCustomer</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/customers/{uid}</code></p>
-<h3 id='description-44'>Description</h3>
+<h3 id='description-45'>Description</h3>
 <p>Update customer metadata. You can also update the customer&#39;s webhook configuration here, or use the dedicated <a href="#webhook-configuration">Webhook CRUD endpoints</a> with the <code>X-Auth-Subaccount-Uid</code> header.</p>
 <h3 id='parameters-38'>Parameters</h3>
 <table><thead>
@@ -4864,7 +4976,7 @@ Total: 150
 <td>object</td>
 </tr>
 </tbody></table>
-<h3 id='responses-44'>Responses</h3>
+<h3 id='responses-45'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -4967,7 +5079,7 @@ Total: 150
 <span class="nx">uploadDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-45'>Description</h3>
+<h3 id='description-46'>Description</h3>
 <p>Upload KYC verification documents for individual customers. Multiple documents are required for complete verification:</p>
 
 <ul>
@@ -5090,7 +5202,7 @@ Total: 150
 <li><code>Drivers license back</code></li>
 <li><code>Green Identity Book</code></li>
 </ul>
-<h3 id='responses-45'>Responses</h3>
+<h3 id='responses-46'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5167,7 +5279,7 @@ Total: 150
 <span class="nx">uploadAllBusinessDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-46'>Description</h3>
+<h3 id='description-47'>Description</h3>
 <p>Upload KYB verification documents for business customers. Nine business documents are required for complete verification. Additionally, all UBOs (Ultimate Beneficial Owners) must upload their individual KYC documents (see &quot;Upload UBO Documents&quot; section below). Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
@@ -5221,7 +5333,7 @@ Total: 150
 <li><code>Bank Statement</code> - Recent company bank statement (must be less than 3 months old)</li>
 <li><code>Tax Statement</code> - Valid tax compliance certificate proving good standing with tax authorities</li>
 </ul>
-<h3 id='responses-46'>Responses</h3>
+<h3 id='responses-47'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5311,7 +5423,7 @@ Total: 150
 <span class="nx">uploadUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_002_XYZ</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-47'>Description</h3>
+<h3 id='description-48'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of business customers. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the business entity documents.</p>
 
 <p><strong>When creating a business customer</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
@@ -5430,7 +5542,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-47'>Responses</h3>
+<h3 id='responses-48'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5515,7 +5627,7 @@ Total: 150
 <span class="nx">createPaymentReference</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments</code></p>
-<h3 id='description-48'>Description</h3>
+<h3 id='description-49'>Description</h3>
 <p>Create a new payment reference for a customer account. The payment reference provides a unique deposit reference code that the customer can use when making deposits. Optionally configure automated actions (aggregate, convert, withdraw) that execute when deposits are received. You can optionally provide a webhook url, with optional secret and protocol that will be sent as a header with the webhook notification.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
@@ -5734,7 +5846,7 @@ Total: 150
 <li><strong>convert_and_withdraw</strong>: Convert currency and withdraw to beneficiary</li>
 <li><strong>aggregate_convert_and_withdraw</strong>: Aggregate deposits, then convert and withdraw</li>
 </ul>
-<h3 id='responses-48'>Responses</h3>
+<h3 id='responses-49'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -5964,7 +6076,7 @@ Total: 150
 <span class="nx">listPaymentReferences</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments</code></p>
-<h3 id='description-49'>Description</h3>
+<h3 id='description-50'>Description</h3>
 <p>List all payment references for your customer accounts. Returns paginated results.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
@@ -6004,7 +6116,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-49'>Responses</h3>
+<h3 id='responses-50'>Responses</h3>
 <p><strong>Headers:</strong></p>
 
 <table><thead>
@@ -6103,7 +6215,7 @@ Total: 150
 <span class="nx">showPaymentReference</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/api/v2/account/payments/:id</code></p>
-<h3 id='description-50'>Description</h3>
+<h3 id='description-51'>Description</h3>
 <p>Retrieve details of a specific payment reference.</p>
 
 <p><strong>Access:</strong> Merchants and Aggregators only</p>
@@ -6134,7 +6246,7 @@ Total: 150
 <td>boolean</td>
 </tr>
 </tbody></table>
-<h3 id='responses-50'>Responses</h3>
+<h3 id='responses-51'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6212,7 +6324,7 @@ Total: 150
 <span class="nx">listMerchants</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants</code></p>
-<h3 id='description-51'>Description</h3>
+<h3 id='description-52'>Description</h3>
 <p>Get a paginated list of merchant accounts managed by the aggregator.</p>
 <h3 id='parameters-45'>Parameters</h3>
 <table><thead>
@@ -6239,7 +6351,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-51'>Responses</h3>
+<h3 id='responses-52'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6284,7 +6396,7 @@ Total: 150
 <span class="nx">listMerchantCustomers</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants/{uid}/customers</code></p>
-<h3 id='description-52'>Description</h3>
+<h3 id='description-53'>Description</h3>
 <p>Get a paginated list of customers belonging to a specific merchant. This provides a nested view for aggregators to see which customers belong to which merchant.</p>
 <h3 id='parameters-46'>Parameters</h3>
 <table><thead>
@@ -6318,7 +6430,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-52'>Responses</h3>
+<h3 id='responses-53'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6435,7 +6547,7 @@ Total: 150
 <span class="nx">createMerchant</span><span class="p">();</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants</code></p>
-<h3 id='description-53'>Description</h3>
+<h3 id='description-54'>Description</h3>
 <p>Create a new merchant account under the aggregator. The request body follows the same structure as <a href="#post-create-business-customer">Create Business Customer</a>, including company details and Ultimate Beneficial Owner (UBO) information.</p>
 
 <p><strong>Merchants</strong> start with &#39;pending&#39; status and require KYB verification. Business documents must be uploaded separately using the merchant document upload endpoint (see &quot;Upload Merchant Documents&quot; section below).</p>
@@ -6486,7 +6598,7 @@ Total: 150
 <p><strong>Business Profile (JSON Object):</strong></p>
 
 <p>Same fields as <a href="#post-create-business-customer">Create Business Customer</a> — see that section for the full <code>business_profile</code> and <code>ubos</code> parameter tables.</p>
-<h3 id='responses-53'>Responses</h3>
+<h3 id='responses-54'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6535,7 +6647,7 @@ Total: 150
 <span class="nx">getMerchant</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/persona/resource/merchants/{uid}</code></p>
-<h3 id='description-54'>Description</h3>
+<h3 id='description-55'>Description</h3>
 <p>Get details for a specific merchant account, including KYC/KYB status and UBO KYC status.</p>
 <h3 id='parameters-48'>Parameters</h3>
 <table><thead>
@@ -6555,7 +6667,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-54'>Responses</h3>
+<h3 id='responses-55'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6628,7 +6740,7 @@ Total: 150
 <span class="nx">uploadAllMerchantDocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">CCT1234567</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/merchants/documents</code></p>
-<h3 id='description-55'>Description</h3>
+<h3 id='description-56'>Description</h3>
 <p>Upload KYB verification documents for a merchant entity. Nine business documents are required for complete verification. Additionally, all merchant UBOs must upload their individual KYC documents (see &quot;Upload Merchant UBO Documents&quot; section below). Each document must be uploaded as a separate request with FormData.</p>
 
 <p><strong>Maximum file size:</strong> 4MB per document.</p>
@@ -6682,7 +6794,7 @@ Total: 150
 <li><code>Bank Statement</code> - Recent company bank statement (must be less than 3 months old)</li>
 <li><code>Tax Statement</code> - Valid tax compliance certificate proving good standing with tax authorities</li>
 </ul>
-<h3 id='responses-55'>Responses</h3>
+<h3 id='responses-56'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -6787,7 +6899,7 @@ Total: 150
 <span class="nx">uploadMerchantUBODocuments</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-56'>Description</h3>
+<h3 id='description-57'>Description</h3>
 <p>Upload KYC verification documents for Ultimate Beneficial Owners (UBOs) of a merchant. Each UBO must complete individual KYC verification by uploading their personal documents. This is required in addition to the merchant&#39;s business entity documents.</p>
 
 <p><strong>When creating a merchant</strong>, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading UBO documents.</p>
@@ -6908,7 +7020,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-56'>Responses</h3>
+<h3 id='responses-57'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7049,7 +7161,7 @@ Total: 150
 <span class="c1">// uploadBusinessCustomerDocs("CCT1234567");</span>
 </code></pre></div>
 <p><code>/api/v2/verification/customers/documents</code></p>
-<h3 id='description-57'>Description</h3>
+<h3 id='description-58'>Description</h3>
 <p>Upload verification documents for customers that belong to a merchant. This endpoint handles both <strong>individual customer KYC</strong> documents and <strong>business customer KYB</strong> documents.</p>
 
 <p>Each document must be uploaded as a separate request with FormData.</p>
@@ -7107,7 +7219,7 @@ Total: 150
 <p><strong>For individual customers:</strong> Use the same document types as <a href="#post-upload-individual-customer-documents">Upload Individual Customer Documents</a> (ID document, selfie, proof of address).</p>
 
 <p><strong>For business customers:</strong> Use the same document types as <a href="#post-upload-business-customer-documents">Upload Business Customer Documents</a> (9 business KYB documents).</p>
-<h3 id='responses-57'>Responses</h3>
+<h3 id='responses-58'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7196,7 +7308,7 @@ Total: 150
 <span class="nx">uploadUBODocs</span><span class="p">(</span><span class="dl">"</span><span class="s2">ID_UBO_001_ABC</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div>
 <p><code>/api/v2/verification/ubos/documents</code></p>
-<h3 id='description-58'>Description</h3>
+<h3 id='description-59'>Description</h3>
 <p>Upload KYC verification documents for UBOs of a merchant&#39;s business customer. When a business customer is created under a merchant, UBO user accounts are automatically created and their UIDs are returned in the creation response. Use these UBO UIDs as the <code>uid</code> when uploading documents.</p>
 
 <p><strong>Business customer KYB completion under a merchant requires</strong>:</p>
@@ -7315,7 +7427,7 @@ Total: 150
 <li><code>Selfie</code></li>
 <li><code>Proof of Address</code></li>
 </ul>
-<h3 id='responses-58'>Responses</h3>
+<h3 id='responses-59'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7341,7 +7453,7 @@ Total: 150
 </tbody></table>
 <h1 id='trading'>Trading</h1><h2 id='post-create-order-2'><span class="request-type__post">POST</span> Create Order</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-59'>Description</h3>
+<h3 id='description-60'>Description</h3>
 <p>Submits a Buy/Sell order to the order book. Orders should be confirmed that they have been created either by querying the order ID that is returned in the response, or subscribing to the websockets for order updates.</p>
 
 <p>You can supply your own custom_order_id for tracking purposes for you own system.</p>
@@ -7399,7 +7511,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-59'>Responses</h3>
+<h3 id='responses-60'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7415,7 +7527,7 @@ Total: 150
 </tbody></table>
 <h2 id='get-order-by-id'><span class="request-type__get">GET</span> Order by id</h2>
 <p><code>/market/orders/{id}</code></p>
-<h3 id='description-60'>Description</h3>
+<h3 id='description-61'>Description</h3>
 <p>Get single order details.</p>
 <h3 id='parameters-54'>Parameters</h3>
 <table><thead>
@@ -7435,7 +7547,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-60'>Responses</h3>
+<h3 id='responses-61'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7451,7 +7563,7 @@ Total: 150
 </tbody></table>
 <h2 id='get-all-orders'><span class="request-type__post">GET</span> All orders</h2>
 <p><code>/market/orders</code></p>
-<h3 id='description-61'>Description</h3>
+<h3 id='description-62'>Description</h3>
 <p>Get orders, result is paginated.</p>
 <h3 id='parameters-55'>Parameters</h3>
 <table><thead>
@@ -7541,7 +7653,7 @@ Total: 150
 <td>integer</td>
 </tr>
 </tbody></table>
-<h3 id='responses-61'>Responses</h3>
+<h3 id='responses-62'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7557,7 +7669,7 @@ Total: 150
 </tbody></table>
 <h2 id='get-trades'><span class="request-type__get">GET</span> Trades</h2>
 <p><code>/market/trades</code></p>
-<h3 id='description-62'>Description</h3>
+<h3 id='description-63'>Description</h3>
 <p>Fetch your trades executed on your orders.</p>
 <h3 id='parameters-56'>Parameters</h3>
 <table><thead>
@@ -7619,7 +7731,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-62'>Responses</h3>
+<h3 id='responses-63'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7635,7 +7747,7 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-order'><span class="request-type__post">POST</span> Cancel Order</h2>
 <p><code>/market/orders/{id}/cancel</code></p>
-<h3 id='description-63'>Description</h3>
+<h3 id='description-64'>Description</h3>
 <p>Cancel a specific order by Order id.</p>
 <h3 id='parameters-57'>Parameters</h3>
 <table><thead>
@@ -7655,7 +7767,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-63'>Responses</h3>
+<h3 id='responses-64'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7669,7 +7781,7 @@ Total: 150
 </tbody></table>
 <h2 id='post-cancel-all-orders'><span class="request-type__post">POST</span> Cancel All Orders</h2>
 <p><code>/market/orders/cancel</code></p>
-<h3 id='description-64'>Description</h3>
+<h3 id='description-65'>Description</h3>
 <p>Cancel all of your open orders.</p>
 <h3 id='parameters-58'>Parameters</h3>
 <table><thead>
@@ -7696,7 +7808,7 @@ Total: 150
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-64'>Responses</h3>
+<h3 id='responses-65'>Responses</h3>
 <table><thead>
 <tr>
 <th>Code</th>
@@ -7771,7 +7883,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.ob-inc</code></p>
-<h3 id='description-65'>Description</h3>
+<h3 id='description-66'>Description</h3>
 <p>Subscribe to orderbook updates for the specified market. You can subscribe to multiple markets at the same time by adding each market as a param, eg</p>
 
 <p><code>?stream=btczar.ob-inc&amp;ethzar.ob-inc</code></p>
@@ -7795,7 +7907,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-65'>Responses</h3>
+<h3 id='responses-66'>Responses</h3>
 <table><thead>
 <tr>
 <th>Description</th>
@@ -7842,7 +7954,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <span class="nx">connectWssPublic</span><span class="p">();</span>
 </code></pre></div>
 <p><code>?stream={market}.kline-{period}</code></p>
-<h3 id='description-66'>Description</h3>
+<h3 id='description-67'>Description</h3>
 <p>Subscribe to the K-LINE (OHLC) for the specified market to get updates on the OHLC for each period. Similary to the otherendpoints, you can combine streams into a single subscription request.</p>
 <h3 id='parameters-60'>Parameters</h3>
 <table><thead>
@@ -7869,7 +7981,7 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>string</td>
 </tr>
 </tbody></table>
-<h3 id='responses-66'>Responses</h3>
+<h3 id='responses-67'>Responses</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -8827,8 +8939,8 @@ You can combine multiple subscriptions in one request, and also provide the subs
 </tr>
 <tr>
 <td>deposit_action</td>
-<td>string</td>
-<td>Action for deposits: &#39;none&#39; (keep in sub-account) or &#39;transfer_to_parent&#39; (auto-transfer)</td>
+<td>object</td>
+<td>Automated deposit handling configuration, or <code>null</code> if not configured. Same shape as the request parameter — see <a href="#post-create-sub-account">Create Sub-Account</a> for the full schema.</td>
 </tr>
 <tr>
 <td>created_at</td>
@@ -9880,6 +9992,89 @@ You can combine multiple subscriptions in one request, and also provide the subs
 <td>paid_at</td>
 <td>String (ISO8601 formatted)</td>
 <td>The datetime when invoice was paid.</td>
+</tr>
+</tbody></table>
+<h3 id='trading-fee'>Trading Fee</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>market_id</td>
+<td>string</td>
+<td>Market identifier (e.g., &quot;btczar&quot;)</td>
+</tr>
+<tr>
+<td>group</td>
+<td>string</td>
+<td>Fee group applied to your account</td>
+</tr>
+<tr>
+<td>maker</td>
+<td>string</td>
+<td>Maker fee rate as a decimal (e.g., &quot;0.001&quot; = 0.1%)</td>
+</tr>
+<tr>
+<td>taker</td>
+<td>string</td>
+<td>Taker fee rate as a decimal (e.g., &quot;0.001&quot; = 0.1%)</td>
+</tr>
+<tr>
+<td>instant</td>
+<td>string</td>
+<td>Instant buy/sell fee rate as a decimal</td>
+</tr>
+</tbody></table>
+<h3 id='funding-fee'>Funding Fee</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Fee record ID</td>
+</tr>
+<tr>
+<td>group</td>
+<td>string</td>
+<td>Fee group applied to your account</td>
+</tr>
+<tr>
+<td>reference_type</td>
+<td>string</td>
+<td>Type of funding method this fee applies to</td>
+</tr>
+<tr>
+<td>reference_id</td>
+<td>integer</td>
+<td>ID of the specific funding method</td>
+</tr>
+<tr>
+<td>fee</td>
+<td>string</td>
+<td>Fee rate as a decimal (e.g., &quot;0.0015&quot;)</td>
+</tr>
+<tr>
+<td>min_fee</td>
+<td>string</td>
+<td>Minimum fee amount in currency units (e.g., &quot;5.0&quot;)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>ISO 8601 timestamp</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>string</td>
+<td>ISO 8601 timestamp</td>
 </tr>
 </tbody></table>
 <h3 id='websocket-orderbook-snapshot'>Websocket orderbook snapshot</h3>
