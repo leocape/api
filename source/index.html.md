@@ -1993,7 +1993,6 @@ createIndividualCustomer = async () => {
     city: "Cape Town",
     country: "ZA",
     nationality: "ZA",
-    country_of_residence: "ZA",
     sa_id_number: "9001155800087",
 
     // Professional Information (must use values from the approved lists below)
@@ -2062,9 +2061,8 @@ Once all documents are received the customer account will be verified by Cape Cr
 | address              | formData   | Full street address                                                                | Yes                           | string  |
 | postcode             | formData   | Postal/ZIP code                                                                    | Yes                           | string  |
 | city                 | formData   | City name                                                                          | Yes                           | string  |
-| country              | formData   | ISO country code (2 chars, e.g., 'ZA', 'US')                                       | Yes                           | string  |
-| nationality          | formData   | Nationality ISO country code (2 chars)                                             | Yes                           | string  |
-| country_of_residence | formData   | Country of residence ISO code (2 chars)                                            | Yes                           | string  |
+| country              | formData   | Current country of residence as ISO code (2 chars, e.g., 'ZA', 'US')               | Yes                           | string  |
+| nationality          | formData   | Nationality / citizenship ISO country code (2 chars)                               | Yes                           | string  |
 | id_number            | formData   | South African ID number                                                            | Yes if nationality='ZA'       | string  |
 | occupation           | formData   | Customer occupation - must be a value from the [Occupations list](#lists)          | Yes                           | string  |
 | source_of_funds      | formData   | Source of funds - must be a value from the [Source of Funds list](#lists)          | Yes                           | string  |
