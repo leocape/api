@@ -3481,16 +3481,18 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>None</td>
 </tr>
 <tr>
-<td><code>convert_and_withdraw</code></td>
+<td><code>convert_and_withdraw</code> (fiat deposits only)</td>
 <td>Convert deposit to target currency and withdraw to beneficiary</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
 <tr>
-<td><code>aggregate_convert_and_withdraw</code></td>
+<td><code>aggregate_convert_and_withdraw</code> (fiat deposits only)</td>
 <td>Transfer to parent, then convert and withdraw</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
 </tbody></table>
+
+<p><strong>Note:</strong> <code>convert_and_withdraw</code> and <code>aggregate_convert_and_withdraw</code> are currently automated for <strong>fiat deposits</strong> only — a fiat deposit is converted to the target crypto currency and withdrawn to the beneficiary. <strong>Coin and lightning deposits support <code>aggregate</code> (and <code>none</code>) only</strong>; converting a crypto deposit to fiat and withdrawing it must be done manually. <code>aggregate</code> is available for all deposit types.</p>
 
 <p><strong>Example with Simple Aggregate:</strong></p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
@@ -3502,33 +3504,37 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 </span></code></pre></div>
 <p><strong>Example with Convert and Withdraw:</strong></p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"USD Conversion Account"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BTC Conversion Account"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usd"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
+<p>This applies to fiat deposits into the account: the fiat is converted to the target crypto (<code>btc</code>) and withdrawn to the beneficiary. A crypto deposit into the same account is not auto-converted (see the note above).</p>
+
 <p><strong>Direction-Specific Form (Advanced):</strong></p>
 
 <p>For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate <code>coin</code> and <code>fiat</code> configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit&#39;s currency type. If a sub-object for the deposit&#39;s direction is not provided, the deposit is credited as normal (<code>none</code> behavior).</p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"account_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Routing Account"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate_convert_and_withdraw"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
       </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
     </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aggregate"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
+<p>Because <code>convert_and_withdraw</code> and <code>aggregate_convert_and_withdraw</code> are automated for fiat deposits only, place those actions under <code>fiat</code>; the <code>coin</code> sub-object should use <code>aggregate</code> (or <code>none</code>).</p>
+
 <p>The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (<code>coin</code> / <code>fiat</code>) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.</p>
 <h3 id='responses-36'>Responses</h3>
 <table><thead>
@@ -4160,8 +4166,6 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 
 <p>If no deposit action is provided, the default will be &quot;none&quot; which will see the deposit simply credited to the customer account, like a regular deposit.</p>
 
-<p>Note: Only the &quot;none&quot; action is currently available, the additional actions are coming soon!</p>
-
 <table><thead>
 <tr>
 <th>Action</th>
@@ -4175,21 +4179,23 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
 <td>None</td>
 </tr>
 <tr>
-<td><code>aggregate</code> (coming soon)</td>
+<td><code>aggregate</code></td>
 <td>Automatically transfer deposits to parent merchant/aggregator account</td>
 <td>None</td>
 </tr>
 <tr>
-<td><code>convert_and_withdraw</code> (coming soon)</td>
+<td><code>convert_and_withdraw</code> (fiat deposits only)</td>
 <td>Convert deposit to target currency and withdraw to beneficiary</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
 <tr>
-<td><code>aggregate_convert_and_withdraw</code> (coming soon)</td>
+<td><code>aggregate_convert_and_withdraw</code> (fiat deposits only)</td>
 <td>Transfer to parent, then convert and withdraw</td>
 <td><code>target_currency</code>, <code>beneficiary_id</code> or <code>lightning_invoice</code></td>
 </tr>
 </tbody></table>
+
+<p><strong>Note:</strong> <code>convert_and_withdraw</code> and <code>aggregate_convert_and_withdraw</code> are currently automated for <strong>fiat deposits</strong> only — a fiat deposit is converted to the target crypto currency and withdrawn to the beneficiary. <strong>Coin and lightning deposits support <code>aggregate</code> (and <code>none</code>) only</strong>; converting a crypto deposit to fiat and withdrawing it must be done manually. <code>aggregate</code> is available for all deposit types.</p>
 
 <p><strong>Example with Deposit Action:</strong></p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
@@ -4200,7 +4206,7 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
   </span><span class="err">//</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">other</span><span class="w"> </span><span class="err">required</span><span class="w"> </span><span class="err">fields</span><span class="w"> </span><span class="err">...</span><span class="w">
   </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
     </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
   </span><span class="p">}</span><span class="w">
@@ -4214,19 +4220,19 @@ Ensure you have <strong>Enabled 2FA</strong> and <strong>Created your API key</s
   </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer@example.com"</span><span class="p">,</span><span class="w">
   </span><span class="err">//</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">other</span><span class="w"> </span><span class="err">required</span><span class="w"> </span><span class="err">fields</span><span class="w"> </span><span class="err">...</span><span class="w">
   </span><span class="nl">"deposit_action"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert_and_withdraw"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"zar"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"target_currency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"beneficiary_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
       </span><span class="nl">"max_slippage"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="w">
     </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"fiat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"coin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (<code>coin</code> / <code>fiat</code>) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.</p>
+<p>The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (<code>coin</code> / <code>fiat</code>) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured. Because <code>convert_and_withdraw</code> and <code>aggregate_convert_and_withdraw</code> are automated for fiat deposits only, place those actions under <code>fiat</code>; the <code>coin</code> sub-object should use <code>aggregate</code> or <code>none</code>.</p>
 <h3 id='responses-41'>Responses</h3>
 <table><thead>
 <tr>
@@ -5834,10 +5840,12 @@ Total: 150
 
 <ul>
 <li><strong>none</strong>: No automated action, deposit sits in account</li>
-<li><strong>aggregate</strong>: Combine multiple small deposits into one before processing</li>
+<li><strong>aggregate</strong>: Transfer the deposit to the parent account (available for all currencies)</li>
 <li><strong>convert_and_withdraw</strong>: Convert currency and withdraw to beneficiary</li>
 <li><strong>aggregate_convert_and_withdraw</strong>: Aggregate deposits, then convert and withdraw</li>
 </ul>
+
+<p><strong>Note:</strong> <code>convert_and_withdraw</code> and <code>aggregate_convert_and_withdraw</code> currently automate conversion to a <strong>crypto or Lightning</strong> payout target only. Converting a deposit to a <strong>fiat</strong> target currency (e.g. converting a crypto deposit to ZAR) and paying it out is <strong>not yet automated</strong> and must be handled manually. <code>aggregate</code> is available for all currencies.</p>
 <h3 id='responses-49'>Responses</h3>
 <table><thead>
 <tr>
