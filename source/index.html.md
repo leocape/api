@@ -1639,37 +1639,53 @@ Create a new sub-account that inherits the parent's KYC verification. Sub-accoun
 
 **Deposit Action Options:**
 
-Configure automatic actions for deposits received by this sub-account.
+Configure automatic actions for deposits received by this sub-account. Each deposit is handled by the configuration for its direction:
 
-The `deposit_action` parameter accepts a JSON object with the following structure:
+- `fiat`: fiat deposits (e.g. ZAR).
+- `coin`: crypto deposits. Lightning deposits are BTC deposits and use the `coin` configuration.
+
+The `deposit_action` parameter accepts a JSON object with one sub-object per direction:
 
 ```json
 {
-  "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
-  "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
-  "beneficiary_id": 123, // Required for withdraw actions
-  "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
-  "max_slippage": 2.5, // Optional: Max slippage percentage (0.1-10, default: 2.0)
-  "beneficiary_amount": "50.00" // Optional: Exact amount the beneficiary should receive
+  "fiat": {
+    "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+    "target_currency": "btc", // Convert actions: a crypto currency
+    "beneficiary_id": 123, // Convert actions: a beneficiary in target_currency
+    "max_slippage": 2.5 // Optional: max slippage percentage (default: 2.0)
+  },
+  "coin": {
+    "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+    "target_currency": "zar", // Convert actions: a fiat currency
+    "beneficiary_id": 456, // Convert actions: a beneficiary in target_currency
+    "max_slippage": 2.5 // Optional: max slippage percentage (default: 2.0)
+  }
 }
 ```
 
-**Beneficiary Amount:**
+Both sub-objects are optional. A direction without its own sub-object uses the flat fields (see **Flat Form** below); if neither is set, deposits in that direction are credited as normal (`none`).
 
-When `beneficiary_amount` is specified (as a string), it defines the exact amount that the beneficiary should receive in the target currency. If, after conversion, the account does not have sufficient funds to cover this amount, the withdrawal will **not** be placed. Instead, the payment will be marked as `completed`, with the converted funds remaining in the account.
+**Fields (per direction):**
 
-**Note:** When using `lightning_invoice` together with `beneficiary_amount`, the invoice amount must match the `beneficiary_amount`.
+| Field              | Description                                                                                                                                                                                                       | Required        | Schema  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ------- |
+| action             | `none`, `aggregate`, `convert_and_withdraw` or `aggregate_convert_and_withdraw` (see Available Actions below)                                                                                                     | Yes             | string  |
+| target_currency    | Currency the deposit is converted to. Under `fiat`: a crypto currency (e.g. `btc`). Under `coin`: a fiat currency (e.g. `zar`). Must be an enabled currency with withdrawals enabled.                             | Convert actions | string  |
+| beneficiary_id     | ID of an active beneficiary in `target_currency`, owned by the sub-account or its parent. The converted funds are withdrawn to this beneficiary.                                                                                        | Convert actions | integer |
+| max_slippage       | Maximum slippage percentage accepted for the conversion (default: 2.0). While no conversion route within this limit is available, the conversion is retried.                                                      | No              | number  |
+| lightning_invoice  | Under `fiat` only; rejected under `coin`. It does not replace `beneficiary_id` here. Paying a Lightning invoice instead of a beneficiary is supported on [payment references](#post-create-payment-reference).    | No              | string  |
+| beneficiary_amount | Applies to [payment references](#post-create-payment-reference) only. It is not applied to the deposit action of a sub-account.                                                                                      | No              | string  |
 
 **Available Actions:**
 
-| Action                           | Description                                                    | Required Fields                                            |
-| -------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
-| `none`                                         | No automatic action (default)                                  | None                                                       |
-| `aggregate`                                    | Automatically transfer deposits to parent account              | None                                                       |
-| `convert_and_withdraw` (fiat deposits only)    | Convert deposit to target currency and withdraw to beneficiary | `target_currency`, `beneficiary_id` or `lightning_invoice` |
-| `aggregate_convert_and_withdraw` (fiat deposits only) | Transfer to parent, then convert and withdraw            | `target_currency`, `beneficiary_id` or `lightning_invoice` |
+| Action                           | Fiat deposit                                                                                                  | Coin deposit (including Lightning)                                                                                      | Required Fields                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `none`                           | Credited to the sub-account (default)                                                                            | Credited to the sub-account (default)                                                                                      | None                                |
+| `aggregate`                      | Transferred to the parent account                                                                                    | Transferred to the parent account                                                                                              | None                                |
+| `convert_and_withdraw`           | Converted to `target_currency` (crypto) on the sub-account and withdrawn to the beneficiary                     | Sold for `target_currency` (fiat, e.g. `zar`) on the sub-account and withdrawn to the beneficiary                         | `target_currency`, `beneficiary_id` |
+| `aggregate_convert_and_withdraw` | Transferred to the parent account, then converted to `target_currency` and withdrawn from the parent account | Transferred to the parent account, then sold for `target_currency` and withdrawn from the parent account                 | `target_currency`, `beneficiary_id` |
 
-**Note:** `convert_and_withdraw` and `aggregate_convert_and_withdraw` are currently automated for **fiat deposits** only — a fiat deposit is converted to the target crypto currency and withdrawn to the beneficiary. **Coin and lightning deposits support `aggregate` (and `none`) only**; converting a crypto deposit to fiat and withdrawing it must be done manually. `aggregate` is available for all deposit types.
+The deposit action is validated for each direction it applies to; a request with an invalid configuration is rejected with `422`.
 
 **Example with Simple Aggregate:**
 
@@ -1686,24 +1702,6 @@ When `beneficiary_amount` is specified (as a string), it defines the exact amoun
 
 ```json
 {
-  "account_name": "BTC Conversion Account",
-  "deposit_action": {
-    "action": "convert_and_withdraw",
-    "target_currency": "btc",
-    "beneficiary_id": 789,
-    "max_slippage": 2.5
-  }
-}
-```
-
-This applies to fiat deposits into the account: the fiat is converted to the target crypto (`btc`) and withdrawn to the beneficiary. A crypto deposit into the same account is not auto-converted (see the note above).
-
-**Direction-Specific Form (Advanced):**
-
-For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate `coin` and `fiat` configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit's currency type. If a sub-object for the deposit's direction is not provided, the deposit is credited as normal (`none` behavior).
-
-```json
-{
   "account_name": "Routing Account",
   "deposit_action": {
     "fiat": {
@@ -1713,15 +1711,42 @@ For advanced use cases where you want different actions for fiat deposits vs. co
       "max_slippage": 2.5
     },
     "coin": {
-      "action": "aggregate"
+      "action": "convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 789,
+      "max_slippage": 2.5
     }
   }
 }
 ```
 
-Because `convert_and_withdraw` and `aggregate_convert_and_withdraw` are automated for fiat deposits only, place those actions under `fiat`; the `coin` sub-object should use `aggregate` (or `none`).
+A fiat deposit into this account is converted to BTC and withdrawn to beneficiary `456` (a BTC beneficiary). A crypto deposit is sold for ZAR and withdrawn to beneficiary `789` (a ZAR bank beneficiary).
 
-The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (`coin` / `fiat`) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured.
+**Example with Aggregate, Convert and Withdraw:**
+
+```json
+{
+  "account_name": "Collection Account",
+  "deposit_action": {
+    "fiat": {
+      "action": "aggregate"
+    },
+    "coin": {
+      "action": "aggregate_convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 789
+    }
+  }
+}
+```
+
+A fiat deposit is transferred to the parent account. A crypto deposit is transferred to the parent account, then sold for ZAR and withdrawn to beneficiary `789` from the parent account.
+
+**Flat Form:**
+
+The fields can also be given at the top level of `deposit_action` (e.g. `{ "action": "aggregate" }`). The flat fields apply to every direction that has no sub-object of its own. If both are provided, the sub-object (`fiat` / `coin`) takes precedence for its direction and the flat fields apply to the other direction.
+
+A convert action needs a crypto `target_currency` for fiat deposits and a fiat `target_currency` for coin deposits, so a flat convert action is only accepted when the other direction has its own sub-object. Use the direction-specific form for convert actions.
 
 ### Responses
 
@@ -2097,37 +2122,53 @@ Set an initial webhook on the customer account during creation. The webhook obje
 
 **Deposit Action Options:**
 
-The optional `deposit_action` parameter accepts a JSON object with the following structure:
+Configure automatic actions for deposits received by this customer. If no deposit action is provided, the default is `none`: the deposit is credited to the customer account like a regular deposit. Each deposit is handled by the configuration for its direction:
+
+- `fiat`: fiat deposits (e.g. ZAR).
+- `coin`: crypto deposits. Lightning deposits are BTC deposits and use the `coin` configuration.
+
+The `deposit_action` parameter accepts a JSON object with one sub-object per direction:
 
 ```json
 {
-  "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
-  "target_currency": "currency_code", // Required for convert actions (e.g., "zar", "usd")
-  "beneficiary_id": 123, // Required for withdraw actions
-  "lightning_invoice": "lnbc...", // Alternative to beneficiary_id for Lightning withdrawals
-  "max_slippage": 2.5, // Optional: Max slippage percentage
-  "beneficiary_amount": "50.00" // Optional: Exact amount the beneficiary should receive
+  "fiat": {
+    "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+    "target_currency": "btc", // Convert actions: a crypto currency
+    "beneficiary_id": 123, // Convert actions: a beneficiary in target_currency
+    "max_slippage": 2.5 // Optional: max slippage percentage (default: 2.0)
+  },
+  "coin": {
+    "action": "none|aggregate|convert_and_withdraw|aggregate_convert_and_withdraw",
+    "target_currency": "zar", // Convert actions: a fiat currency
+    "beneficiary_id": 456, // Convert actions: a beneficiary in target_currency
+    "max_slippage": 2.5 // Optional: max slippage percentage (default: 2.0)
+  }
 }
 ```
 
-**Beneficiary Amount:**
+Both sub-objects are optional. A direction without its own sub-object uses the flat fields (see **Flat Form** below); if neither is set, deposits in that direction are credited as normal (`none`).
 
-When `beneficiary_amount` is specified (as a string), it defines the exact amount that the beneficiary should receive in the target currency. If, after conversion, the account does not have sufficient funds to cover this amount, the withdrawal will **not** be placed. Instead, the payment will be marked as `completed`, with the converted funds remaining in the account.
+**Fields (per direction):**
 
-**Note:** When using `lightning_invoice` together with `beneficiary_amount`, the invoice amount must match the `beneficiary_amount`.
+| Field              | Description                                                                                                                                                                                                       | Required        | Schema  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ------- |
+| action             | `none`, `aggregate`, `convert_and_withdraw` or `aggregate_convert_and_withdraw` (see Available Actions below)                                                                                                     | Yes             | string  |
+| target_currency    | Currency the deposit is converted to. Under `fiat`: a crypto currency (e.g. `btc`). Under `coin`: a fiat currency (e.g. `zar`). Must be an enabled currency with withdrawals enabled.                             | Convert actions | string  |
+| beneficiary_id     | ID of an active beneficiary in `target_currency`, owned by the customer or its parent merchant. The converted funds are withdrawn to this beneficiary.                                                                                        | Convert actions | integer |
+| max_slippage       | Maximum slippage percentage accepted for the conversion (default: 2.0). While no conversion route within this limit is available, the conversion is retried.                                                      | No              | number  |
+| lightning_invoice  | Under `fiat` only; rejected under `coin`. It does not replace `beneficiary_id` here. Paying a Lightning invoice instead of a beneficiary is supported on [payment references](#post-create-payment-reference).    | No              | string  |
+| beneficiary_amount | Applies to [payment references](#post-create-payment-reference) only. It is not applied to the deposit action of a customer.                                                                                      | No              | string  |
 
 **Available Actions:**
 
-If no deposit action is provided, the default will be "none" which will see the deposit simply credited to the customer account, like a regular deposit.
+| Action                           | Fiat deposit                                                                                                  | Coin deposit (including Lightning)                                                                                      | Required Fields                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `none`                           | Credited to the customer (default)                                                                            | Credited to the customer (default)                                                                                      | None                                |
+| `aggregate`                      | Transferred to the parent merchant/aggregator account                                                                                    | Transferred to the parent merchant/aggregator account                                                                                              | None                                |
+| `convert_and_withdraw`           | Converted to `target_currency` (crypto) on the customer and withdrawn to the beneficiary                     | Sold for `target_currency` (fiat, e.g. `zar`) on the customer and withdrawn to the beneficiary                         | `target_currency`, `beneficiary_id` |
+| `aggregate_convert_and_withdraw` | Transferred to the parent merchant/aggregator account, then converted to `target_currency` and withdrawn from the parent account | Transferred to the parent merchant/aggregator account, then sold for `target_currency` and withdrawn from the parent account                 | `target_currency`, `beneficiary_id` |
 
-| Action                                                | Description                                                           | Required Fields                                            |
-| ----------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `none`                                                | No automatic action (default)                                         | None                                                       |
-| `aggregate`                                           | Automatically transfer deposits to parent merchant/aggregator account | None                                                       |
-| `convert_and_withdraw` (fiat deposits only)           | Convert deposit to target currency and withdraw to beneficiary        | `target_currency`, `beneficiary_id` or `lightning_invoice` |
-| `aggregate_convert_and_withdraw` (fiat deposits only) | Transfer to parent, then convert and withdraw                         | `target_currency`, `beneficiary_id` or `lightning_invoice` |
-
-**Note:** `convert_and_withdraw` and `aggregate_convert_and_withdraw` are currently automated for **fiat deposits** only — a fiat deposit is converted to the target crypto currency and withdrawn to the beneficiary. **Coin and lightning deposits support `aggregate` (and `none`) only**; converting a crypto deposit to fiat and withdrawing it must be done manually. `aggregate` is available for all deposit types.
+The deposit action is validated for each direction it applies to; a request with an invalid configuration is rejected with `422`.
 
 **Example with Deposit Action:**
 
@@ -2139,17 +2180,25 @@ If no deposit action is provided, the default will be "none" which will see the 
   "last_name": "Doe",
   // ... other required fields ...
   "deposit_action": {
-    "action": "convert_and_withdraw",
-    "target_currency": "btc",
-    "beneficiary_id": 456,
-    "max_slippage": 2.5
+    "fiat": {
+      "action": "convert_and_withdraw",
+      "target_currency": "btc",
+      "beneficiary_id": 456,
+      "max_slippage": 2.5
+    },
+    "coin": {
+      "action": "convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 789,
+      "max_slippage": 2.5
+    }
   }
 }
 ```
 
-**Direction-Specific Form (Advanced):**
+A fiat deposit by this customer is converted to BTC and withdrawn to beneficiary `456` (a BTC beneficiary). A crypto deposit is sold for ZAR and withdrawn to beneficiary `789` (a ZAR bank beneficiary).
 
-For advanced use cases where you want different actions for fiat deposits vs. coin (crypto) deposits, supply a nested form with separate `coin` and `fiat` configurations. Each sub-object accepts the same fields as the flat form. When a deposit arrives, the matching sub-object is used based on the deposit's currency type. If a sub-object for the deposit's direction is not provided, the deposit is credited as normal (`none` behavior).
+**Example with Aggregate, Convert and Withdraw:**
 
 ```json
 {
@@ -2158,19 +2207,24 @@ For advanced use cases where you want different actions for fiat deposits vs. co
   // ... other required fields ...
   "deposit_action": {
     "fiat": {
-      "action": "convert_and_withdraw",
-      "target_currency": "btc",
-      "beneficiary_id": 456,
-      "max_slippage": 2.5
+      "action": "aggregate"
     },
     "coin": {
-      "action": "none"
+      "action": "aggregate_convert_and_withdraw",
+      "target_currency": "zar",
+      "beneficiary_id": 789
     }
   }
 }
 ```
 
-The flat form and the direction-specific form are mutually exclusive in practice: if both are provided, the direction-specific form (`coin` / `fiat`) takes precedence for that direction, and the flat fields act as a fallback for any direction not configured. Because `convert_and_withdraw` and `aggregate_convert_and_withdraw` are automated for fiat deposits only, place those actions under `fiat`; the `coin` sub-object should use `aggregate` or `none`.
+A fiat deposit is transferred to the parent merchant/aggregator account. A crypto deposit is transferred to the parent account, then sold for ZAR and withdrawn to beneficiary `789` from the parent account.
+
+**Flat Form:**
+
+The fields can also be given at the top level of `deposit_action` (e.g. `{ "action": "aggregate" }`). The flat fields apply to every direction that has no sub-object of its own. If both are provided, the sub-object (`fiat` / `coin`) takes precedence for its direction and the flat fields apply to the other direction.
+
+A convert action needs a crypto `target_currency` for fiat deposits and a fiat `target_currency` for coin deposits, so a flat convert action is only accepted when the other direction has its own sub-object. Use the direction-specific form for convert actions.
 
 ### Responses
 
@@ -3153,7 +3207,7 @@ For `webhook_protocol: "none"` or when not set, no `X-Auth-Webhook` header is se
 - **convert_and_withdraw**: Convert currency and withdraw to beneficiary
 - **aggregate_convert_and_withdraw**: Aggregate deposits, then convert and withdraw
 
-**Note:** `convert_and_withdraw` and `aggregate_convert_and_withdraw` currently automate conversion to a **crypto or Lightning** payout target only. Converting a deposit to a **fiat** target currency (e.g. converting a crypto deposit to ZAR) and paying it out is **not yet automated** and must be handled manually. `aggregate` is available for all currencies.
+**Note:** For coin and Lightning deposits, `target_currency` is a fiat currency (e.g. `zar`) or a different crypto currency with an available conversion route; for fiat deposits it is a crypto currency. `aggregate` is available for all currencies.
 
 ### Responses
 
